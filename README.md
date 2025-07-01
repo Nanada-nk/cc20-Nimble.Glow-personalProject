@@ -11,7 +11,7 @@ CLOUDINARY_API_SECRET=**
 
 ---
 
-# Nimble.Glow-API – Best Practice Endpoints
+# Nimble.Glow-API – Endpoints
 
 ## 1. Authentication
 
