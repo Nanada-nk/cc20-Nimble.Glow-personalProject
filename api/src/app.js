@@ -26,7 +26,7 @@ app.use(compression())
 
 app.use('/api/auth', authRouter)
 app.use('/api/users', authenticateUser, usersRouter)
-// app.use('/api/categories',()=>{})
+app.use('/api/categories',()=>{})
 // app.use('/api/products',()=>{})
 // app.use('/api/cart',()=>{})
 // app.use('/api/orders',()=>{})

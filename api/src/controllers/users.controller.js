@@ -44,18 +44,35 @@ usersController.updateUser = async (req, res) => {
     throw createError(401, "Unauthorized")
   }
   const id = Number(req.params.id)
-  const { firstName, lastName, mobile, email, password, profileImage, addresses } = req.body
-  const hashPassword = await hashService.hash(password);
+  const { firstName, lastName, mobile, profileImage, addresses } = req.body
+  
   const data = {
     firstName,
     lastName,
     mobile,
-    email,
-    password: hashPassword,
     profileImage,
     addresses: {
       create: addresses
     }
+  }
+  const updatedUser = await usersService.updateUser(id, data)
+
+  if (!updatedUser) {
+    return res.status(404).json({ success: false, message: 'Not found or unauthorized' })
+  }
+  res.status(200).json({ success: true, user: updatedUser })
+}
+
+usersController.forgotPassword = async (req, res) => {
+  if (!req.user) {
+    throw createError(401, "Unauthorized")
+  }
+  const id = Number(req.params.id)
+  const { email, password } = req.body
+  const hashPassword = await hashService.hash(password);
+  const data = {
+    email,
+    password: hashPassword
   }
   const updatedUser = await usersService.updateUser(id, data)
 
