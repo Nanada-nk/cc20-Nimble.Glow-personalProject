@@ -1,13 +1,12 @@
 import express from 'express'
 import authController from '../controllers/auth.controller.js'
-import checkRole from '../middlewares/checkRole.middleware.js'
+import authenticateUser from '../middlewares/authenticate.middleware.js'
 
 const authRouter = express.Router()
 
 authRouter.post('/register',authController.register)
 authRouter.post('/login',authController.login)
-authRouter.post('/admin/register',checkRole("SUPERADMIN") ,authController.register)
-// authRouter.get('/me',authController)
+authRouter.get('/me',authenticateUser,authController.getMe)
 // authRouter.post('/logout',authController)
 
 

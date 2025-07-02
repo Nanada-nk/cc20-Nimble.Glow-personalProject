@@ -19,7 +19,6 @@ CLOUDINARY_API_SECRET=**
 |------------------------------|--------|------------------------------------|---------------------|------------------------------------------------------|---------------------|---------------------|
 | `/api/auth/login`            | POST   | User login                         | Public              | `{ email, password }`                                | -                   | -                   |
 | `/api/auth/register`         | POST   | Register new customer              | Public              | `{ firstName, lastName, mobile, email, password }`   | -                   | -                   |
-| `/api/auth/admin/register`   | POST   | Register admin (by superadmin)     | Superadmin          | `{ email, firstName, lastName, mobile, password }`   | -                   | -                   |
 | `/api/auth/me`               | GET    | Get current user (profile)         | User                | `(JWT in header)`                                    | -                   | -                   |
 | `/api/auth/logout`           | POST   | Logout (optional, for session)     | User                | `(JWT in header)`                                    | -                   | -                   |
 

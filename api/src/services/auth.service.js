@@ -10,7 +10,8 @@ authService.findUserByEmail = (email) => {
 
 authService.findUserById = (id) => {
   return prisma.user.findUnique({
-    where: { id }
+    where: { id },
+    include: { addresses: true }
   })
 }
 
@@ -18,22 +19,12 @@ authService.createUser = (data) => {
   return prisma.user.create({ data })
 }
 
-authService.updateUser = (id, data) => {
-  return prisma.user.update({
-    data,
-    where: {
-      id
-    }
+authService.updateLastLogin = async (userId) => {
+  const updatedUser = await prisma.user.update({
+    where: { id: userId },
+    data: { lastLogin: new Date() },
   })
-}
-
-authService.deleteUser = (id, data) => {
-  return prisma.user.delete({
-    data,
-    where: {
-      id
-    }
-  })
+  return updatedUser
 }
 
 export default authService

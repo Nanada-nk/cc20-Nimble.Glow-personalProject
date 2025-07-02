@@ -19,9 +19,9 @@ model User {
   role         Role    @default(CUSTOMER)
   enabled      Boolean @default(true)
 
-  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp(0)
-  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamp(0)
-  lastLogin DateTime? @map("last_login") @db.Timestamp(0)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(0)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp(0)
+  lastLogin DateTime @default(now()) @map("last_login") @db.Timestamp(0)
 
   addresses Address[]
   cart      Cart?
@@ -45,15 +45,15 @@ model AuditLog {
   details   String? // JSON string หรือ message อธิบายเพิ่มเติม
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(0)
 
-  user   User? @relation(fields: [userId], references: [id])
+  user   User? @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId Int?  @map("user_id")
 }
 
 model Address {
   id      Int    @id @default(autoincrement())
-  address String @db.Text
+  address String
 
-  user   User? @relation(fields: [userId], references: [id])
+  user   User? @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId Int?  @map("user_id")
 
   shippings Shipping[]
@@ -106,7 +106,7 @@ model Cart {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(0)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp(0)
 
-  user   User? @relation(fields: [userId], references: [id])
+  user   User? @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId Int?  @unique @map("user_id")
 
   products ProductOnCart[]
@@ -195,7 +195,7 @@ model Payment {
   order   Order? @relation(fields: [orderId], references: [id])
   orderId Int?   @unique @map("order_id")
 
-  user   User? @relation(fields: [userId], references: [id])
+  user   User? @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId Int?  @map("user_id")
 
   PaymentRefund PaymentRefund[]
@@ -246,7 +246,7 @@ model CouponUsage {
   id     Int      @id @default(autoincrement())
   usedAt DateTime @default(now()) @map("used_at") @db.Timestamp(0)
 
-  user   User @relation(fields: [userId], references: [id])
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId Int  @map("user_id")
 
   coupon   Coupon @relation(fields: [couponId], references: [id])
@@ -316,7 +316,7 @@ model Review {
   product   Product? @relation(fields: [productId], references: [id])
   productId Int?     @map("product_id")
 
-  user   User? @relation(fields: [userId], references: [id])
+  user   User? @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId Int?  @map("user_id")
 
   images ReviewImage[]
@@ -327,8 +327,8 @@ model ReviewImage {
   url       String
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(0)
 
-  review    Review?  @relation(fields: [reviewId], references: [id])
-  reviewId  Int @map("review_id")
+  review   Review? @relation(fields: [reviewId], references: [id])
+  reviewId Int     @map("review_id")
 
   @@map("review_image")
 }

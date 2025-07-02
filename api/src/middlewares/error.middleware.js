@@ -10,14 +10,18 @@
 // export default errorMiddleware
 
 
-// มิดเดิลแวร์จัดการข้อผิดพลาด
-function errorMiddleware(err, req, res, next) {
-  // ตรวจสอบว่า error object มีการกำหนด statusCode หรือไม่ ถ้าไม่มีให้ใช้ค่า 500 เป็นค่าเริ่มต้น
-  const statusCode = err.statusCode || 500; 
+const errorMiddleware = (err, req, res, next) => {
+  console.error(err.stack)
+
+  // ตรวจสอบว่ามี status code หรือไม่ หากไม่มีให้ใช้ 500 เป็นค่าเริ่มต้น
+  const statusCode = err.status || 500
+  const message = err.message || 'Internal Server Error'
+
   res.status(statusCode).json({
-    message: err.message || "Internal Server Error",
-    stack: process.env.NODE_ENV === 'production' ? null : err.stack
-  });
+    success: false,
+    message: message,
+    error: err.stack
+  })
 }
 
 export default errorMiddleware
