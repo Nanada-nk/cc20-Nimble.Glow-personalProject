@@ -4,6 +4,7 @@ import compression from 'compression'
 import morgan from 'morgan'
 import errorMiddleware from './middlewares/error.middleware.js'
 import notFoundMiddleware from './middlewares/not-found.middleware.js'
+import authRouter from './routes/auth.route.js'
 
 const app = express()
 
@@ -13,16 +14,16 @@ app.use(morgan("dev")) // log
 app.use(compression())
 
 
-app.use('/api/auth',()=>{})
-app.use('/api/users',()=>{})
-app.use('/api/categories',()=>{})
-app.use('/api/products',()=>{})
-app.use('/api/cart',()=>{})
-app.use('/api/orders',()=>{})
-app.use('/api/payments',()=>{})
-app.use('/api/shipping',()=>{})
-app.use('/api/reviews',()=>{})
-app.use('/api/coupons',()=>{})
+app.use('/api/auth',authRouter)
+// app.use('/api/users',()=>{})
+// app.use('/api/categories',()=>{})
+// app.use('/api/products',()=>{})
+// app.use('/api/cart',()=>{})
+// app.use('/api/orders',()=>{})
+// app.use('/api/payments',()=>{})
+// app.use('/api/shipping',()=>{})
+// app.use('/api/reviews',()=>{})
+// app.use('/api/coupons',()=>{})
 
 
 app.use(notFoundMiddleware)
