@@ -29,7 +29,7 @@ CLOUDINARY_API_SECRET=**
 |------------------------------|--------|----------------------------|---------------------|-------------------|-------------------------------------------|---------------------|
 | `/api/categories`            | GET    | List all categories        | Public              | -                 | `{ name?, page?, limit? }`                | -                   |
 | `/api/categories`            | POST   | Create new category        | Admin/Superadmin    | `{ name }`        | -                                         | -                   |         
-| `/api/categories/:id`        | PUT    | Update category            | Admin/Superadmin    | `{ name }`        | -                                         | `{ id }`            |
+| `/api/categories/:id`        | PATCH  | Update category            | Admin/Superadmin    | `{ name }`        | -                                         | `{ id }`            |
 | `/api/categories/:id`        | DELETE | Delete category            | Admin/Superadmin    | -                 | -                                         | `{ id }`            |
 
 ## 3. Product
@@ -39,7 +39,7 @@ CLOUDINARY_API_SECRET=**
 | `/api/products`              | GET    | List/search products       | Public              | -                                                                              | `{ categoryId?, minPrice?, maxPrice?, search?, page?, limit? }` | -                   |
 | `/api/products`              | POST   | Create product             | Admin/Superadmin    | `{ title, description, price, stockQuantity, categoryId, images: [url, ...] }` | -                                                               | -                   |
 | `/api/products/:id`          | GET    | Get product by id          | Public              | -                                                                              | -                                                               | `{ id }`            |
-| `/api/products/:id`          | PUT    | Update product             | Admin/Superadmin    | `{ title?, description?, price?, stockQuantity?, categoryId?, images? }`       | -                                                               | `{ id }`            |
+| `/api/products/:id`          | PATCH  | Update product             | Admin/Superadmin    | `{ title?, description?, price?, stockQuantity?, categoryId?, images? }`       | -                                                               | `{ id }`            |
 | `/api/products/:id`          | DELETE | Delete product             | Admin/Superadmin    | -                                                                              | -                                                               | `{ id }`            |
 
 ## 4. User Management
@@ -79,7 +79,7 @@ CLOUDINARY_API_SECRET=**
 |--------------------------------------------|--------|--------------------------------|---------------------|-----------------------------------------------------|------------- |---------------------|
 | `/api/shipping/methods`                    | GET    | List shipping methods          | Public              | -                                                   | -            | -                   |
 | `/api/shipping/methods`                    | POST   | Add shipping method            | Admin/Superadmin    | `{ ... }`                                           | -            | -                   |
-| `/api/shipping/methods/:id`                | PUT    | Update shipping method         | Admin/Superadmin    | `{ ... }`                                           | -            | `{ id }`            |
+| `/api/shipping/methods/:id`                | PATCH  | Update shipping method         | Admin/Superadmin    | `{ ... }`                                           | -            | `{ id }`            |
 | `/api/shipping/methods/:id`                | DELETE | Delete shipping method         | Admin/Superadmin    | -                                                   | -            | `{ id }`            |
 | `/api/orders/:orderId/shipping`            | GET    | Get order shipping status      | customer            | -                                                   | -            | `{ orderId }`       |
 | `/api/orders/:orderId/shipping`            | PATCH  | Update order shipping status   | Admin/Superadmin    | `{ status, trackingNumber, shippedAt, deliveredAt }`| -            | `{ orderId }`       |
