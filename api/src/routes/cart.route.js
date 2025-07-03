@@ -1,12 +1,11 @@
 import express from 'express'
-import authenticateUser from '../middlewares/authenticate.middleware.js'
 import checkRole from '../middlewares/checkRole.middleware.js'
-import cartController from '../controllers/cart.controller.js' // <-- import controller
+import cartController from '../controllers/cart.controller.js'
 
 const cartRouter = express.Router()
 
-cartRouter.get('/', authenticateUser, checkRole("CUSTOMER"), cartController.getCart);
-cartRouter.post('/', authenticateUser, checkRole("CUSTOMER"), cartController.addItemToCart);
-cartRouter.delete('/items/:itemId', authenticateUser, checkRole("CUSTOMER"), cartController.removeItem);
+cartRouter.get('/', checkRole("CUSTOMER"), cartController.getCart)
+cartRouter.post('/', checkRole("CUSTOMER"), cartController.addItemToCart)
+cartRouter.delete('/items/:itemId', checkRole("CUSTOMER"), cartController.removeItem)
 
 export default cartRouter

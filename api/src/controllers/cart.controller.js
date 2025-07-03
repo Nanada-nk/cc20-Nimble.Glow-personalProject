@@ -3,7 +3,7 @@ import createError from "../utils/create-error.js";
 
 const cartController = {};
 
-cartController.addItemToCart = async (req, res, next) => {
+cartController.addItemToCart = async (req, res) => {
   const { productId, count } = req.body;
   const userId = req.user.id;
 
@@ -16,17 +16,30 @@ cartController.addItemToCart = async (req, res, next) => {
   }
 
   const cartItem = await cartService.addItemToCart(userId, productId, count);
-  res.status(200).json({ success: true, cartItem });
+  res.status(200).json({ success: true, cartItem })
 };
 
 
-cartController.getCart = async (req, res, next) => {
-  res.status(501).json({ message: "Get Cart Not Implemented" });
+cartController.getCart = async (req, res) => {
+  const userId = req.user.id;
+  const cart = await cartService.getCartForUser(userId);
+
+  if (!cart) {
+    return res.status(200).json({ success: true, cart: null });
+  }
+
+  res.status(200).json({ success: true, cart })
 };
 
-cartController.removeItem = async (req, res, next) => {
-  res.status(501).json({ message: "Remove Item Not Implemented" });
+
+cartController.removeItem = async (req, res) => {
+  const userId = req.user.id;
+  const cartItemId = Number(req.params.itemId);
+
+  const removeItem = await cartService.removeItemFromCart(userId, cartItemId);
+
+
+  res.status(204).json({ success: true, removeItem })
 };
 
-
-export default cartController;
+export default cartController
