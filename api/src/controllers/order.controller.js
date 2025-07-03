@@ -1,4 +1,39 @@
-const orderController = {}
+import orderService from "../services/orders.service.js";
+import createError from "../utils/create-error.js";
 
+const ordersController = {};
 
-export default orderController
+ordersController.createOrder = async (req, res) => {
+  const userId = req.user.id;
+  const { note } = req.body;
+
+  const newOrder = await orderService.createOrderFromCart(userId, note);
+  res.status(201).json({ success: true, order: newOrder });
+};
+
+ordersController.getUserOrders = async (req, res) => {
+  const userId = req.user.id;
+  const orders = await orderService.findOrdersByUserId(userId);
+  res.status(200).json({ success: true, orders });
+};
+
+ordersController.getOrderById = async (req, res) => {
+  const orderId = Number(req.params.id);
+  const user = req.user
+  const order = await orderService.findOrderById(orderId, user);
+  res.status(200).json({ success: true, order });
+};
+
+ordersController.updateStatus = async (req, res) => {
+  const orderId = Number(req.params.id);
+  const { orderStatus } = req.body;
+
+  if (!orderStatus) {
+    throw createError(400, "orderStatus is required.");
+  }
+
+  const updatedOrder = await orderService.updateOrderStatus(orderId, orderStatus);
+  res.status(200).json({ success: true, order: updatedOrder });
+};
+
+export default ordersController;
