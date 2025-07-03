@@ -70,7 +70,7 @@ orderService.createOrderFromCart = async (userId, note) => {
     where: { id: newOrder.id },
     include: { products: { include: { product: true } } },
   });
-};
+}
 
 
 orderService.findOrdersByUserId = (userId) => {
@@ -82,7 +82,7 @@ orderService.findOrdersByUserId = (userId) => {
       payment: true
     }
   });
-};
+}
 
 
 orderService.findOrderById = async (orderId, user) => {
@@ -105,13 +105,13 @@ orderService.findOrderById = async (orderId, user) => {
   }
 
   return order;
-};
+}
 
 orderService.updateOrderStatus = (orderId, orderStatus) => {
   return prisma.order.update({
     where: { id: orderId },
     data: { orderStatus }
   });
-};
+}
 
 export default orderService;

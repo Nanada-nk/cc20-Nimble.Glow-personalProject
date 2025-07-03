@@ -4,26 +4,55 @@ import createError from "../utils/create-error.js";
 const cartService = {};
 
 
-const updateCartTotal = async (cartId) => {
+cartService.addItemToCart = async (userId, productId, count) => {
+  const product = await prisma.product.findUnique({ where: { id: productId } });
+  if (!product) {
+    throw createError(404, "Product not found");
+  }
 
-  const cartItems = await prisma.productOnCart.findMany({
-    where: { cartId },
+  const cart = await prisma.cart.upsert({
+    where: { userId },
+    update: {},
+    create: { userId, cartTotal: 0 },
+  });
+
+  const existingCartItem = await prisma.productOnCart.findFirst({
+    where: { cartId: cart.id, productId: productId },
   });
 
 
-  const total = cartItems.reduce((sum, item) => {
-    return sum + item.price * item.count;
-  }, 0);
+  const quantityInCart = existingCartItem ? existingCartItem.count : 0;
+  const requestedTotalQuantity = quantityInCart + count;
+
+  if (product.stockQuantity < requestedTotalQuantity) {
+    throw createError(
+      400,
+      `Not enough stock for product: ${product.title}. You have ${quantityInCart} in cart, and requested ${count}. Only ${product.stockQuantity} available.`
+    );
+  }
 
 
-  await prisma.cart.update({
-    where: { id: cartId },
-    data: { cartTotal: total },
-  });
+  let updatedCartItem;
+  if (existingCartItem) {
+    updatedCartItem = await prisma.productOnCart.update({
+      where: { id: existingCartItem.id },
+      data: { count: requestedTotalQuantity },
+    });
+  } else {
+    updatedCartItem = await prisma.productOnCart.create({
+      data: {
+        cartId: cart.id,
+        productId: productId,
+        count: count,
+        price: product.price,
+      },
+    });
+  }
 
-  return total;
-};
+  await updateCartTotal(cart.id);
 
+  return updatedCartItem;
+}
 
 cartService.addItemToCart = async (userId, productId, count) => {
   const product = await prisma.product.findUnique({ where: { id: productId } });
@@ -62,7 +91,7 @@ cartService.addItemToCart = async (userId, productId, count) => {
   await updateCartTotal(cart.id);
 
   return updatedCartItem;
-};
+}
 
 
 cartService.getCartForUser = async (userId) => {
@@ -76,7 +105,7 @@ cartService.getCartForUser = async (userId) => {
       },
     },
   });
-};
+}
 
 
 cartService.removeItemFromCart = async (userId, cartItemId) => {
@@ -97,7 +126,7 @@ cartService.removeItemFromCart = async (userId, cartItemId) => {
 
 
   await updateCartTotal(cartItem.cartId);
-};
+}
 
 
 export default cartService;

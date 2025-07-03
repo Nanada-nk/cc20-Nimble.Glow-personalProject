@@ -17,7 +17,7 @@ cartController.addItemToCart = async (req, res) => {
 
   const cartItem = await cartService.addItemToCart(userId, productId, count);
   res.status(200).json({ success: true, cartItem })
-};
+}
 
 
 cartController.getCart = async (req, res) => {
@@ -29,7 +29,7 @@ cartController.getCart = async (req, res) => {
   }
 
   res.status(200).json({ success: true, cart })
-};
+}
 
 
 cartController.removeItem = async (req, res) => {
@@ -40,6 +40,6 @@ cartController.removeItem = async (req, res) => {
 
 
   res.status(204).json({ success: true, removeItem })
-};
+}
 
 export default cartController
