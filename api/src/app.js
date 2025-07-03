@@ -29,7 +29,7 @@ const limiter = rateLimit({
 app.use(express.json())
 app.use(cors())
 app.use(limiter)
-app.use(morgan("dev")) // log
+app.use(morgan("dev"))
 app.use(compression())
 
 
@@ -42,7 +42,7 @@ app.use('/api/orders', authenticateUser, ordersRouter)
 app.use('/api/payments',paymentRouter)
 app.use('/api/shipping',shippingRouter)
 app.use('/api/reviews',reviewRouter)
-app.use('/api/coupons',authenticateUser, couponRouter)
+app.use('/api/coupons', couponRouter)
 
 
 app.use(notFoundMiddleware)
