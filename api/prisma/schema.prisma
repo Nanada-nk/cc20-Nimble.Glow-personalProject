@@ -31,6 +31,9 @@ model User {
 
   coupons     Coupon[]      @relation("UserUsedCoupon")
   couponUsage CouponUsage[]
+
+  productsCreated   Product[]  @relation("ProductCreatedBy")
+  categoriesCreated Category[] @relation("CategoryCreatedBy")
 }
 
 enum Role {
@@ -45,7 +48,7 @@ model AuditLog {
   details   String? // JSON string หรือ message อธิบายเพิ่มเติม
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(0)
 
-  user   User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User? @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   userId Int?  @map("user_id")
 }
 
@@ -53,7 +56,7 @@ model Address {
   id      Int    @id @default(autoincrement())
   address String
 
-  user   User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User? @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   userId Int?  @map("user_id")
 
   shippings Shipping[]
@@ -66,6 +69,9 @@ model Category {
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp(0)
 
   products Product[]
+
+  createdBy   User @relation("CategoryCreatedBy", fields: [createdById], references: [id])
+  createdById Int  @map("created_by")
 }
 
 model Product {
@@ -80,12 +86,15 @@ model Product {
 
   images ProductImage[]
 
-  category   Category? @relation(fields: [categoryId], references: [id])
+  category   Category? @relation(fields: [categoryId], references: [id], onUpdate: Cascade, onDelete: SetNull)
   categoryId Int?      @map("category_id")
 
   orderItems ProductOnOrder[]
   cartItems  ProductOnCart[]
   reviews    Review[]
+
+  createdBy   User @relation("ProductCreatedBy", fields: [createdById], references: [id])
+  createdById Int  @map("created_by")
 }
 
 model ProductImage {
@@ -94,7 +103,7 @@ model ProductImage {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(0)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp(0)
 
-  product   Product? @relation(fields: [productId], references: [id])
+  product   Product? @relation(fields: [productId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   productId Int?     @map("product_id")
 
   @@map("product_image")
@@ -106,7 +115,7 @@ model Cart {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(0)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp(0)
 
-  user   User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User? @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   userId Int?  @unique @map("user_id")
 
   products ProductOnCart[]
@@ -119,10 +128,10 @@ model ProductOnCart {
   count Int
   price Float
 
-  product   Product? @relation(fields: [productId], references: [id])
+  product   Product? @relation(fields: [productId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   productId Int      @map("product_id")
 
-  cart   Cart? @relation(fields: [cartId], references: [id])
+  cart   Cart? @relation(fields: [cartId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   cartId Int   @map("cart_id")
 
   @@map("product_on_cart")
@@ -146,10 +155,10 @@ model Order {
 
   shipping Shipping?
 
-  cart   Cart? @relation(fields: [cartId], references: [id])
+  cart   Cart? @relation(fields: [cartId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   cartId Int?  @map("cart_id")
 
-  coupon      Coupon?       @relation(fields: [couponId], references: [id])
+  coupon      Coupon?       @relation(fields: [couponId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   couponId    Int?          @map("coupon_id")
   couponUsage CouponUsage[]
 }
@@ -175,10 +184,10 @@ model ProductOnOrder {
   price    Float
   discount Float? @default(0)
 
-  order   Order? @relation(fields: [orderId], references: [id])
+  order   Order? @relation(fields: [orderId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   orderId Int    @map("order_id")
 
-  product   Product? @relation(fields: [productId], references: [id])
+  product   Product? @relation(fields: [productId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   productId Int      @map("product_id")
 
   @@map("product_on_order")
@@ -192,10 +201,10 @@ model Payment {
   createdAt DateTime      @default(now()) @map("created_at") @db.Timestamp(0)
   updatedAt DateTime      @updatedAt @map("updated_at") @db.Timestamp(0)
 
-  order   Order? @relation(fields: [orderId], references: [id])
+  order   Order? @relation(fields: [orderId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   orderId Int?   @unique @map("order_id")
 
-  user   User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User? @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   userId Int?  @map("user_id")
 
   PaymentRefund PaymentRefund[]
@@ -225,7 +234,7 @@ model PaymentRefund {
   reason    String?
   createdAt DateTime @default(now())
 
-  payment   Payment @relation(fields: [paymentId], references: [id])
+  payment   Payment @relation(fields: [paymentId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   paymentId Int     @map("payment_id")
 }
 
@@ -246,13 +255,13 @@ model CouponUsage {
   id     Int      @id @default(autoincrement())
   usedAt DateTime @default(now()) @map("used_at") @db.Timestamp(0)
 
-  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   userId Int  @map("user_id")
 
-  coupon   Coupon @relation(fields: [couponId], references: [id])
+  coupon   Coupon @relation(fields: [couponId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   couponId Int    @map("coupon_id")
 
-  order   Order? @relation(fields: [orderId], references: [id])
+  order   Order? @relation(fields: [orderId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   orderId Int?   @map("order_id")
 
   @@map("coupon_usage")
@@ -268,10 +277,10 @@ model Shipping {
 
   fee Float? @default(0) @map("fee")
 
-  order   Order? @relation(fields: [orderId], references: [id])
+  order   Order? @relation(fields: [orderId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   orderId Int?   @unique @map("order_id")
 
-  address   Address? @relation(fields: [addressId], references: [id])
+  address   Address? @relation(fields: [addressId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   addressId Int?     @map("address_id")
 }
 
@@ -313,10 +322,10 @@ model Review {
 
   reviewDate DateTime @default(now()) @map("review_date") @db.Timestamp(0)
 
-  product   Product? @relation(fields: [productId], references: [id])
+  product   Product? @relation(fields: [productId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   productId Int?     @map("product_id")
 
-  user   User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User? @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Restrict)
   userId Int?  @map("user_id")
 
   images ReviewImage[]
@@ -327,7 +336,7 @@ model ReviewImage {
   url       String
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(0)
 
-  review   Review? @relation(fields: [reviewId], references: [id])
+  review   Review? @relation(fields: [reviewId], references: [id], onUpdate: Cascade, onDelete: Restrict)
   reviewId Int     @map("review_id")
 
   @@map("review_image")

@@ -27,7 +27,7 @@ export const schemaRegister = Yup.object({
     Yup.string()
       .oneOf([Yup.ref("password"), null], "Passwords must match")
       .required("Confirm password is required")
-})
+}).noUnknown()
 
 export const schemaLogin = Yup.object({
   email:
@@ -42,4 +42,4 @@ export const schemaLogin = Yup.object({
         /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{8,}$/,
         "Password must be at least 8 characters and include uppercase, lowercase, and a number")
       .required("Password is required")
-})
+}).noUnknown()

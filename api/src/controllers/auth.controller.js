@@ -2,6 +2,9 @@ import authService from "../services/auth.service.js"
 import hashService from "../services/hash.service.js"
 import jwtService from "../services/jwt.service.js"
 import createError from "../utils/create-error.js"
+import cloudinary from "../config/cloudinary.config.js"
+import fs from 'fs/promises'
+import path from 'path'
 
 const authController = {}
 
@@ -20,6 +23,18 @@ authController.register = async (req, res) => {
   const hashPassword = await hashService.hash(password);
   console.log('hashPassword', hashPassword);
 
+  // console.log(req.file) // single
+  // let haveFile = !!req.file   // !! = boolean , null undefined = false
+  // let uploadResult = null
+  // if (haveFile) {
+
+  //   // console.log('path.parse(req.file.path).name', path.parse(req.file.path).name)
+  //   uploadResult = await cloudinary.uploader.upload(req.file.path, {
+  //     overwrite: true,
+  //     public_id: path.parse(req.file.path).name
+  //   })
+  //   fs.unlink(req.file.path)
+  // }
 
   const data = {
     firstName,
@@ -28,6 +43,7 @@ authController.register = async (req, res) => {
     email,
     password: hashPassword,
     profileImage,
+    // profileImage: uploadResult?.secure_url || '',
     addresses: {
       create: addresses
     }
@@ -35,7 +51,8 @@ authController.register = async (req, res) => {
 
   const newUser = await authService.createUser(data);
   console.log('newUser', newUser)
-  res.status(201).json({ message: "Register User Successfully" });
+  res.status(201).json({ message: "Register User Successfully", newUser});
+  // res.status(201).json({ message: "Register User Successfully", newUser, file: req.file });
 };
 
 
@@ -84,9 +101,9 @@ authController.getMe = async (req, res) => {
       profileImage: user.profileImage,
       role: user.role,
       enabled: user.enabled,
-      createdAt,   
-      updatedAt,   
-      lastLogin,   
+      createdAt,
+      updatedAt,
+      lastLogin,
       addresses: user.addresses,
     }
   })

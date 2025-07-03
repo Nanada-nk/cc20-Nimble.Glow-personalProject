@@ -31,7 +31,7 @@ usersController.updateRole = async (req, res) => {
   const id = Number(req.params.id)
   const { role } = req.body
 
-  const updatedRoleUser = await usersService.updateUser(id, {role})
+  const updatedRoleUser = await usersService.updateUser(id, { role })
 
   if (!updatedRoleUser) {
     return res.status(404).json({ success: false, message: 'Not found or unauthorized' })
@@ -45,7 +45,38 @@ usersController.updateUser = async (req, res) => {
   }
   const id = Number(req.params.id)
   const { firstName, lastName, mobile, profileImage, addresses } = req.body
-  
+  //  const { message, removePic } = req.body
+
+  // const foundUpdateUser = await prisma.user.findUnique({
+  //     where: {
+  //       id: Number(id)
+  //     }
+  //   })
+
+  //   if (!foundUpdateUser || req.user.id !== foundUpdateUser.userId) {
+  //     createError(400, 'Cannot this user')
+  //   }
+
+  //   const haveFilePicture = !!req.file
+  //   let uploadResult
+  //   if (haveFilePicture) {
+  //     uploadResult = await cloudinary.uploader.upload(req.file.path, {
+  //       overwrite: true,
+  //       public_id: path.parse(req.file.path).name
+  //     })
+  //     fs.unlink(req.file.path)
+  //   }
+  //   const data = haveFilePicture
+  //     ? { firstName,lastName,mobile, userId: req.user.id, profileImage: uploadResult.secure_url, addresses: {create: addresses}}
+  //     : { firstName,lastName,mobile, userId: req.user.id, profileImage: removePic ? '' : foundUpdateUser.profileImage }
+
+  //   const rs = await prisma.user.update({
+  //     where: { id: Number(id) },
+  //     data: data
+  //   })
+
+  //   res.json({ message: 'Update post done' })
+
   const data = {
     firstName,
     lastName,
