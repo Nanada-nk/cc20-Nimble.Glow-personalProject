@@ -13,6 +13,10 @@ import categoriesRouter from './routes/categories.route.js'
 import productsRouter from './routes/products.route.js'
 import cartRouter from './routes/cart.route.js'
 import ordersRouter from './routes/orders.route.js'
+import shippingRouter from './routes/shipping.route.js'
+import paymentRouter from './routes/payment.route.js'
+import reviewRouter from './routes/review.route.js'
+import couponRouter from './routes/coupon.route.js'
 
 const app = express()
 
@@ -35,10 +39,10 @@ app.use('/api/categories', categoriesRouter)
 app.use('/api/products', productsRouter)
 app.use('/api/cart', authenticateUser, cartRouter)
 app.use('/api/orders', authenticateUser, ordersRouter)
-// app.use('/api/payments',()=>{})
-// app.use('/api/shipping',()=>{})
-// app.use('/api/reviews',()=>{})
-// app.use('/api/coupons',()=>{})
+app.use('/api/payments',paymentRouter)
+app.use('/api/shipping',shippingRouter)
+app.use('/api/reviews',reviewRouter)
+app.use('/api/coupons',authenticateUser, couponRouter)
 
 
 app.use(notFoundMiddleware)

@@ -1,20 +1,4 @@
-@import "tailwindcss";
-@plugin "daisyui" {
-  themes: light --default;
-}
-
-@layer base {
-  :root {
-    --color-primary-green: #677E52;
-    --color-accent-green: #cfdb98;
-    --color-accent-tan: #c4b494;
-    --color-background-main: #fcf5eb;
-    --color-background-alt: #EAE2CB;
-    --color-text-dark: #1a1a1a;
-    --color-text-light: #fcf5eb;
-  }
-}
-
-body {
-  @apply bg-background-main text-text-dark;
-}
+@import "tailwindcss"
+ @plugin "daisyui" {
+   themes: light --default;
+ }
