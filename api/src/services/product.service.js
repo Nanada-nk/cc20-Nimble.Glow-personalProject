@@ -55,6 +55,22 @@ productService.updateProduct = (id, dataToUpdate) => {
     data: dataToUpdate
   })
 }
+
+productService.addImagesToProduct = (productId, imageUrls) => {
+  return prisma.product.update({
+    where: { id: productId },
+    data: {
+      images: {
+        create: imageUrls.map(url => ({ url })),
+      },
+    },
+    include: {
+      images: true,
+    },
+  });
+};
+
+
 productService.deleteProduct = (id) => {
   return prisma.product.delete({
     where: { id }

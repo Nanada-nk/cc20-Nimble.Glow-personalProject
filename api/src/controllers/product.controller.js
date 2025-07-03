@@ -56,6 +56,25 @@ productController.updateProduct = async (req, res) => {
   res.status(200).json({ success: true, product: updatedProduct })
 }
 
+productController.addImages = async (req, res, next) => {
+  const { productId } = req.params
+  const { images } = req.body
+
+  if (!images || !Array.isArray(images) || images.length === 0) {
+    throw createError(400, "Images must be a non-empty array of URLs.")
+  }
+
+
+  const product = await productService.findById(Number(productId));
+  if (!product) {
+    throw createError(404, "Product not found")
+  }
+
+  const updatedProduct = await productService.addImagesToProduct(Number(productId), images)
+  res.status(200).json({ success: true, product: updatedProduct })
+};
+
+
 productController.deleteProduct = async (req, res) => {
   const id = Number(req.params.id);
 

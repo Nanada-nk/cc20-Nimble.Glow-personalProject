@@ -91,13 +91,34 @@ usersController.forgotPassword = async (req, res) => {
   res.status(200).json({ success: true, message: "Password updated successfully", updatedUser })
 }
 
-usersController.deleteCustomer = async (req, res) => {
-  if (!req.user) {
-    throw createError(401, "Unauthorized")
+usersController.addAddress = async (req, res, next) => {
+  const { userId } = req.params;
+  const { address } = req.body;
+
+  if (req.user.id !== Number(userId)) {
+    throw createError(403, "Forbidden: You can only add an address to your own profile.");
   }
-  const id = Number(req.params.id)
-  const user = await usersService.deleteUser(id)
-  res.status(204).json({ success: true, user })
-}
+
+  if (!address || typeof address !== 'string' || address.trim() === '') {
+    throw createError(400, "Address is required and must be a non-empty string.");
+  }
+
+  const newAddress = await usersService.addAddressToUser(Number(userId), address);
+  res.status(201).json({ success: true, address: newAddress });
+};
+
+
+usersController.disableUser = async (req, res, next) => {
+  const id = Number(req.params.id);
+
+  const userToDisable = await usersService.findUserById(id);
+  if (!userToDisable) {
+    throw createError(404, "User not found");
+  }
+
+  const softDeleteUser = await usersService.softDeleteUser(id);
+
+  res.status(204).json({ success: true, softDeleteUser });
+};
 
 export default usersController
