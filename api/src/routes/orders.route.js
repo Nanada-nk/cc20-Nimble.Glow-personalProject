@@ -1,12 +1,11 @@
-import express from 'express';
-import checkRole from '../middlewares/checkRole.middleware.js';
-import ordersController from '../controllers/orders.controller.js';
+import express from 'express'
+import checkRole from '../middlewares/checkRole.middleware.js'
+import couponController from '../controllers/coupon.controller.js'
 
-const ordersRouter = express.Router();
+const couponRouter = express.Router();
 
-ordersRouter.get('/', checkRole("CUSTOMER"), ordersController.getUserOrders);
-ordersRouter.post('/', checkRole("CUSTOMER"), ordersController.createOrder);
-ordersRouter.get('/:id', checkRole("CUSTOMER", "ADMIN", "SUPERADMIN"), ordersController.getOrderById);
-ordersRouter.patch('/:id/status', checkRole("SUPERADMIN", "ADMIN"), ordersController.updateStatus);
+couponRouter.get('/', checkRole("ADMIN", "SUPERADMIN"), couponController.getAll);
+couponRouter.post('/', checkRole("ADMIN", "SUPERADMIN"), couponController.create);
+couponRouter.patch('/apply/orders/:orderId', checkRole("CUSTOMER"), couponController.applyToOrder);
 
-export default ordersRouter;
+export default couponRouter;
