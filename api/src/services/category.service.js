@@ -2,17 +2,31 @@ import prisma from "../config/prisma.config.js"
 
 const categoryService = {}
 
-categoryService.create = (data) => {
-  return prisma.category.create({ data })
-}
-
-categoryService.findAll = (userId) => {
-  return prisma.category.findMany({
-    where: {
-      userId
-    }
+categoryService.create = (name, createdById) => {
+  return prisma.category.create({
+    data: {
+      name,
+      createdById,
+    },
   })
 }
+
+
+categoryService.findAll = () => {
+  return prisma.category.findMany({
+    include: {
+      createdBy: {
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+        },
+      },
+    },
+  })
+}
+
+
 categoryService.findById = (id) => {
   return prisma.category.findUnique({
     where: {
@@ -20,21 +34,25 @@ categoryService.findById = (id) => {
     },
   })
 }
+
+
 categoryService.updateCategory = (id, data) => {
   return prisma.category.update({
     where: {
-      id
+      id,
     },
     data: {
-      name: data.name
-    }
+      name: data.name,
+    },
   })
 }
+
+
 categoryService.deleteCategory = (id) => {
   return prisma.category.delete({
-    where: { id }
-  })
-}
+    where: { id },
+  });
+};
 
 
 export default categoryService

@@ -24,19 +24,27 @@ usersController.getUserById = async (req, res) => {
   res.status(200).json({ success: true, user })
 }
 
-usersController.updateRole = async (req, res) => {
+usersController.updateUserStatus = async (req, res) => {
   if (!req.user) {
     throw createError(401, "Unauthorized")
   }
   const id = Number(req.params.id)
-  const { role } = req.body
+  const { role, enabled } = req.body
 
-  const updatedRoleUser = await usersService.updateUser(id, { role })
-
-  if (!updatedRoleUser) {
-    return res.status(404).json({ success: false, message: 'Not found or unauthorized' })
+  if (role === undefined && enabled === undefined) {
+    throw createError(400, "At least one field (role or enabled) is required")
   }
-  res.status(200).json({ success: true, user: updatedRoleUser })
+
+  const dataToUpdate = {};
+  if (role) {
+    dataToUpdate.role = role
+  }
+  if (enabled !== undefined) {
+    dataToUpdate.enabled = enabled
+  }
+
+  const updatedUser = await usersService.updateUser(id, dataToUpdate)
+  res.status(200).json({ success: true, user: updatedUser })
 }
 
 usersController.updateUser = async (req, res) => {
@@ -44,47 +52,16 @@ usersController.updateUser = async (req, res) => {
     throw createError(401, "Unauthorized")
   }
   const id = Number(req.params.id)
-  const { firstName, lastName, mobile, profileImage, addresses } = req.body
-  //  const { message, removePic } = req.body
-
-  // const foundUpdateUser = await prisma.user.findUnique({
-  //     where: {
-  //       id: Number(id)
-  //     }
-  //   })
-
-  //   if (!foundUpdateUser || req.user.id !== foundUpdateUser.userId) {
-  //     createError(400, 'Cannot this user')
-  //   }
-
-  //   const haveFilePicture = !!req.file
-  //   let uploadResult
-  //   if (haveFilePicture) {
-  //     uploadResult = await cloudinary.uploader.upload(req.file.path, {
-  //       overwrite: true,
-  //       public_id: path.parse(req.file.path).name
-  //     })
-  //     fs.unlink(req.file.path)
-  //   }
-  //   const data = haveFilePicture
-  //     ? { firstName,lastName,mobile, userId: req.user.id, profileImage: uploadResult.secure_url, addresses: {create: addresses}}
-  //     : { firstName,lastName,mobile, userId: req.user.id, profileImage: removePic ? '' : foundUpdateUser.profileImage }
-
-  //   const rs = await prisma.user.update({
-  //     where: { id: Number(id) },
-  //     data: data
-  //   })
-
-  //   res.json({ message: 'Update post done' })
+  if (req.user.id !== id && req.user.role !== 'SUPERADMIN') {
+    throw createError(403, "Forbidden: You can only update your own profile.");
+  }
+  const { firstName, lastName, mobile, profileImage } = req.body
 
   const data = {
     firstName,
     lastName,
     mobile,
-    profileImage,
-    addresses: {
-      create: addresses
-    }
+    profileImage
   }
   const updatedUser = await usersService.updateUser(id, data)
 
@@ -99,18 +76,19 @@ usersController.forgotPassword = async (req, res) => {
     throw createError(401, "Unauthorized")
   }
   const id = Number(req.params.id)
-  const { email, password } = req.body
+  const { password } = req.body;
+
+  if (req.user.id !== id) {
+    throw createError(403, "Forbidden: You can only change your own password.");
+  }
+
   const hashPassword = await hashService.hash(password);
   const data = {
-    email,
-    password: hashPassword
-  }
-  const updatedUser = await usersService.updateUser(id, data)
+    password: hashPassword,
+  };
 
-  if (!updatedUser) {
-    return res.status(404).json({ success: false, message: 'Not found or unauthorized' })
-  }
-  res.status(200).json({ success: true, user: updatedUser })
+  const updatedUser = await usersService.updateUser(id, data);
+  res.status(200).json({ success: true, message: "Password updated successfully", updatedUser })
 }
 
 usersController.deleteCustomer = async (req, res) => {
@@ -119,7 +97,7 @@ usersController.deleteCustomer = async (req, res) => {
   }
   const id = Number(req.params.id)
   const user = await usersService.deleteUser(id)
-  res.status(200).json({ success: true, user })
+  res.status(204).json({ success: true, user })
 }
 
 export default usersController

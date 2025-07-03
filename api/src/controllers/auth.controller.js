@@ -9,32 +9,29 @@ import path from 'path'
 const authController = {}
 
 authController.register = async (req, res) => {
-  const { firstName, lastName, mobile, email, password, confirmPassword, profileImage, addresses } = req.body;
+  // const { firstName, lastName, mobile, email, password, confirmPassword, profileImage, addresses } = req.body;
+  const { firstName, lastName, mobile, email, password, addresses } = req.body
 
   if (password !== confirmPassword) {
-    throw createError(400, 'Password and Confirm Password do not match');
+    throw createError(400, 'Password and Confirm Password do not match')
   }
 
-  const findEmail = await authService.findUserByEmail(email);
+  const findEmail = await authService.findUserByEmail(email)
   if (findEmail) {
-    throw createError(400, 'Email already exists');
+    throw createError(400, 'Email already exists')
   }
 
-  const hashPassword = await hashService.hash(password);
-  console.log('hashPassword', hashPassword);
+  const hashPassword = await hashService.hash(password)
+  console.log('hashPassword', hashPassword)
 
-  // console.log(req.file) // single
-  // let haveFile = !!req.file   // !! = boolean , null undefined = false
-  // let uploadResult = null
-  // if (haveFile) {
+  let uploadResult = null
+  if (req.file) {
+    uploadResult = await cloudinary.uploader.upload(req.file.path, {
+      folder: 'nimble-glow-users',
+    })
+    fs.unlink(req.file.path)
+  }
 
-  //   // console.log('path.parse(req.file.path).name', path.parse(req.file.path).name)
-  //   uploadResult = await cloudinary.uploader.upload(req.file.path, {
-  //     overwrite: true,
-  //     public_id: path.parse(req.file.path).name
-  //   })
-  //   fs.unlink(req.file.path)
-  // }
 
   const data = {
     firstName,
@@ -42,17 +39,16 @@ authController.register = async (req, res) => {
     mobile,
     email,
     password: hashPassword,
-    profileImage,
-    // profileImage: uploadResult?.secure_url || '',
-    addresses: {
-      create: addresses
-    }
-  }
+    profileImage: uploadResult?.secure_url || null,
+    addresses: addresses ? { create: JSON.parse(addresses) } : undefined
+  };
 
-  const newUser = await authService.createUser(data);
-  console.log('newUser', newUser)
-  res.status(201).json({ message: "Register User Successfully", newUser});
-  // res.status(201).json({ message: "Register User Successfully", newUser, file: req.file });
+  const newUser = await authService.createUser(data)
+  res.status(201).json({ message: "Register User Successfully", user: newUser })
+
+  if (req.file) {
+    fs.unlink(req.file.path).catch(err => console.error("Failed to delete temp file:", err))
+  }
 };
 
 
@@ -82,7 +78,7 @@ authController.getMe = async (req, res) => {
   if (!req.user) {
     throw createError(401, "Unauthorization")
   }
-  const user = await authService.findUserById(req.user.id)
+  const user = req.user
   if (!user) {
     throw createError(404, "User not found");
   }
@@ -91,21 +87,15 @@ authController.getMe = async (req, res) => {
   const updatedAt = new Date(user.updatedAt).toLocaleString()
   const lastLogin = new Date(user.lastLogin).toLocaleString()
 
+  const { password, ...userWithoutPassword } = user
+
   res.status(200).json({
     user: {
-      id: user.id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      mobile: user.mobile,
-      email: user.email,
-      profileImage: user.profileImage,
-      role: user.role,
-      enabled: user.enabled,
+      ...userWithoutPassword,
       createdAt,
       updatedAt,
       lastLogin,
-      addresses: user.addresses,
-    }
+    },
   })
 }
 
