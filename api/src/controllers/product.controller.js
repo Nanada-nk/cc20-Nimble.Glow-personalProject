@@ -1,10 +1,26 @@
 import productService from "../services/product.service.js"
 import createError from "../utils/create-error.js"
-
+import cloudinary from "../config/cloudinary.config.js";
+import fs from "fs/promises"
 
 const productController = {}
 
-productController.create = async (req, res) => {
+const uploadImagesToCloudinary = async (files) => {
+  if (!files || files.length === 0) return [];
+
+  const uploadPromises = files.map(file =>
+    cloudinary.uploader.upload(file.path, { folder: 'nimble-glow-products' })
+  );
+  try {
+    const results = await Promise.all(uploadPromises);
+    return results.map(result => result.secure_url);
+  } finally {
+    const unlinkPromises = files.map(file => fs.unlink(file.path));
+    await Promise.all(unlinkPromises);
+  }
+}
+
+productController.create = async (req, res, next) => {
 
   const productData = req.body
   const creatorId = req.user.id
@@ -13,21 +29,24 @@ productController.create = async (req, res) => {
     throw createError(400, 'Title, price, and stock quantity are required')
   }
 
+  const imageUrls = await uploadImagesToCloudinary(req.files);
+  productData.images = imageUrls
+
   const newProduct = await productService.create(productData, creatorId)
-  res.status(201).json({ success: true, product: newProduct })
+  res.status(201).json({ success: true, product: formatDates(newProduct) })
 }
 
-productController.getAll = async (req, res) => {
+productController.getAll = async (req, res, next) => {
 
   const products = await productService.findAll()
   if (!products) {
     throw createError(404, 'Get category not found or unauthorized')
   }
-  res.status(200).json({ success: true, products })
+  res.status(200).json({ success: true, products: formatDates(products) })
 }
 
 
-productController.getById = async (req, res) => {
+productController.getById = async (req, res, next) => {
 
   const id = Number(req.params.id);
   const product = await productService.findById(id);
@@ -35,10 +54,10 @@ productController.getById = async (req, res) => {
   if (!product) {
     throw createError(404, 'Product not found')
   }
-  res.status(200).json({ success: true, product })
+  res.status(200).json({ success: true, product: formatDates(product) })
 }
 
-productController.updateProduct = async (req, res) => {
+productController.updateProduct = async (req, res, next) => {
 
   const id = Number(req.params.id);
   const dataToUpdate = req.body;
@@ -47,35 +66,21 @@ productController.updateProduct = async (req, res) => {
     return res.status(400).json({ success: false, message: 'Invalid stock quantity' })
   }
 
+  const newImageUrls = await uploadImagesToCloudinary(req.files)
+  const imagesToDelete = req.body.imagesToDelete ? JSON.parse(req.body.imagesToDelete) : []
+
+
   const productToUpdate = await productService.findById(id);
   if (!productToUpdate) {
     throw createError(404, 'Product not found');
   }
 
-  const updatedProduct = await productService.updateProduct(id, dataToUpdate)
-  res.status(200).json({ success: true, product: updatedProduct })
+  const updatedProduct = await productService.updateProduct(id, dataToUpdate, newImageUrls, imagesToDelete);
+  res.status(200).json({ success: true, product: formatDates(updatedProduct) });
 }
 
-productController.addImages = async (req, res, next) => {
-  const { productId } = req.params
-  const { images } = req.body
 
-  if (!images || !Array.isArray(images) || images.length === 0) {
-    throw createError(400, "Images must be a non-empty array of URLs.")
-  }
-
-
-  const product = await productService.findById(Number(productId));
-  if (!product) {
-    throw createError(404, "Product not found")
-  }
-
-  const updatedProduct = await productService.addImagesToProduct(Number(productId), images)
-  res.status(200).json({ success: true, product: updatedProduct })
-};
-
-
-productController.deleteProduct = async (req, res) => {
+productController.deleteProduct = async (req, res, next) => {
   const id = Number(req.params.id);
 
   const productToDelete = await productService.findById(id);

@@ -2,12 +2,12 @@ import paymentService from "../services/payment.service.js";
 
 const paymentController = {};
 
-paymentController.getMethods = (req, res) => {
+paymentController.getMethods = (req, res, next) => {
     const methods = paymentService.getPaymentMethods();
     res.status(200).json({ success: true, methods });
 };
 
-paymentController.payForOrder = async (req, res) => {
+paymentController.payForOrder = async (req, res, next) => {
     const { orderId } = req.params;
     const userId = req.user.id;
     const paymentData = req.body;
@@ -16,14 +16,14 @@ paymentController.payForOrder = async (req, res) => {
     res.status(201).json({ success: true, payment: newPayment });
 };
 
-paymentController.getPaymentForOrder = async (req, res) => {
+paymentController.getPaymentForOrder = async (req, res, next) => {
     const { orderId } = req.params;
     const userId = req.user.id;
     const payment = await paymentService.getPaymentByOrderId(Number(orderId), userId);
     res.status(200).json({ success: true, payment });
 };
 
-paymentController.refundPayment = async (req, res) => {
+paymentController.refundPayment = async (req, res, next) => {
     const { id } = req.params; 
     const refundData = req.body;
     const newRefund = await paymentService.createRefund(Number(id), refundData);

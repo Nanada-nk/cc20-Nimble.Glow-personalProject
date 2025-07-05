@@ -23,13 +23,16 @@ model User {
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp(0)
   lastLogin DateTime @default(now()) @map("last_login") @db.Timestamp(0)
 
+  passwordResetToken   String?   @unique
+  passwordResetExpires DateTime?
+
   addresses Address[]
   cart      Cart?
   reviews   Review[]
   payments  Payment[]
   AuditLog  AuditLog[]
 
-  coupons     Coupon[]      @relation("UserUsedCoupon")
+  coupons     UserOnCoupon[]
   couponUsage CouponUsage[]
 
   productsCreated   Product[]  @relation("ProductCreatedBy")
@@ -239,16 +242,28 @@ model PaymentRefund {
 }
 
 model Coupon {
-  id         Int      @id @default(autoincrement())
-  code       String   @unique
-  discount   Float
+  id       Int    @id @default(autoincrement())
+  code     String @unique
+  discount Float
+
   expiredAt  DateTime @map("expired_at") @db.Timestamp(0)
   usageLimit Int?     @map("usage_limit")
-  usageCount Int?     @map("usage_count") // หรือคำนวณนับจาก CouponUsages
+  usageCount Int?     @map("usage_count")
 
-  users       User[]        @relation("UserUsedCoupon")
+  users       UserOnCoupon[]
   Order       Order[]
   couponUsage CouponUsage[]
+}
+
+model UserOnCoupon {
+  user       User     @relation(fields: [userId], references: [id])
+  userId     Int
+  coupon     Coupon   @relation(fields: [couponId], references: [id])
+  couponId   Int
+  assignedAt DateTime @default(now())
+
+  @@id([userId, couponId])
+  @@map("user_on_coupon")
 }
 
 model CouponUsage {

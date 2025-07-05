@@ -1,112 +1,71 @@
 import hashService from "../services/hash.service.js"
 import usersService from "../services/users.service.js"
 import createError from "../utils/create-error.js"
+import fs from 'fs/promises';
+import { formatDates } from "../utils/formatter.js"
+import cloudinary from "../config/cloudinary.config.js"
 
 const usersController = {}
 
-usersController.getListAllUser = async (req, res) => {
+usersController.getListAllUser = async (req, res, next) => {
   if (!req.user) {
     throw createError(401, "Unauthorized")
   }
   const users = await usersService.getAllUsers()
-  res.status(200).json({ success: true, users })
+  res.status(200).json({ success: true, users: formatDates(users) })
 }
 
-usersController.getUserById = async (req, res) => {
-  if (!req.user) {
-    throw createError(401, "Unauthorized")
-  }
-  const id = Number(req.params.id)
-  const user = await usersService.findUserById(id)
-  if (!user) {
-    throw createError(404, "User not found");
-  }
-  res.status(200).json({ success: true, user })
-}
 
-usersController.updateUserStatus = async (req, res) => {
-  if (!req.user) {
-    throw createError(401, "Unauthorized")
-  }
-  const id = Number(req.params.id)
-  const { role, enabled } = req.body
+usersController.updateUserStatus = async (req, res, next) => {
+  const targetUserId = Number(req.params.id);
+  const { role, enabled } = req.body;
 
   if (role === undefined && enabled === undefined) {
-    throw createError(400, "At least one field (role or enabled) is required")
+    throw createError(400, "Role or enabled status is required.");
   }
-
   const dataToUpdate = {};
-  if (role) {
-    dataToUpdate.role = role
-  }
-  if (enabled !== undefined) {
-    dataToUpdate.enabled = enabled
-  }
+  if (role) dataToUpdate.role = role;
+  if (enabled !== undefined) dataToUpdate.enabled = JSON.parse(enabled)
 
-  const updatedUser = await usersService.updateUser(id, dataToUpdate)
-  res.status(200).json({ success: true, user: updatedUser })
+  const updatedUser = await usersService.updateUser(targetUserId, dataToUpdate);
+  res.status(200).json({ success: true, user: formatDates(updatedUser) });
 }
 
-usersController.updateUser = async (req, res) => {
-  if (!req.user) {
-    throw createError(401, "Unauthorized")
-  }
-  const id = Number(req.params.id)
-  if (req.user.id !== id && req.user.role !== 'SUPERADMIN') {
-    throw createError(403, "Forbidden: You can only update your own profile.");
-  }
-  const { firstName, lastName, mobile, profileImage } = req.body
+usersController.updateMyProfile = async (req, res, next) => {
+  const myUserId = req.user.id;
+  const { firstName, lastName, mobile } = req.body;
+  const data = { firstName, lastName, mobile };
 
-  const data = {
-    firstName,
-    lastName,
-    mobile,
-    profileImage
+  if (req.file) {
+    try {
+      const result = await cloudinary.uploader.upload(req.file.path, { folder: 'nimble-glow-users' });
+      data.profileImage = result.secure_url;
+    } finally {
+      await fs.unlink(req.file.path);
+    }
   }
-  const updatedUser = await usersService.updateUser(id, data)
-
-  if (!updatedUser) {
-    return res.status(404).json({ success: false, message: 'Not found or unauthorized' })
-  }
-  res.status(200).json({ success: true, user: updatedUser })
+  const updatedUser = await usersService.updateUser(myUserId, data);
+  res.status(200).json({ success: true, user: formatDates(updatedUser) });
 }
 
-usersController.forgotPassword = async (req, res) => {
-  if (!req.user) {
-    throw createError(401, "Unauthorized")
-  }
-  const id = Number(req.params.id)
-  const { password } = req.body;
-
-  if (req.user.id !== id) {
-    throw createError(403, "Forbidden: You can only change your own password.");
-  }
-
-  const hashPassword = await hashService.hash(password);
-  const data = {
-    password: hashPassword,
-  };
-
-  const updatedUser = await usersService.updateUser(id, data);
-  res.status(200).json({ success: true, message: "Password updated successfully", updatedUser })
-}
-
-usersController.addAddress = async (req, res, next) => {
-  const { userId } = req.params;
+usersController.addMyAddress = async (req, res, next) => {
+  const myUserId = req.user.id;
   const { address } = req.body;
+  if (!address) throw createError(400, "Address is required.");
 
-  if (req.user.id !== Number(userId)) {
-    throw createError(403, "Forbidden: You can only add an address to your own profile.");
-  }
-
-  if (!address || typeof address !== 'string' || address.trim() === '') {
-    throw createError(400, "Address is required and must be a non-empty string.");
-  }
-
-  const newAddress = await usersService.addAddressToUser(Number(userId), address);
+  const newAddress = await usersService.addAddressToUser(myUserId, address);
   res.status(201).json({ success: true, address: newAddress });
-};
+}
 
+usersController.updateMyAddress = async (req, res, next) => {
+  const myUserId = req.user.id;
+  const addressId = Number(req.params.addressId);
+  const { address } = req.body;
+  if (!address) throw createError(400, "Address is required.");
+
+  const updatedAddress = await usersService.updateUserAddress(myUserId, addressId, address);
+  res.status(200).json({ success: true, address: updatedAddress });
+}
 
 usersController.disableUser = async (req, res, next) => {
   const id = Number(req.params.id);
@@ -119,6 +78,28 @@ usersController.disableUser = async (req, res, next) => {
   const softDeleteUser = await usersService.softDeleteUser(id);
 
   res.status(204).json({ success: true, softDeleteUser });
-};
+}
+
+usersController.changeMyPassword = async (req, res, next) => {
+  const myUserId = req.user.id;
+  const { currentPassword, newPassword } = req.body;
+
+  if (!currentPassword || !newPassword) {
+    throw createError(400, "Current password and new password are required.");
+  }
+
+  const user = await usersService.findUserById(myUserId);
+  const isMatch = await hashService.comparePassword(currentPassword, user.password);
+  if (!isMatch) {
+    throw createError(401, "Current password is not correct.");
+  }
+
+  const hashedNewPassword = await hashService.hash(newPassword);
+  await usersService.updateUser(myUserId, { password: hashedNewPassword });
+
+  res.status(200).json({ success: true, message: "Password changed successfully." });
+}
+
+
 
 export default usersController

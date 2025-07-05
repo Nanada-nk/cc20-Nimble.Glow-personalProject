@@ -9,9 +9,9 @@ productService.create = (productData, creatorId) => {
     data: {
       title,
       description: description || "",
-      price,
-      stockQuantity,
-      categoryId,
+      price: Number(price),
+      stockQuantity: Number(stockQuantity),
+      categoryId: Number(categoryId),
       createdById: creatorId,
       images: {
         create: images ? images.map(imgUrl => ({ url: imgUrl })) : [],
@@ -49,27 +49,28 @@ productService.findById = (id) => {
     }
   })
 }
-productService.updateProduct = (id, dataToUpdate) => {
+productService.updateProduct = (id, dataToUpdate, newImageUrls = [], imagesToDelete = []) => {
+  const { title, description, price, stockQuantity, categoryId } = dataToUpdate
+  const updateData = { title, description, price, stockQuantity, categoryId }
+  const imageUpdateLogic = {};
+  if (newImageUrls.length > 0) {
+    imageUpdateLogic.create = newImageUrls.map(url => ({ url }));
+  }
+  if (imagesToDelete.length > 0) {
+    imageUpdateLogic.deleteMany = {
+      id: { in: imagesToDelete.map(id => Number(id)) }
+    };
+  }
+
+  if (Object.keys(imageUpdateLogic).length > 0) {
+    updateData.images = imageUpdateLogic;
+  }
   return prisma.product.update({
     where: { id },
-    data: dataToUpdate
+    data: updateData,
+    include: { images: true }
   })
 }
-
-productService.addImagesToProduct = (productId, imageUrls) => {
-  return prisma.product.update({
-    where: { id: productId },
-    data: {
-      images: {
-        create: imageUrls.map(url => ({ url })),
-      },
-    },
-    include: {
-      images: true,
-    },
-  });
-};
-
 
 productService.deleteProduct = (id) => {
   return prisma.product.delete({

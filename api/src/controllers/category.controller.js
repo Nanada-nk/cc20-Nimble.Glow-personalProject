@@ -1,9 +1,10 @@
 import categoryService from "../services/category.service.js"
 import createError from "../utils/create-error.js";
+import { formatDates } from "../utils/formatter.js";
 
 const categoryController = {}
 
-categoryController.create = async (req, res) => {
+categoryController.create = async (req, res, next) => {
   const { name } = req.body
   const createdById = req.user.id
   if (!name) {
@@ -11,15 +12,15 @@ categoryController.create = async (req, res) => {
   }
 
   const newCategory = await categoryService.create(name, createdById)
-  res.status(201).json({ success: true, category: newCategory })
+  res.status(201).json({ success: true, category: formatDates(newCategory) })
 }
 
-categoryController.getAll = async (req, res) => {
+categoryController.getAll = async (req, res, next) => {
   const categories = await categoryService.findAll()
-  res.status(200).json({ success: true, categories })
+  res.status(200).json({ success: true, categories: formatDates(categories) })
 }
 
-categoryController.updateCategory = async (req, res) => {
+categoryController.updateCategory = async (req, res, next) => {
   const id = Number(req.params.id)
   const { name } = req.body
 
@@ -36,7 +37,7 @@ categoryController.updateCategory = async (req, res) => {
   res.status(200).json({ success: true, category: updatedCategory })
 }
 
-categoryController.deleteCategory = async (req, res) => {
+categoryController.deleteCategory = async (req, res, next) => {
   const id = Number(req.params.id);
 
   const categoryToDelete = await categoryService.findById(id);

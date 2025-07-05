@@ -13,7 +13,6 @@
 const errorMiddleware = (err, req, res, next) => {
   console.error(err.stack)
 
-  // ตรวจสอบว่ามี status code หรือไม่ หากไม่มีให้ใช้ 500 เป็นค่าเริ่มต้น
   const statusCode = err.status || 500
   const message = err.message || 'Internal Server Error'
 

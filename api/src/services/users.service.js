@@ -30,7 +30,21 @@ usersService.addAddressToUser = (userId, address) => {
       userId,
     },
   });
-};
+}
+
+usersService.updateUserAddress = async (userId, addressId, newAddress) => {
+
+  const address = await prisma.address.findFirst({
+    where: { id: addressId, userId: userId }
+  });
+  if (!address) {
+    throw createError(404, "Address not found or you do not have permission.");
+  }
+  return prisma.address.update({
+    where: { id: addressId },
+    data: { address: newAddress }
+  });
+}
 
 usersService.softDeleteUser = (id) => {
   return prisma.user.update({
@@ -39,5 +53,6 @@ usersService.softDeleteUser = (id) => {
       enabled: false,
     },
   });
-};
+}
+
 export default usersService

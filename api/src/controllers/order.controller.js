@@ -4,7 +4,7 @@ import createError from "../utils/create-error.js";
 
 const ordersController = {};
 
-ordersController.createOrder = async (req, res) => {
+ordersController.createOrder = async (req, res, next) => {
   const userId = req.user.id;
   const { note } = req.body;
 
@@ -12,20 +12,20 @@ ordersController.createOrder = async (req, res) => {
   res.status(201).json({ success: true, order: newOrder });
 }
 
-ordersController.getUserOrders = async (req, res) => {
+ordersController.getUserOrders = async (req, res, next) => {
   const userId = req.user.id;
   const orders = await orderService.findOrdersByUserId(userId);
-  res.status(200).json({ success: true, orders });
+  res.status(200).json({ success: true, orders: formatDates(orders) })
 }
 
-ordersController.getOrderById = async (req, res) => {
+ordersController.getOrderById = async (req, res, next) => {
   const orderId = Number(req.params.id);
   const user = req.user
   const order = await orderService.findOrderById(orderId, user);
-  res.status(200).json({ success: true, order });
+  res.status(200).json({ success: true, orders: formatDates(order) })
 }
 
-ordersController.updateStatus = async (req, res,) => {
+ordersController.updateStatus = async (req, res, next,) => {
   const orderId = Number(req.params.id);
   const { orderStatus } = req.body;
 

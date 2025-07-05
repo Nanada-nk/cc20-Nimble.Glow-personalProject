@@ -3,7 +3,7 @@ import createError from "../utils/create-error.js";
 
 const cartController = {};
 
-cartController.addItemToCart = async (req, res) => {
+cartController.addItemToCart = async (req, res, next) => {
   const { productId, count } = req.body;
   const userId = req.user.id;
 
@@ -20,7 +20,7 @@ cartController.addItemToCart = async (req, res) => {
 }
 
 
-cartController.getCart = async (req, res) => {
+cartController.getCart = async (req, res, next) => {
   const userId = req.user.id;
   const cart = await cartService.getCartForUser(userId);
 
@@ -32,7 +32,7 @@ cartController.getCart = async (req, res) => {
 }
 
 
-cartController.removeItem = async (req, res) => {
+cartController.removeItem = async (req, res, next) => {
   const userId = req.user.id;
   const cartItemId = Number(req.params.itemId);
 
