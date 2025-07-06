@@ -19,7 +19,15 @@ productService.create = (productData, creatorId) => {
     },
     include: {
       images: true,
-      category: true
+      category: true,
+      createdBy: {
+        select: {
+          firstName: true,
+          lastName: true,
+          email: true,
+          role: true
+        }
+      }
     }
   });
 }
@@ -34,6 +42,8 @@ productService.findAll = () => {
           id: true,
           firstName: true,
           lastName: true,
+          email: true,
+          role: true
         }
       }
     }
@@ -46,12 +56,27 @@ productService.findById = (id) => {
       images: true,
       category: true,
       reviews: true,
+      createdBy: {
+        select: {
+          firstName: true,
+          lastName: true,
+          email: true,
+          role: true
+        }
+      }
     }
   })
 }
 productService.updateProduct = (id, dataToUpdate, newImageUrls = [], imagesToDelete = []) => {
   const { title, description, price, stockQuantity, categoryId } = dataToUpdate
-  const updateData = { title, description, price, stockQuantity, categoryId }
+
+  const updateData = {};
+  if (title) updateData.title = title;
+  if (description) updateData.description = description;
+  if (price) updateData.price = Number(price);
+  if (stockQuantity) updateData.stockQuantity = Number(stockQuantity);
+  if (categoryId) updateData.categoryId = Number(categoryId);
+
   const imageUpdateLogic = {};
   if (newImageUrls.length > 0) {
     imageUpdateLogic.create = newImageUrls.map(url => ({ url }));
@@ -68,13 +93,33 @@ productService.updateProduct = (id, dataToUpdate, newImageUrls = [], imagesToDel
   return prisma.product.update({
     where: { id },
     data: updateData,
-    include: { images: true }
+    include: {
+      images: true,
+      createdBy: {
+        select: {
+          firstName: true,
+          lastName: true,
+          email: true,
+          role: true
+        }
+      }
+    }
   })
 }
 
 productService.deleteProduct = (id) => {
   return prisma.product.delete({
-    where: { id }
+    where: { id },
+    include: {
+      createdBy: {
+        select: {
+          firstName: true,
+          lastName: true,
+          email: true,
+          role: true
+        }
+      }
+    }
   })
 }
 

@@ -9,7 +9,7 @@ const categoriesRouter = express.Router()
 categoriesRouter.get('/', categoryController.getAll)
 categoriesRouter.post('/', authenticateUser, checkRole("SUPERADMIN", "ADMIN"), categoryController.create)
 categoriesRouter.patch('/:id', authenticateUser, checkRole("SUPERADMIN", "ADMIN"), categoryController.updateCategory)
-categoriesRouter.delete('/:id', authenticateUser, checkRole("SUPERADMIN", "ADMIN"), categoryController.deleteCategory)
+categoriesRouter.delete('/:id', authenticateUser, checkRole("SUPERADMIN"), categoryController.deleteCategory)
 
 
 export default categoriesRouter

@@ -11,5 +11,7 @@ paymentRouter.get('/methods', paymentController.getMethods)
 paymentRouter.post('/orders/:orderId/pay', authenticateUser, checkRole("CUSTOMER"), paymentController.payForOrder)
 paymentRouter.get('/orders/:orderId/payment', authenticateUser, checkRole("CUSTOMER"), paymentController.getPaymentForOrder)
 paymentRouter.post('/:id/refund', authenticateUser, checkRole("SUPERADMIN", "ADMIN"), paymentController.refundPayment)
+paymentRouter.patch('/:paymentId/status', authenticateUser, checkRole("SUPERADMIN", "ADMIN"), paymentController.updatePaymentStatus);
+
 
 export default paymentRouter

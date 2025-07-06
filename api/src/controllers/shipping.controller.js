@@ -1,4 +1,5 @@
 import shippingService from "../services/shipping.service.js";
+import { formatDates } from "../utils/formatter.js";
 
 const shippingController = {};
 
@@ -10,14 +11,14 @@ shippingController.getMethods = (req, res, next) => {
 shippingController.getStatus = async (req, res, next) => {
     const { orderId } = req.params;
     const shipping = await shippingService.getShippingStatusForOrder(Number(orderId));
-    res.status(200).json({ success: true, shipping });
+    res.status(200).json({ success: true, shipping : formatDates(shipping) });
 };
 
 shippingController.updateStatus = async (req, res, next) => {
     const { orderId } = req.params;
     const shippingData = req.body;
     const updatedShipping = await shippingService.updateShippingForOrder(Number(orderId), shippingData);
-    res.status(200).json({ success: true, shipping: updatedShipping });
+    res.status(200).json({ success: true, shipping: formatDates(updatedShipping) });
 };
 
 export default shippingController;

@@ -1,6 +1,8 @@
 import prisma from "../config/prisma.config.js"
 import { sendPasswordResetEmail } from "../utils/email.util.js"
 import hashService from "./hash.service.js"
+import crypto from 'crypto'
+import createError from "../utils/create-error.js"
 
 const authService = {}
 
@@ -40,6 +42,8 @@ authService.requestPasswordReset = async (email) => {
     where: { email },
     data: { passwordResetToken, passwordResetExpires }
   });
+
+  console.log("Password Reset Token (for testing):", resetToken)
 
   try {
     await sendPasswordResetEmail(user.email, resetToken);

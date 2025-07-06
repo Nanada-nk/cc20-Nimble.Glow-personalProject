@@ -45,7 +45,8 @@ usersController.updateMyProfile = async (req, res, next) => {
     }
   }
   const updatedUser = await usersService.updateUser(myUserId, data);
-  res.status(200).json({ success: true, user: formatDates(updatedUser) });
+  const { password, ...userWithoutPassword } = updatedUser
+  res.status(200).json({ success: true, user: formatDates(userWithoutPassword) });
 }
 
 usersController.addMyAddress = async (req, res, next) => {
@@ -77,7 +78,11 @@ usersController.disableUser = async (req, res, next) => {
 
   const softDeleteUser = await usersService.softDeleteUser(id);
 
-  res.status(204).json({ success: true, softDeleteUser });
+  res.status(200).json({
+    success: true,
+    message: `User with ID ${id} has been disabled successfully.`,
+    softDeleteUser: formatDates(softDeleteUser)
+  });
 }
 
 usersController.changeMyPassword = async (req, res, next) => {

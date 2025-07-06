@@ -1,5 +1,6 @@
 import prisma from "../config/prisma.config.js";
 import createError from "../utils/create-error.js";
+import { PaymentMethod } from "../generated/prisma/client.js"
 
 const paymentService = {};
 
@@ -18,9 +19,9 @@ paymentService.createPaymentForOrder = async (orderId, userId, paymentData) => {
 
   const finalAmount = order.cartTotal - (order.orderDiscount || 0);
 
- 
+
   if (finalAmount !== paymentData.amount) {
-      throw createError(400, `Payment amount is incorrect. Required: ${finalAmount}`);
+    throw createError(400, `Payment amount is incorrect. Required: ${finalAmount}`);
   }
 
   return prisma.payment.create({
@@ -36,29 +37,44 @@ paymentService.createPaymentForOrder = async (orderId, userId, paymentData) => {
 
 
 paymentService.getPaymentByOrderId = (orderId, userId) => {
-    return prisma.payment.findFirst({
-        where: {
-            orderId: orderId,
-            userId: userId
-        }
-    });
+  return prisma.payment.findFirst({
+    where: {
+      orderId: orderId,
+      userId: userId
+    }
+  });
 };
 
 
 paymentService.createRefund = (paymentId, refundData) => {
-    return prisma.paymentRefund.create({
-        data: {
-            paymentId: paymentId,
-            amount: refundData.amount,
-            reason: refundData.reason
-        }
-    });
+  return prisma.paymentRefund.create({
+    data: {
+      paymentId: paymentId,
+      amount: refundData.amount,
+      reason: refundData.reason
+    }
+  });
 };
 
 
 paymentService.getPaymentMethods = () => {
 
-    return Object.values(prisma.PaymentMethod);
+  return Object.values(PaymentMethod);
+};
+
+paymentService.updatePaymentStatus = async (paymentId, status) => {
+  const payment = await prisma.payment.findUnique({
+    where: { id: paymentId }
+  });
+
+  if (!payment) {
+    throw createError(404, "Payment not found.");
+  }
+
+  return prisma.payment.update({
+    where: { id: paymentId },
+    data: { status }
+  });
 };
 
 

@@ -2,6 +2,7 @@ import productService from "../services/product.service.js"
 import createError from "../utils/create-error.js"
 import cloudinary from "../config/cloudinary.config.js";
 import fs from "fs/promises"
+import { formatDates } from "../utils/formatter.js";
 
 const productController = {}
 
@@ -79,7 +80,6 @@ productController.updateProduct = async (req, res, next) => {
   res.status(200).json({ success: true, product: formatDates(updatedProduct) });
 }
 
-
 productController.deleteProduct = async (req, res, next) => {
   const id = Number(req.params.id);
 
@@ -88,9 +88,17 @@ productController.deleteProduct = async (req, res, next) => {
     throw createError(404, 'Product not found');
   }
 
-  await productService.deleteProduct(id);
-  res.status(204).json({ success: true, deleteProduct })
+
+  const deletedProduct = await productService.deleteProduct(id);
+
+
+  res.status(200).json({
+    success: true,
+    message: "Product deleted successfully",
+    product: formatDates(deletedProduct)
+  });
 }
+
 
 
 export default productController

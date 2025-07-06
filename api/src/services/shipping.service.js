@@ -1,15 +1,16 @@
 import prisma from "../config/prisma.config.js";
+import { ShippingMethod } from "../generated/prisma/client.js"
 
 const shippingService = {};
 
 shippingService.getShippingMethods = () => {
-    return Object.values(prisma.ShippingMethod);
+  return Object.values(ShippingMethod);
 };
 
 shippingService.getShippingStatusForOrder = (orderId) => {
-    return prisma.shipping.findUnique({
-        where: { orderId: orderId }
-    });
+  return prisma.shipping.findUnique({
+    where: { orderId: orderId }
+  });
 };
 
 
@@ -31,7 +32,7 @@ shippingService.updateShippingForOrder = async (orderId, shippingData) => {
       trackingNumber,
       method,
       fee,
-      addressId, 
+      addressId,
     },
   });
 };

@@ -3,6 +3,17 @@ import createError from "../utils/create-error.js";
 
 const cartService = {};
 
+const updateCartTotal = async (cartId) => {
+  const cartItems = await prisma.productOnCart.findMany({
+    where: { cartId },
+    include: { product: true },
+  });
+
+  const total = cartItems.reduce((sum, item) => sum + (item.price * item.count), 0);
+
+  await prisma.cart.update({ where: { id: cartId }, data: { cartTotal: total } });
+};
+
 
 cartService.addItemToCart = async (userId, productId, count) => {
   const product = await prisma.product.findUnique({ where: { id: productId } });

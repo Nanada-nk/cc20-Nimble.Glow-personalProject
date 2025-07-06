@@ -1,5 +1,7 @@
 import reviewService from "../services/review.service.js";
 import { formatDates } from "../utils/formatter.js";
+import cloudinary from "../config/cloudinary.config.js";
+import fs from "fs/promises"
 
 const reviewController = {};
 
@@ -19,9 +21,11 @@ const uploadReviewImages = async (files) => {
 }
 
 reviewController.create = async (req, res, next) => {
-    const productId = Number(req.params);
+    const productId = Number(req.params.productId);
     const userId = req.user.id
-    const reviewData = req.body
+
+    const { rating, comment } = req.body;
+    const reviewData = { rating: Number(rating), comment }
 
     const newImageUrls = await uploadReviewImages(req.files)
     reviewData.images = newImageUrls
@@ -31,15 +35,16 @@ reviewController.create = async (req, res, next) => {
 };
 
 reviewController.getByProduct = async (req, res, next) => {
-    const productId = Number(req.params);
+    const productId = Number(req.params.productId);
     const reviews = await reviewService.getReviewsForProduct(productId);
-    res.status(200).json({ success: true, reviews });
+    res.status(200).json({ success: true, reviews: formatDates(reviews) });
 };
 
 reviewController.update = async (req, res, next) => {
-    const reviewId = Number(req.params);
+    const reviewId = Number(req.params.reviewId);
     const userId = req.user.id;
-    const dataToUpdate = req.body;
+    const { rating, comment } = req.body;
+    const dataToUpdate = { rating: Number(rating), comment }
 
     const newImageUrls = await uploadReviewImages(req.files)
     const imagesToDelete = req.body.imagesToDelete ? JSON.parse(req.body.imagesToDelete) : []
@@ -49,7 +54,7 @@ reviewController.update = async (req, res, next) => {
 };
 
 reviewController.delete = async (req, res, next) => {
-    const reviewId = Number(req.params);
+    const reviewId = Number(req.params.reviewId);
     await reviewService.deleteReview(reviewId, req.user.id);
     res.status(204).send();
 };

@@ -8,6 +8,16 @@ categoryService.create = (name, createdById) => {
       name,
       createdById,
     },
+    include: {
+      createdBy: {
+        select: {
+          firstName:true,
+          lastName:true,
+          email: true,
+          role: true
+        }
+      }
+    }
   })
 }
 
@@ -20,6 +30,8 @@ categoryService.findAll = () => {
           id: true,
           firstName: true,
           lastName: true,
+          email:true,
+          role:true
         },
       },
     },
@@ -32,6 +44,16 @@ categoryService.findById = (id) => {
     where: {
       id: id,
     },
+    include: {
+      createdBy: {
+        select: {
+          firstName:true,
+          lastName:true,
+          email: true,
+          role: true
+        }
+      }
+    }
   })
 }
 
@@ -44,6 +66,16 @@ categoryService.updateCategory = (id, data) => {
     data: {
       name: data.name,
     },
+    include: {
+      createdBy: {
+        select: {
+          firstName:true,
+          lastName:true,
+          email: true,
+          role: true
+        }
+      }
+    }
   })
 }
 
@@ -51,6 +83,16 @@ categoryService.updateCategory = (id, data) => {
 categoryService.deleteCategory = (id) => {
   return prisma.category.delete({
     where: { id },
+    include:{
+      createdBy:{
+        select:{
+          firstName:true,
+          lastName:true,
+          email:true,
+          role:true
+        }
+      }
+    }
   });
 };
 

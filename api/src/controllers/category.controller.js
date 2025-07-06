@@ -34,7 +34,7 @@ categoryController.updateCategory = async (req, res, next) => {
   }
 
   const updatedCategory = await categoryService.updateCategory(id, { name })
-  res.status(200).json({ success: true, category: updatedCategory })
+  res.status(200).json({ success: true, category: formatDates(updatedCategory) })
 }
 
 categoryController.deleteCategory = async (req, res, next) => {
@@ -45,7 +45,7 @@ categoryController.deleteCategory = async (req, res, next) => {
     throw createError(404, "Category not found");
   }
   const deleteCategory = await categoryService.deleteCategory(id)
-  res.status(204).json({ success: true, deleteCategory })
+  res.status(200).json({ success: true, message: "Category deleted successfully",deleteCategory : formatDates(deleteCategory) })
 }
 
 

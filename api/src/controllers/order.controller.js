@@ -1,6 +1,8 @@
 import { OrderStatus } from "../generated/prisma/client.js"
-import orderService from "../services/orders.service.js";
+import orderService from "../services/order.service.js";
+
 import createError from "../utils/create-error.js";
+import { formatDates } from "../utils/formatter.js";
 
 const ordersController = {};
 
@@ -9,7 +11,7 @@ ordersController.createOrder = async (req, res, next) => {
   const { note } = req.body;
 
   const newOrder = await orderService.createOrderFromCart(userId, note);
-  res.status(201).json({ success: true, order: newOrder });
+  res.status(201).json({ success: true, order: formatDates(newOrder) });
 }
 
 ordersController.getUserOrders = async (req, res, next) => {
@@ -22,7 +24,7 @@ ordersController.getOrderById = async (req, res, next) => {
   const orderId = Number(req.params.id);
   const user = req.user
   const order = await orderService.findOrderById(orderId, user);
-  res.status(200).json({ success: true, orders: formatDates(order) })
+  res.status(200).json({ success: true, order: formatDates(order) })
 }
 
 ordersController.updateStatus = async (req, res, next,) => {
@@ -45,7 +47,7 @@ ordersController.updateStatus = async (req, res, next,) => {
     orderId,
     orderStatus
   );
-  res.status(200).json({ success: true, order: updatedOrder });
+  res.status(200).json({ success: true, order: formatDates(updatedOrder) });
 }
 
 export default ordersController;
