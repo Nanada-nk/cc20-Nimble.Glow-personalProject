@@ -1,5 +1,20 @@
-@import "tailwindcss"
+@import "tailwindcss";
 
 @plugin "daisyui" {
   themes: light --default;
+}
+
+@theme {
+  --color-pri-ic: #c4b494;
+  --color-pri-gr2: #cfdb98;
+  --color-pri-wh: #fcf5eb;
+  --color-pri-gr1: #677e52;
+  --color-bg-cr: #eae2cb;
+  --color-bg-cr2: #e7decc;
+  --color-bg-cr3: #fdf9ee;
+  --color-bg-cr4: #fcf5eb;
+}
+
+body {
+  background-color: #eae2cb;
 }
