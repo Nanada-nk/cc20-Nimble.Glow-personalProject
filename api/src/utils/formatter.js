@@ -1,5 +1,5 @@
 /**
- * 
+ * note for blur blur
  * @param {object|object[]} data 
  * @returns {object|object[]} 
  */

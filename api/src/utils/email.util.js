@@ -10,6 +10,7 @@ const transporter = nodemailer.createTransport({
 });
 
 /**
+ * note ไว้เดี๋ยวลืม
  * @param {string} to - 
  * @param {string} token 
  */

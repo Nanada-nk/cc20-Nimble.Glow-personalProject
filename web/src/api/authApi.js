@@ -13,8 +13,8 @@ authApi.login = (body) => {
 }
 
 
-authApi.getMe = (body, token) => {
-  return axios.get(`${BASE_URL}/me`, body, {
+authApi.getMe = (token) => {
+  return axios.get(`${BASE_URL}/me`, {
     headers: {
       Authorization: `Bearer ${token}`
     }

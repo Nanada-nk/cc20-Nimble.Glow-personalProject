@@ -43,3 +43,27 @@ export const schemaLogin = Yup.object({
         "Password must be at least 8 characters and include uppercase, lowercase, and a number")
       .required("Password is required")
 }).noUnknown()
+
+
+export const schemaForgotPassword = Yup.object({
+  email:
+    Yup.string()
+      .email("Email is invalid")
+      .max(30, "Email must be at most 30 characters")
+      .required("Email is required")
+}).noUnknown()
+
+
+export const schemaResetPassword = Yup.object({
+  newPassword:
+    Yup.string()
+      .max(30, "Password must be at most 30 characters")
+      .matches(
+        /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{8,}$/,
+        "Password must be at least 8 characters and include uppercase, lowercase, and a number")
+      .required("Password is required"),
+  confirmNewPassword:
+    Yup.string()
+      .oneOf([Yup.ref("newPassword"), null], "Passwords must match")
+      .required("Confirm password is required")
+}).noUnknown()
