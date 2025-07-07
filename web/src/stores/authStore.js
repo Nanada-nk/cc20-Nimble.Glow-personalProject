@@ -4,11 +4,25 @@ import authApi from "../api/authApi.js";
 
 const authStore = create(
   persist(
-    (set) => ({
+    (set, get) => ({
       user: null,
       token: null,
       isLoading: false,
-
+      isLoggedIn: false,
+      checkAuth: async () => {
+        const currentToken = get().token;
+        if (currentToken) {
+          set({ isLoading: true });
+          try {
+            const resp = await authApi.getMe(currentToken);
+            set({ user: resp.data.user, isLoggedIn: true, isLoading: false });
+          } catch (error) {
+            set({ user: null, token: null, isLoggedIn: false, isLoading: false });
+          }
+        } else {
+          set({ isLoggedIn: false, isLoading: false });
+        }
+      },
       actionRegister: async (registerData) => {
         try {
           const response = await authApi.register(registerData);
@@ -19,11 +33,12 @@ const authStore = create(
       },
 
       actionLogin: async (loginData) => {
+        set({ isLoading: true });
         try {
-          set({ isLoading: true });
           const response = await authApi.login(loginData);
-          const { accessToken } = response.data;
-          set({ token: accessToken, user: null, isLoading: false });
+          const { accessToken, user } = response.data;
+          set({ token: accessToken, user: user, isLoggedIn: true, isLoading: false });
+          return response
         } catch (error) {
           set({ isLoading: false });
           throw error;
@@ -31,12 +46,13 @@ const authStore = create(
       },
 
       actionLogout: () => {
-        set({ user: null, token: null });
+       set({ user: null, token: null, isLoggedIn: false }); 
       },
+      setAuthUser: (user) => set({ user }), 
     }),
     {
-      name: "auth-storage", 
-      storage: createJSONStorage(() => localStorage), 
+      name: "auth-storage",
+      storage: createJSONStorage(() => localStorage),
     }
   )
 );

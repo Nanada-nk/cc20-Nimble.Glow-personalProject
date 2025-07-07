@@ -30,5 +30,4 @@ authApi.resetPassword = (body) => {
 }
 
 
-
 export default authApi

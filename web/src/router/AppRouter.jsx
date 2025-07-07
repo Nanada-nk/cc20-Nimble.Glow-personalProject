@@ -27,9 +27,15 @@ import UserAddressesPage from '../pages/users/UserAddressesPage';
 import UserProfilePage from '../pages/users/UserProfilePage';
 import NotFoundPage from '../pages/NotFoundPage';
 import HomePage from '../pages/HomePage';
-
+import authStore from '../stores/authStore';
+import { useEffect } from 'react';
+import EditProfilePage from '../pages/users/EditProfilePage';
 
 function AppRouter() {
+  const checkAuth = authStore((state) => state.checkAuth)
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth])
   return (
     <BrowserRouter>
       <Routes>
@@ -52,6 +58,7 @@ function AppRouter() {
           <Route path='orders' element={<UserOrdersPage />} />
           <Route path='orders/:id' element={<OrderDetailPage />} />
           <Route path='profile' element={<UserProfilePage />} />
+          <Route path='profile/edit' element={<EditProfilePage />} />
           <Route path='profile/addresses' element={<UserAddressesPage />} />
           <Route path='profile/change-password' element={<ChangePasswordPage />} />
           <Route path='reviews/history' element={<UserReviewHistoryPage />} />

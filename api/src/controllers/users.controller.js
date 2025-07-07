@@ -33,8 +33,8 @@ usersController.updateUserStatus = async (req, res, next) => {
 
 usersController.updateMyProfile = async (req, res, next) => {
   const myUserId = req.user.id;
-  const { firstName, lastName, mobile } = req.body;
-  const data = { firstName, lastName, mobile };
+  const { firstName, lastName, mobile, email } = req.body;
+  const data = { firstName, lastName, mobile, email };
 
   if (req.file) {
     try {
@@ -48,6 +48,12 @@ usersController.updateMyProfile = async (req, res, next) => {
   const { password, ...userWithoutPassword } = updatedUser
   res.status(200).json({ success: true, user: formatDates(userWithoutPassword) });
 }
+
+usersController.getAddressesForCurrentUser = async (req, res, next) => {
+  const userId = req.user.id;
+  const addresses = await usersService.getAddressesByUserId(userId);
+  res.status(200).json({ success: true, addresses: addresses });
+};
 
 usersController.addMyAddress = async (req, res, next) => {
   const myUserId = req.user.id;
@@ -67,6 +73,13 @@ usersController.updateMyAddress = async (req, res, next) => {
   const updatedAddress = await usersService.updateUserAddress(myUserId, addressId, address);
   res.status(200).json({ success: true, address: updatedAddress });
 }
+
+usersController.deleteAddress = async (req, res, next) => {
+  const userId = req.user.id;
+  const { addressId } = req.params;
+  await usersService.deleteUserAddress(userId, Number(addressId));
+  res.status(204).json();
+};
 
 usersController.disableUser = async (req, res, next) => {
   const id = Number(req.params.id);

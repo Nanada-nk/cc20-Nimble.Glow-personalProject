@@ -1,8 +1,23 @@
-import { Link } from "react-router"
+import { Link, useNavigate } from "react-router"
 import NimbleGlowLogo from "/src/components/NimbleGlowLogo.jsx"
-import { Search, User, ShoppingCart, Menu } from "lucide-react"
+import { Search, User, ShoppingCart, Menu, LogOut } from "lucide-react"
+import authStore from "../stores/authStore"
+import { toast } from "react-toastify"
+
 
 function Header() {
+
+  const isLoggedIn = authStore((state) => state.isLoggedIn);
+  const actionLogout = authStore((state) => state.actionLogout);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    actionLogout();
+    toast.success("You have been logged out.");
+    navigate("/")
+  }
+
+
   return (
     <header className="sticky top-0 z-50 bg-bg-cr4 shadow-sm">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -10,13 +25,27 @@ function Header() {
           <div className="flex-shrink-0">
             <NimbleGlowLogo className="w-[150px]" />
           </div>
+
           <div className="hidden md:flex items-center space-x-6">
             <Link to="/search" className="text-gray-600 hover:text-pri-gr1">
               <Search size={20} />
             </Link>
-            <Link to="/login" className="text-gray-600 hover:text-pri-gr1">
-              <User size={20} />
-            </Link>
+
+            {isLoggedIn ? (
+              <>
+                <Link to="/profile" className="text-gray-600 hover:text-pri-gr1" title="My Profile">
+                  <User size={20} />
+                </Link>
+                <button onClick={handleLogout} className="text-gray-600 hover:text-pri-gr1" title="Logout">
+                  <LogOut size={20} />
+                </button>
+              </>
+            ) : (
+              <Link to="/login" className="text-gray-600 hover:text-pri-gr1" title="Login">
+                <User size={20} />
+              </Link>
+            )}
+
             <Link to="/cart" className="text-gray-600 hover:text-pri-gr1">
               <ShoppingCart size={20} />
             </Link>
@@ -32,30 +61,29 @@ function Header() {
                 tabIndex={0}
                 className="dropdown-content menu p-2 shadow bg-bg-cr3 rounded-box w-52 mt-3 z-[1] text-pri-gr1"
               >
-                <li>
-                  <Link to="/login">Login</Link>
-                </li>
+
+                {isLoggedIn ? (
+                  <>
+                    <li><Link to="/profile">My Profile</Link></li>
+                    <li><button onClick={handleLogout}>Logout</button></li>
+                  </>
+                ) : (
+                  <li><Link to="/login">Login</Link></li>
+                )}
+
+
+                <div className="divider my-1" />
                 <li className="menu-title">
                   <span>Shop by Category</span>
                 </li>
-                <li>
-                  <Link to="/category/essential">Essential Series</Link>
-                </li>
-                <li>
-                  <Link to="/category/supplement">Supplement Series</Link>
-                </li>
-                <li>
-                  <Link to="/category/lip">Lip Series</Link>
-                </li>
-                <li>
-                  <Link to="/category/body">Body Series</Link>
-                </li>
+                <li><Link to="/categories">All Categories</Link></li>
+                <li><Link to="/category/essential">Essential Series</Link></li>
+                <li><Link to="/category/supplement">Supplement Series</Link></li>
+                <li><Link to="/category/lip">Lip Series</Link></li>
+                <li><Link to="/category/body">Body Series</Link></li>
                 <div className="divider my-1" />
                 <li>
                   <Link to="/cart">Cart</Link>
-                </li>
-                <li>
-                  <button onClick={() => alert("Logout!")}>Logout</button>
                 </li>
               </ul>
             </div>

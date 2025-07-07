@@ -15,10 +15,10 @@ usersRouter.patch('/status/:id', checkRole("SUPERADMIN"), usersController.update
 
 usersRouter.patch('/profile/me', upload.single('profileImage'), usersController.updateMyProfile);
 
-
+usersRouter.get('/addresses', usersController.getAddressesForCurrentUser);
 usersRouter.post('/addresses', usersController.addMyAddress);
 usersRouter.patch('/addresses/:addressId', usersController.updateMyAddress);
-
+usersRouter.delete('/addresses/:addressId', usersController.deleteAddress);
 usersRouter.patch('/password/change', usersController.changeMyPassword);
 
 

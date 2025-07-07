@@ -15,10 +15,10 @@ usersService.getAllUsers = () => {
   })
 }
 
-usersService.updateUser = (id, data) => {
+usersService.updateUser = (userId, userData) => {
   return prisma.user.update({
-    where: { id },
-    data,
+    where: { id: userId },
+    data: userData,
     include: { addresses: true }
   })
 }
@@ -53,6 +53,23 @@ usersService.softDeleteUser = (id) => {
       enabled: false,
     },
   });
+}
+
+usersService.getAddressesByUserId = (userId) => {
+  return prisma.address.findMany({
+    where: { userId: userId },
+    orderBy: { id: 'asc' }
+  });
+}
+
+usersService.deleteUserAddress = async (userId, addressId) => {
+  const address = await prisma.address.findFirst({
+    where: { id: addressId, userId: userId }
+  });
+  if (!address) {
+    throw createError(404, "Address not found or you do not have permission.");
+  }
+  return prisma.address.delete({ where: { id: addressId } });
 }
 
 export default usersService

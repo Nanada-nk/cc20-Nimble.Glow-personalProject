@@ -29,13 +29,21 @@ userApi.updateUserStatus = (id, body, token) => {
   })
 }
 
-userApi.updateMyProfile = (body, token) => {
-  return axios.patch(`${BASE_URL}/profile/me`, body, {
+userApi.updateMyProfile = (formData, token) => {
+  return axios.patch(`${BASE_URL}/profile/me`, formData, {
     headers: {
       Authorization: `Bearer ${token}`
     }
   })
 }
+
+userApi.getMyAddresses = (token) => {
+  return axios.get(`${BASE_URL}/addresses`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+};
 
 userApi.addMyAddress = (body, token) => {
   return axios.post(`${BASE_URL}/addresses`, body, {
@@ -59,6 +67,14 @@ userApi.changeMyPassword = (body, token) => {
       Authorization: `Bearer ${token}`
     }
   })
+}
+
+userApi.deleteAddress = (addressId, token) => {
+  return axios.delete(`${BASE_URL}/addresses/${addressId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
 }
 
 

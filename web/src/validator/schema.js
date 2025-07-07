@@ -67,3 +67,46 @@ export const schemaResetPassword = Yup.object({
       .oneOf([Yup.ref("newPassword"), null], "Passwords must match")
       .required("Confirm password is required")
 }).noUnknown()
+
+export const schemaEditProfile = Yup.object({
+  firstName:
+    Yup.string()
+      .required("First name is required"),
+  lastName:
+    Yup.string()
+      .required("Last name is required"),
+  mobile:
+    Yup.string()
+      .matches(/^[0-9]{10}$/, "Mobile number must be 10 digits (e.g. 0811111111)")
+      .required("Mobile is required"),
+  email:
+    Yup.string()
+      .email("Email is invalid")
+      .max(30, "Email must be at most 30 characters")
+      .required("Email is required")
+}).noUnknown(true)
+
+export const schemaAddress = Yup.object({
+  address:
+    Yup.string()
+      .max(250, "Address must be at most 250 characters")
+      .required("Address is required")
+}).noUnknown(true)
+
+export const schemaChangePassword = Yup.object({
+  currentPassword:
+    Yup.string()
+      .max(30, "Password must be at most 30 characters")
+      .required('Please enter current password.'),
+  newPassword:
+    Yup.string()
+      .max(30, "Password must be at most 30 characters")
+      .matches(
+        /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{8,}$/,
+        "Password must be at least 8 characters and include uppercase, lowercase, and a number")
+      .required("Password is required"),
+  confirmNewPassword:
+    Yup.string()
+      .oneOf([Yup.ref("newPassword"), null], "Passwords must match")
+      .required("Confirm password is required")
+}).noUnknown(true)
