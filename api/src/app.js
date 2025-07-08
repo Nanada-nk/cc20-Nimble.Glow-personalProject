@@ -27,7 +27,10 @@ const limiter = rateLimit({
   message: 'Too many requests, please try again later.'
 })
 
-app.use(cors())
+app.use(cors({
+  origin: process.env.FRONTEND_URL,
+  credentials: true
+}))
 app.use(limiter)
 app.use(express.json())
 app.use(morgan("dev"))

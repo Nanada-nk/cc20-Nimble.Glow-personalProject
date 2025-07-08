@@ -2,13 +2,26 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from "react-router";
 
 import { toast } from "react-toastify";
-import { BubblesIcon } from 'lucide-react';
-import { SearchIcon } from 'lucide-react';
+import { BubblesIcon, SearchIcon } from 'lucide-react';
 
 import userApi from '../../api/userApi.js';
 import authStore from '../../stores/authStore.js';
 import UserTable from '../../components/UserTable.jsx';
+import Modal from '../../components/Modal.jsx';
+import SelectInput from '../../components/SelectInput.jsx';
+import RadioGroupInput from '../../components/RadioGroupInput.jsx';
 
+
+const roleOptions = [
+  { value: "CUSTOMER", label: "Customer" },
+  { value: "ADMIN", label: "Admin" },
+  { value: "SUPERADMIN", label: "Super admin" },
+]
+
+const statusOptions = [
+  { value: true, label: "Active", className: "checked:bg-green-500" },
+  { value: false, label: "Disabled", className: "checked:bg-red-500" },
+]
 
 function AdminUserManagementPage() {
   const navigate = useNavigate();
@@ -18,6 +31,7 @@ function AdminUserManagementPage() {
   const actionLogout = authStore((state) => state.actionLogout);
   const userRole = user?.role
   console.log("Value of userRole being checked is:", userRole)
+
   const [users, setUsers] = useState([]);
   const [isLoadingUsers, setIsLoadingUsers] = useState(true)
   const [errorLoadingUsers, setErrorLoadingUsers] = useState(null);
@@ -25,11 +39,15 @@ function AdminUserManagementPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-  const [totalUsers, setTotalUsers] = useState(0);
+
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedUser, setSelectedUser] = useState(null)
+  const [editData, setEditData] = useState({ role: '', enabled: false })
 
   const fetchUsers = async () => {
-    if (!token || (userRole !== 'ADMIN' && userRole !== 'SUPERADMIN')) {
-      toast.error("Unauthorized access. Please login as an admin.");
+    console.log("A. fetchUsers called.")
+    if (!userRole || (userRole !== 'ADMIN' && userRole !== 'SUPERADMIN')) {
+      toast.error("Unauthorized access.")
       actionLogout();
       navigate('/login', { replace: true });
       return;
@@ -38,33 +56,28 @@ function AdminUserManagementPage() {
     setIsLoadingUsers(true);
     setErrorLoadingUsers(null);
     try {
+      console.log("B. Calling userApi.getListAllUser...")
       const resp = await userApi.getListAllUser(token);
+      console.log("C. API call SUCCEEDED. Response data:", resp.data)
       setUsers(resp.data.users || []);
-      setTotalUsers(resp.data.users?.length || 0);
+
     } catch (err) {
-      console.error("AdminUserManagementPage: Failed to fetch users:", err)
+      console.error("D. API call FAILED.", err)
       setErrorLoadingUsers(err.response?.data?.message || "Failed to load users.");
       toast.error(err.response?.data?.message || "Failed to load users.")
-      if (err.response?.status === 401 || err.response?.status === 403) {
-        actionLogout();
-        navigate('/login', { replace: true })
-      }
+
     } finally {
+      console.log("E. FINALLY block reached. Setting isLoadingUsers to false.");
       setIsLoadingUsers(false)
     }
   };
 
   useEffect(() => {
     console.log("AdminUserManagementPage: Component Mounted/Updated");
-    if (isLoadingUsers) {
-      return;
+    if (token) {
+      fetchUsers();
     }
-    if (!token) {
-      navigate('/login', { replace: true });
-      return;
-    }
-    fetchUsers();
-  }, [token, user, isLoadingUsers, navigate, actionLogout]);
+  }, [token]);
 
   const handleDisableUser = async (userId) => {
     if (!window.confirm(`Are you sure you want to disable user ID: ${userId}?`)) {
@@ -91,6 +104,33 @@ function AdminUserManagementPage() {
     setCurrentPage(pageNumber);
   };
 
+  const handleOpenEditModal = (userToEdit) => {
+    console.log('userToEdit handleOpenEditModal', userToEdit)
+    setSelectedUser(userToEdit)
+    setEditData({ role: userToEdit.role, enabled: userToEdit.enabled })
+    setIsModalOpen(true)
+  }
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false)
+    setSelectedUser(null)
+  }
+
+  const handleConfirmChange = async () => {
+    if (!selectedUser) return
+    try {
+      await userApi.updateUserStatus(selectedUser.id, editData, token)
+      toast.success(`User ${selectedUser.firstName} has been updated.`)
+      setUsers(prevUsers => prevUsers.map(user =>
+        user.id === selectedUser.id ? { ...user, ...editData } : user
+      ))
+      handleCloseModal()
+    } catch (err) {
+      console.log('error for handleConfirmChange', err)
+      toast.error(err.response?.data?.message || "Failed to update user.")
+    }
+  }
+
   const filteredUsers = users.filter(user =>
     user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -101,7 +141,6 @@ function AdminUserManagementPage() {
   const indexOfLastUser = currentPage * itemsPerPage;
   const indexOfFirstUser = indexOfLastUser - itemsPerPage;
   const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
-
   const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
 
 
@@ -119,7 +158,6 @@ function AdminUserManagementPage() {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-100">
         <p className="text-red-500">Error: {errorLoadingUsers}</p>
-        <button onClick={() => navigate('/admin/users')} className="ml-4 px-4 py-2 bg-pri-gr1 text-white rounded-lg">Back to Admin Dashboard</button>
       </div>
     );
   }
@@ -137,7 +175,7 @@ function AdminUserManagementPage() {
           <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
           <input
             type="text"
-            placeholder="Search customer..."
+            placeholder="Search by name, email, or mobile..."
             className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pri-gr1"
             value={searchTerm}
             onChange={handleSearchChange}
@@ -149,40 +187,45 @@ function AdminUserManagementPage() {
       <UserTable
         users={currentUsers}
         onDisableUser={handleDisableUser}
+        onEditUser={handleOpenEditModal}
+        currentUserRole={userRole}
       />
 
 
       <div className="flex justify-between items-center mt-6">
         <p className="text-sm text-gray-600">
-          Showing {indexOfFirstUser + 1}-{Math.min(indexOfLastUser, filteredUsers.length)} from {filteredUsers.length} total users
+          Showing {indexOfFirstUser + 1}-{Math.min(indexOfLastUser, filteredUsers.length)} of {filteredUsers.length} users
         </p>
-        <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-          <button
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-          >
-            Previous
-          </button>
-          {[...Array(totalPages)].map((_, index) => (
-            <button
-              key={index + 1}
-              onClick={() => handlePageChange(index + 1)}
-              className={`relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium ${currentPage === index + 1 ? 'z-10 bg-pri-gr1 text-white' : 'text-gray-700 hover:bg-gray-50'
-                }`}
-            >
-              Next
-            </button>
-          ))}
-          <button
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-          >
-            Next
-          </button>
-        </nav>
+        <div className="join">
+          <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} className="join-item btn btn-sm">«</button>
+          <button className="join-item btn btn-sm">Page {currentPage}</button>
+          <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages || totalPages === 0} className="join-item btn btn-sm">»</button>
+        </div>
       </div>
+
+      <Modal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmChange}
+        title={`Edit User: ${selectedUser?.firstName}`}
+        confirmText="Save Changes"
+      >
+        <SelectInput
+          label="Role"
+          value={editData.role}
+          onChange={(e) => setEditData(prev => ({ ...prev, role: e.target.value }))}
+          options={roleOptions}
+        />
+
+        <RadioGroupInput
+          label="Status"
+          name="status-radio"
+          selectedValue={editData.enabled}
+          onChange={(newValue) => setEditData(prev => ({ ...prev, enabled: newValue }))}
+          options={statusOptions}
+        />
+      </Modal>
+
     </div>
   );
 }

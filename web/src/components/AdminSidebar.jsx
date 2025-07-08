@@ -1,8 +1,6 @@
 
 import { Link, useLocation, useNavigate } from "react-router"; 
 import { TrashIcon } from 'lucide-react'; 
-
-
 import authStore from "../stores/authStore";
 import { toast } from "react-toastify"; 
 

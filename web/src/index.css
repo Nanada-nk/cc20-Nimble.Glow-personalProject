@@ -18,3 +18,9 @@
 body {
   background-color: #eae2cb;
 }
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+}

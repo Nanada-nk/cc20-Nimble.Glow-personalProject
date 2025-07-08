@@ -7,7 +7,7 @@ function FeaturedProduct() {
         <div>
           <h3 className="text-lg font-semibold">Nimble.Glow</h3>
           <h2 className="text-4xl font-bold mt-2">Brightening Pineapple Body Lotion</h2>
-          <p className="mt-4 text-gray-200">
+          <p className="m-4 text-gray-200">
             Discover Nimble.Glow Brightening Pineapple Body Lotion, body lotion with pineapple enzyme extract nourishes
             the skin to look brighter and smoother. It also helps increase moisture and strengthens the skin barrier to
             keep the skin moist for a long time.

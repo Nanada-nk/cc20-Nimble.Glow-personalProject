@@ -2,15 +2,15 @@ import axios from "axios"
 
 const reviewsApi = {}
 
-const BASE_URL = 'http://localhost:9090/api/reviews'
+const BASE_URL = import.meta.env.VITE_API_BASE_URL
 
 
 reviewsApi.getByProduct = (id) => {
-  return axios.get(`${BASE_URL}/product/${id}`)
+  return axios.get(`${BASE_URL}/reviews/product/${id}`)
 }
 
 reviewsApi.create = (id,body, token) => {
-  return axios.post(`${BASE_URL}/product/${id}`, body, {
+  return axios.post(`${BASE_URL}/reviews/product/${id}`, body, {
     headers: {
       Authorization: `Bearer ${token}`
     }
@@ -19,7 +19,7 @@ reviewsApi.create = (id,body, token) => {
 
 
 reviewsApi.update = (id, body, token) => {
-  return axios.patch(`${BASE_URL}/${id}`, body, {
+  return axios.patch(`${BASE_URL}/reviews/${id}`, body, {
     headers: {
       Authorization: `Bearer ${token}`
     }
@@ -27,7 +27,7 @@ reviewsApi.update = (id, body, token) => {
 }
 
 reviewsApi.delete = (id, token) => {
-  return axios.delete(`${BASE_URL}/${id}`, {
+  return axios.delete(`${BASE_URL}/reviews/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`
     }

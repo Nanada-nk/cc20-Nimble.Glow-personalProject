@@ -23,8 +23,9 @@ const authenticateUser = async (req, res, next) => {
     if (!user) {
       return next(createError(403, 'Unauthorized'))
     }
-
+   
     req.user = user
+
     next()
   } catch (error) {
     return next(createError(401, 'Invalid token'))

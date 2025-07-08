@@ -5,11 +5,8 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { toast } from "react-toastify";
 import { BubblesIcon } from 'lucide-react';
-
 import userApi from "../../api/userApi.js";
 import authStore from "../../stores/authStore.js";
-
-
 import { schemaChangePassword } from "../../validator/schema.js";
 
 
@@ -30,16 +27,11 @@ function ChangePasswordPage() {
 
   const onSubmit = async (data) => {
     try {
-
       const resp = await userApi.changeMyPassword(data, token);
-
       toast.success(resp.data.message || "Password changed successfully!");
       reset();
-
-
       actionLogout();
       navigate("/login");
-
     } catch (error) {
       console.error("Change password failed:", error);
       toast.error(error.response?.data?.message || "Failed to change password. Please try again.");
@@ -48,7 +40,6 @@ function ChangePasswordPage() {
 
   const handleLogout = () => {
     actionLogout();
-    toast.success("Logged out successfully!");
     navigate("/login");
   };
 
@@ -72,8 +63,9 @@ function ChangePasswordPage() {
             <h1 className="text-3xl md:text-4xl font-bold font-serif text-pri-gr1">Change Password</h1>
             <button
               onClick={handleLogout}
-              className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+              className="flex items-center px-3 py-2 bg-red-800 text-white rounded-lg hover:bg-red-500 transition-colors font-semibold text-sm"
             >
+              <LogOut size={16} className="mr-2" />
               Log out
             </button>
           </div>

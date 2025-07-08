@@ -7,15 +7,15 @@ const categories = [
 
 function CategorySection() {
   return (
-    <section className="py-12 bg-bg-cr4">
+    <section id="categories" className="py-12 bg-bg-cr4">
       <div className="container mx-auto px-4 text-center">
         <h2 className="text-2xl font-bold text-gray-800 mb-8">Shop By Category</h2>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 duration-1000">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 duration-1000">
           {categories.map((category) => (
             <div key={category.name} className="flex flex-col items-center hover:animate-pulse">
               <div className="w-50 h-80 rounded-br-4xl rounded-md overflow-hidden shadow-md">
                 <img
-                  src={category.img || "/placeholder.svg"}
+                  src={category.img || "../../assets/product.jpg"}
                   alt={category.name}
                   className="w-full h-full object-cover"
                 />

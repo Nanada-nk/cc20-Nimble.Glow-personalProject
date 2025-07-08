@@ -8,22 +8,31 @@ const authStore = create(
       user: null,
       token: null,
       isLoading: false,
-      isLoggedIn: false,
+      isLoggedIn: true,
+
+
+      setAuthUser: (user) => {
+        // console.log("setAuthUser: Updating user state.", user);
+        set({ user: user, isLoggedIn: !!user });
+      },
+
 
       checkAuth: async () => {
-        console.log("1. checkAuth action STARTING...")
+        // console.log("1. checkAuth action STARTING...")
         const currentToken = get().token;
-        console.log("2. Token from store is:", currentToken);
+        // console.log("2. Token from store is:", currentToken);
 
         if (currentToken) {
           try {
             const resp = await authApi.getMe(currentToken);
-           console.log("3. getMe API call SUCCEEDED.");
-            set({ user: resp.data.user, isLoggedIn: true })
+            // console.log("3. getMe API call SUCCEEDED.");
+            set({ user: resp.data.user, isLoggedIn: true, isLoading: false });
           } catch (error) {
-            console.error("4. getMe API call FAILED.", error);
-            set({ user: null, token: null, isLoggedIn: false });
+            // console.error("4. getMe API call FAILED.", error);
+            set({ user: null, token: null, isLoggedIn: false, isLoading: false })
           }
+        } else {
+          set({ isLoading: false });
         }
       },
       actionRegister: async (registerData) => {
@@ -40,26 +49,26 @@ const authStore = create(
         try {
           const response = await authApi.login(loginData);
           const { accessToken, user } = response.data;
-          console.log("actionLogin: Login successful, accessToken =", accessToken, "user =", user)
+          // console.log("actionLogin: Login successful, accessToken =", accessToken, "user =", user)
           set({ token: accessToken, user: user, isLoggedIn: true, isLoading: false });
           return response
         } catch (error) {
-          console.error("actionLogin: Login failed, error =", error)
+          // console.error("actionLogin: Login failed, error =", error)
           set({ isLoading: false });
           throw error;
         }
       },
 
       actionLogout: () => {
-        console.log("actionLogout: Logging out user.");
-        console.trace("Call stack:")
+        // console.log("actionLogout: Logging out user.");
+        // console.trace("Call stack:")
         set({ user: null, token: null, isLoggedIn: false });
       },
     }),
     {
       name: "auth-storage",
       storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({ token: state.token, user: state.user ,isLoggedIn: state.isLoggedIn}),
+      partialize: (state) => ({ token: state.token }),
     }
   )
 );

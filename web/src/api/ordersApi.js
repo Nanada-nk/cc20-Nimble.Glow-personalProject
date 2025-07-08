@@ -2,10 +2,10 @@ import axios from "axios"
 
 const ordersApi = {}
 
-const BASE_URL = 'http://localhost:9090/api/orders'
+const BASE_URL = import.meta.env.VITE_API_BASE_URL
 
 ordersApi.getUserOrders = (token) => {
-  return axios.get(`${BASE_URL}/`, {
+  return axios.get(`${BASE_URL}/orders/`, {
     headers: {
       Authorization: `Bearer ${token}`
     }
@@ -15,7 +15,7 @@ ordersApi.getUserOrders = (token) => {
 
 
 ordersApi.createOrder = (body, token) => {
-  return axios.post(`${BASE_URL}/`, body, {
+  return axios.post(`${BASE_URL}/orders/`, body, {
     headers: {
       Authorization: `Bearer ${token}`
     }
@@ -23,7 +23,7 @@ ordersApi.createOrder = (body, token) => {
 }
 
 ordersApi.getOrderById = (id, token) => {
-  return axios.get(`${BASE_URL}/${id}`, {
+  return axios.get(`${BASE_URL}/orders/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`
     }

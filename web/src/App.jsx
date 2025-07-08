@@ -3,6 +3,7 @@ import AppRouter from "./router/AppRouter"
 import authStore from "./stores/authStore";
 import { useEffect } from "react";
 
+
 function App() {
   const checkAuth = authStore((state) => state.checkAuth);
   useEffect(() => {

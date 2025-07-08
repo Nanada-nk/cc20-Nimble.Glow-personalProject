@@ -2,14 +2,14 @@ import axios from "axios"
 
 const categoriesApi = {}
 
-const BASE_URL = 'http://localhost:9090/api/categories'
+const BASE_URL = import.meta.env.VITE_API_BASE_URL
 
 categoriesApi.getAll = () => {
-  return axios.get(`${BASE_URL}/`)
+  return axios.get(`${BASE_URL}/categories/`)
 }
 
 categoriesApi.create = (body, token) => {
-  return axios.post(`${BASE_URL}/`, body, {
+  return axios.post(`${BASE_URL}/categories/`, body, {
     headers: {
       Authorization: `Bearer ${token}`
     }
@@ -18,7 +18,7 @@ categoriesApi.create = (body, token) => {
 
 
 categoriesApi.updateCategory = (id, body, token) => {
-  return axios.patch(`${BASE_URL}/${id}`, body, {
+  return axios.patch(`${BASE_URL}/categories/${id}`, body, {
     headers: {
       Authorization: `Bearer ${token}`
     }
@@ -26,7 +26,7 @@ categoriesApi.updateCategory = (id, body, token) => {
 }
 
 categoriesApi.deleteCategory = (id, token) => {
-  return axios.delete(`${BASE_URL}/${id}`, {
+  return axios.delete(`${BASE_URL}/categories/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`
     }

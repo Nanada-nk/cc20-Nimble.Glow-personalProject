@@ -2,10 +2,10 @@ import axios from "axios"
 
 const cartApi = {}
 
-const BASE_URL = 'http://localhost:9090/api/cart'
+const BASE_URL = import.meta.env.VITE_API_BASE_URL
 
 cartApi.getCart = (token) => {
-  return axios.get(`${BASE_URL}/`,{
+  return axios.get(`${BASE_URL}/cart/`,{
       headers:{
         Authorization: `Bearer ${token}`
       }
@@ -15,7 +15,7 @@ cartApi.getCart = (token) => {
 
 
 cartApi.addItemToCart = (body, token) => {
-  return axios.post(`${BASE_URL}/`, body, {
+  return axios.post(`${BASE_URL}/cart/`, body, {
     headers: {
       Authorization: `Bearer ${token}`
     }
@@ -24,7 +24,7 @@ cartApi.addItemToCart = (body, token) => {
 
 
 cartApi.removeItem = (id, token) => {
-  return axios.delete(`${BASE_URL}/items/${id}`, {
+  return axios.delete(`${BASE_URL}/cart/items/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`
     }

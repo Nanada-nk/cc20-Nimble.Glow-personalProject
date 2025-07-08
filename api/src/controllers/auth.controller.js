@@ -53,6 +53,11 @@ authController.login = async (req, res, next) => {
   // const preparePayload = { id: findEmail.id, role: findEmail.role }
   // const accessToken = await jwtService.genToken(preparePayload)
   const accessToken = await jwtService.genToken({ id: findEmail.id, role: findEmail.role })
+      res.cookie('accessToken', accessToken, {
+        httpOnly: true, 
+        secure: process.env.NODE_ENV === 'production', 
+        sameSite: 'strict' 
+    })
   const { password: userPassword, ...userWithoutPassword } = findEmail;
   res.status(200).json({ 
         success: true, 
