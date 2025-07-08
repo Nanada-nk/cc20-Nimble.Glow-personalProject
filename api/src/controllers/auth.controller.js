@@ -53,8 +53,12 @@ authController.login = async (req, res, next) => {
   // const preparePayload = { id: findEmail.id, role: findEmail.role }
   // const accessToken = await jwtService.genToken(preparePayload)
   const accessToken = await jwtService.genToken({ id: findEmail.id, role: findEmail.role })
-
-  res.status(200).json({ success: true, accessToken })
+  const { password: userPassword, ...userWithoutPassword } = findEmail;
+  res.status(200).json({ 
+        success: true, 
+        accessToken, 
+        user: formatDates(userWithoutPassword) 
+    });
 }
 
 authController.getMe = async (req, res, next) => {
@@ -66,7 +70,7 @@ authController.getMe = async (req, res, next) => {
     throw createError(404, "User not found");
   }
 
-  const { password, role, ...userWithoutPasswordAndRole } = user
+  const { password, ...userWithoutPassword } = user
 
   // res.status(200).json({
   //   user: {
@@ -76,7 +80,7 @@ authController.getMe = async (req, res, next) => {
   //     lastLogin: new Date(user.lastLogin).toLocaleString(),
   //   }
   // })
-  res.status(200).json({ user: formatDates(userWithoutPasswordAndRole) })
+  res.status(200).json({ user: formatDates(userWithoutPassword) })
 }
 
 

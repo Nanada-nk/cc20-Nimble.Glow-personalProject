@@ -98,6 +98,7 @@ function RegisterPage() {
               register={register}
               error={errors.password}
               placeholder="Enter Your Password"
+              autoComplete="new-password"
             />
             <FormInput
               label="Confirm Password"
@@ -106,6 +107,7 @@ function RegisterPage() {
               register={register}
               error={errors.confirmPassword}
               placeholder="Confirm Your Password"
+              autoComplete="new-password"
             />
 
             <button

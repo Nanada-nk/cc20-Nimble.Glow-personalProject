@@ -6,13 +6,28 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { schemaLogin } from "../../validator/schema.js";
 import { toast } from "react-toastify";
 import { BubblesIcon } from 'lucide-react'
-import authApi from "../../api/authApi.js";
 import FormInput from "../../components/FormInput.jsx";
 import authStore from "../../stores/authStore.js";
+import { useEffect } from "react";
+import authApi from "../../api/authApi.js";
 
 function LoginPage() {
   const navigate = useNavigate();
   const actionLogin = authStore((state) => state.actionLogin);
+  const isLoggedIn = authStore((state) => state.isLoggedIn);
+  const user = authStore((state) => state.user);
+  const isLoading = authStore((state) => state.isLoading);
+  
+
+    useEffect(() => {
+    if (!isLoading && isLoggedIn && user) {
+      if (user.role === 'SUPERADMIN' || user.role === 'ADMIN') {
+        navigate("/admin/users", { replace: true });
+      } else {
+        navigate("/", { replace: true });
+      }
+    }
+  }, [isLoggedIn, user, isLoading, navigate]);
 
   const {
     register,
@@ -27,16 +42,23 @@ function LoginPage() {
   const onSubmit = async (data) => {
     try {
       await actionLogin(data);
-
+      
       toast.success("Login successful!");
       reset();
-      navigate("/");
-
+      
     } catch (error) {
       console.error("Login failed:", error);
       toast.error(error.response?.data?.message || "An unexpected error occurred during login.");
     }
   };
+
+  if (isLoading) {
+    return (
+       <div className="flex items-center justify-center min-h-screen bg-bg-cr3">
+        <BubblesIcon className="w-10 h-10 animate-spin text-pri-gr1" />
+       </div>
+    )
+  }
 
   return (
     <div className="w-full min-h-screen lg:grid lg:grid-cols-2 bg-bg-cr3">
@@ -67,6 +89,7 @@ function LoginPage() {
               register={register}
               error={errors.email}
               placeholder="Enter Your Email"
+              autoComplete="current-password"
             />
 
             <FormInput
@@ -76,6 +99,7 @@ function LoginPage() {
               register={register}
               error={errors.password}
               placeholder="Enter Your Password"
+              autoComplete="current-password"
             />
 
             <div className="text-right text-sm">

@@ -1,35 +1,39 @@
 
+import { useEffect } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router';
 import MainLayout from '../layouts/MainLayout';
+import AdminLayout from '../layouts/AdminLayout';
+
 import LoginPage from '../pages/auth/LoginPage';
 import RegisterPage from '../pages/auth/RegisterPage';
-
-
 import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage';
 import ResetPasswordPage from '../pages/auth/ResetPasswordPage';
-import CartPage from '../pages/cart/CartPage';
-import CategoryListPage from '../pages/categories/CategoryListPage';
-import AdminCategoryManagementPage from '../pages/categories/AdminCategoryManagementPage';
-import AdminCouponManagementPage from '../pages/coupons/AdminCouponManagementPage';
-import UserOrdersPage from '../pages/orders/UserOrdersPage';
-import OrderDetailPage from '../pages/orders/OrderDetailPage';
-import AdminOrderManagementPage from '../pages/orders/AdminOrderManagementPage';
-import CheckoutPage from '../pages/payments/CheckoutPage';
 import ProductListPage from '../pages/products/ProductListPage';
 import ProductDetailPage from '../pages/products/ProductDetailPage';
-import AdminProductManagementPage from '../pages/products/AdminProductManagementPage';
-import UserReviewHistoryPage from '../pages/reviews/UserReviewHistoryPage';
-import AdminReviewManagementPage from '../pages/reviews/AdminReviewManagementPage';
-import AdminDashboardPage from '../pages/users/AdminDashboardPage';
-import AdminUserManagementPage from '../pages/users/AdminUserManagementPage';
-import ChangePasswordPage from '../pages/users/ChangePasswordPage';
-import UserAddressesPage from '../pages/users/UserAddressesPage';
+import CategoryListPage from '../pages/categories/CategoryListPage';
+
+import CartPage from '../pages/cart/CartPage';
+import CheckoutPage from '../pages/payments/CheckoutPage';
+import UserOrdersPage from '../pages/orders/UserOrdersPage';
+import OrderDetailPage from '../pages/orders/OrderDetailPage';
 import UserProfilePage from '../pages/users/UserProfilePage';
+import EditProfilePage from '../pages/users/EditProfilePage';
+import UserAddressesPage from '../pages/users/UserAddressesPage';
+import ChangePasswordPage from '../pages/users/ChangePasswordPage';
+import UserReviewHistoryPage from '../pages/reviews/UserReviewHistoryPage';
+
+
 import NotFoundPage from '../pages/NotFoundPage';
 import HomePage from '../pages/HomePage';
 import authStore from '../stores/authStore';
-import { useEffect } from 'react';
-import EditProfilePage from '../pages/users/EditProfilePage';
+
+import AdminDashboardPage from '../pages/admin/AdminDashboardPage';
+import AdminUserManagementPage from '../pages/admin/AdminUserManagementPage';
+import AdminProductManagementPage from '../pages/admin/AdminProductManagementPage';
+import AdminCategoryManagementPage from '../pages/admin/AdminCategoryManagementPage';
+import AdminOrderManagementPage from '../pages/admin/AdminOrderManagementPage';
+import AdminCouponManagementPage from '../pages/admin/AdminCouponManagementPage';
+import AdminReviewManagementPage from '../pages/admin/AdminReviewManagementPage';
 
 function AppRouter() {
   const checkAuth = authStore((state) => state.checkAuth)
@@ -65,7 +69,7 @@ function AppRouter() {
         </Route>
 
 
-        <Route path='/admin' element={<MainLayout />}>
+        <Route path='/admin' element={<AdminLayout />}>
           <Route index element={<AdminDashboardPage />} />
           <Route path='users' element={<AdminUserManagementPage />} />
           <Route path='products' element={<AdminProductManagementPage />} />

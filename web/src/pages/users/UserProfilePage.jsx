@@ -83,7 +83,7 @@ function UserProfilePage() {
             <h1 className="text-3xl md:text-4xl font-bold font-serif text-pri-gr1">Hello, {user.firstName || 'User'} !</h1>
             <button
               onClick={handleLogout}
-              className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+              className="px-3 py-2 bg-red-800 text-white rounded-2xl hover:bg-red-500 transition-colors font-bold"
             >
               Log out
             </button>
@@ -96,7 +96,7 @@ function UserProfilePage() {
                 {user.profileImage ? (
                   <img src={user.profileImage} alt="Profile" className="w-full h-full object-cover" />
                 ) : (
-                  <span className="text-gray-500 text-5xl">👤</span> // Placeholder icon
+                  <span className="text-gray-500 text-5xl">👤</span> 
                 )}
               </div>
               <h3 className="mt-2 text-xl font-bold text-gray-800">{user.firstName} {user.lastName}</h3>

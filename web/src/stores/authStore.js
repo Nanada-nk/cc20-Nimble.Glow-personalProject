@@ -9,18 +9,21 @@ const authStore = create(
       token: null,
       isLoading: false,
       isLoggedIn: false,
+
       checkAuth: async () => {
+        console.log("1. checkAuth action STARTING...")
         const currentToken = get().token;
+        console.log("2. Token from store is:", currentToken);
+
         if (currentToken) {
-          set({ isLoading: true });
           try {
             const resp = await authApi.getMe(currentToken);
-            set({ user: resp.data.user, isLoggedIn: true, isLoading: false });
+           console.log("3. getMe API call SUCCEEDED.");
+            set({ user: resp.data.user, isLoggedIn: true })
           } catch (error) {
-            set({ user: null, token: null, isLoggedIn: false, isLoading: false });
+            console.error("4. getMe API call FAILED.", error);
+            set({ user: null, token: null, isLoggedIn: false });
           }
-        } else {
-          set({ isLoggedIn: false, isLoading: false });
         }
       },
       actionRegister: async (registerData) => {
@@ -33,26 +36,30 @@ const authStore = create(
       },
 
       actionLogin: async (loginData) => {
-        set({ isLoading: true });
+        set({ isLoading: true })
         try {
           const response = await authApi.login(loginData);
           const { accessToken, user } = response.data;
+          console.log("actionLogin: Login successful, accessToken =", accessToken, "user =", user)
           set({ token: accessToken, user: user, isLoggedIn: true, isLoading: false });
           return response
         } catch (error) {
+          console.error("actionLogin: Login failed, error =", error)
           set({ isLoading: false });
           throw error;
         }
       },
 
       actionLogout: () => {
-       set({ user: null, token: null, isLoggedIn: false }); 
+        console.log("actionLogout: Logging out user.");
+        console.trace("Call stack:")
+        set({ user: null, token: null, isLoggedIn: false });
       },
-      setAuthUser: (user) => set({ user }), 
     }),
     {
       name: "auth-storage",
       storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({ token: state.token, user: state.user ,isLoggedIn: state.isLoggedIn}),
     }
   )
 );
