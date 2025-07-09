@@ -1,42 +1,23 @@
 import { useEffect } from 'react';
-import { Link, useNavigate } from "react-router";
-import { toast } from "react-toastify";
+import { Link } from "react-router";
 import { BubblesIcon } from 'lucide-react'
-import authApi from '../../api/authApi.js';
 import authStore from '../../stores/authStore.js';
 import ProfileLayout from '../../components/ProfileLayout.jsx';
 
 
-
-
 function UserProfilePage() {
-  const navigate = useNavigate();
   const user = authStore((state) => state.user);
-  const token = authStore((state) => state.token);
-  const setAuthUser = authStore((state) => state.setAuthUser);
-  const actionLogout = authStore((state) => state.actionLogout);
-  const isLoading = authStore((state) => state.isLoading);
+  const checkAuth = authStore((state) => state.checkAuth);
 
-
-  const fetchUserProfile = async () => {
-    if (token) {
-      try {
-        const resp = await authApi.getMe(token);
-        setAuthUser(resp.data.user);
-      } catch (error) {
-        toast.error("Session expired. Please login again.");
-        actionLogout();
-        navigate('/login');
-      }
-    }
-  }
 
   useEffect(() => {
-    fetchUserProfile()
-  }, [])
+    if (!user) {
+      checkAuth();
+    }
+  }, [user, checkAuth]);
 
 
-  if (isLoading || !user) {
+  if (!user) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <BubblesIcon className="w-10 h-10 animate-spin text-pri-gr1" />
@@ -44,14 +25,15 @@ function UserProfilePage() {
     );
   }
 
+
   return (
     <ProfileLayout title={`Hello, ${user.firstName || 'User'}!`}>
       <div className="bg-bg-cr3 p-8 rounded-3xl shadow-lg space-y-4">
         <div className="flex flex-col items-center mb-6">
-          <div className="relative w-24 h-24 rounded-full overflow-hidden bg-gray-200 border-2 border-pri-gr1">
+          <div className="relative w-24 h-24 rounded-full overflow-hidden bg-bg-cr4 border-2 border-pri-gr1">
 
             <img
-              src={user.profileImage || '../../assets/user-6-svgrepo-com.png'}
+              src={user.profileImage || 'https://res.cloudinary.com/dhoyopcr7/image/upload/v1752042093/user-alt-1-svgrepo-com_i9clsu.png'}
               alt="Profile"
               className="w-full h-full object-cover"
             />
@@ -84,6 +66,16 @@ function UserProfilePage() {
         <Link to="/profile/edit" className="inline-flex items-center justify-center w-full bg-pri-gr1 hover:bg-[#5a6e47] text-white font-bold py-3 rounded-lg text-base transition-colors mt-4">
           Edit Profile
         </Link>
+
+        {(user.role === 'SUPERADMIN' || user.role === 'ADMIN') && (
+          <Link
+            to="/admin/users"
+            className="inline-flex items-center justify-center w-full bg-orange-700 hover:bg-orange-900 text-white font-bold py-3 rounded-lg text-base transition-colors mt-2"
+          >
+            Go to Admin Management
+          </Link>
+        )}
+
 
       </div>
       <div className='flex gap-6 justify-center mt-4'>

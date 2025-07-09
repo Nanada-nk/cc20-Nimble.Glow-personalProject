@@ -31,9 +31,16 @@ ordersApi.getOrderById = (id, token) => {
   )
 }
 
+ordersApi.getAllAdminOrders = (token) => {
+  return axios.get(`${BASE_URL}/orders/admin`, { 
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+};
 
 ordersApi.updateStatus = (id, body, token) => {
-  return axios.patch(`${BASE_URL}/${id}/status`, body, {
+  return axios.patch(`${BASE_URL}/orders/${id}/status`, body, {
     headers: {
       Authorization: `Bearer ${token}`
     }

@@ -1,4 +1,4 @@
-function SelectInput({ label, value, onChange, options = [] }) {
+function SelectInput({ label, name, register, error, options = []  }) {
   return (
     <div className="form-control w-full pb-5">
       <label className="label">
@@ -6,15 +6,16 @@ function SelectInput({ label, value, onChange, options = [] }) {
       </label>
       <select
       className="select select-bordered"
-      value={value}
-      onChange={onChange}
+      {...register(name)}
       >
+        <option value="">-- Please select --</option>
         {options.map(option => (
           <option key={option.value} value={option.value}>
             {option.label}
           </option>
         ))}
       </select>
+      {error && <p className="text-red-500 text-xs mt-1">{error.message}</p>}
     </div>
   )
 }

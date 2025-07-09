@@ -7,7 +7,7 @@ const categories = [
 
 function CategorySection() {
   return (
-    <section id="categories" className="py-12 bg-bg-cr4">
+    <section id="categories" className="py-12 min-[1920px]:py-20 bg-bg-cr4 ">
       <div className="container mx-auto px-4 text-center">
         <h2 className="text-2xl font-bold text-gray-800 mb-8">Shop By Category</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 duration-1000">

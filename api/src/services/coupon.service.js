@@ -6,15 +6,17 @@ const couponService = {};
 
 couponService.createCoupon = (data) => prisma.coupon.create({ data });
 couponService.getAllCoupons = () => prisma.coupon.findMany();
-couponService.updateCoupon = (id, data) => prisma.coupon.update({ where: { id }, data });
-couponService.deleteCoupon = (id) => prisma.coupon.delete({ where: { id } });
+couponService.findById = (id) => prisma.coupon.findUnique({ where: { id: Number(id) } });
+
+
+couponService.updateCoupon = (id, data) => prisma.coupon.update({ where: { id: Number(id) }, data });
+couponService.deleteCoupon = (id) => prisma.coupon.delete({ where: { id : Number(id) } });
 
 
 couponService.applyCouponToOrder = async (orderId, couponCode, userId) => {
   const coupon = await prisma.coupon.findUnique({ where: { code: couponCode } });
   const order = await prisma.order.findFirst({ where: { id: orderId, cart: { userId } } });
 
-  // Validation 
   if (!order) throw createError(404, "Order not found.");
   if (order.couponId) throw createError(400, "Coupon already applied.");
   if (!coupon) throw createError(404, "Coupon code is invalid.");
@@ -23,7 +25,6 @@ couponService.applyCouponToOrder = async (orderId, couponCode, userId) => {
     throw createError(400, "Coupon has reached its usage limit.");
   }
 
-  //Transaction 
   return prisma.$transaction(async (tx) => {
     const discountAmount = order.cartTotal * (coupon.discount / 100);
 

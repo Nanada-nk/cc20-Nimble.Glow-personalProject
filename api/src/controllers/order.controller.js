@@ -27,6 +27,15 @@ ordersController.getOrderById = async (req, res, next) => {
   res.status(200).json({ success: true, order: formatDates(order) })
 }
 
+ordersController.getAllAdmin = async (req, res, next) => {
+  try {
+    const orders = await orderService.findAllAdmin();
+    res.status(200).json({ success: true, orders: formatDates(orders) });
+  } catch (error) {
+    next(error);
+  }
+};
+
 ordersController.updateStatus = async (req, res, next,) => {
   const orderId = Number(req.params.id);
   const { orderStatus } = req.body;

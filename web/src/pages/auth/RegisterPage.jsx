@@ -26,7 +26,7 @@ function RegisterPage() {
   const onSubmit = async (data) => {
     try {
       await new Promise(resolve => setTimeout(resolve, 1000))
-      const resp = await authApi.register(data);
+      await authApi.register(data);
       // console.log('resp', resp);
       toast.success("Registration successful! Please log in.");
       reset();

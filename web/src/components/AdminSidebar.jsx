@@ -6,12 +6,11 @@ import { toast } from "react-toastify";
 
 
 
-const ADMIN_NAV_LINKS = [
-  { path: '/admin/dashboard', label: 'Dashboard' }, 
-  { path: '/admin/products', label: 'Product Management' },
-  { path: '/admin/orders', label: 'Order Management' },
+const adminNavLinks = [
   { path: '/admin/users', label: 'Customer Management' },
   { path: '/admin/categories', label: 'Category Management' },
+  { path: '/admin/products', label: 'Product Management' },
+  { path: '/admin/orders', label: 'Order Management' },
   { path: '/admin/coupons', label: 'Coupon Management' },
   { path: '/admin/reviews', label: 'Review Management' },
 ];
@@ -32,13 +31,13 @@ function AdminSidebar() {
     <div className="w-64 bg-gray-800 text-white p-4 flex flex-col">
       <div className="flex-shrink-0 mb-8">
          
-          <Link to="/admin">
+          <Link to="/">
               <h2 className="text-2xl font-bold text-pri-gr1">Nimble.Glow</h2>
           </Link>
       </div>
       <nav className="flex-grow">
         <ul>
-          {ADMIN_NAV_LINKS.map((link) => (
+          {adminNavLinks.map((link) => (
             <li key={link.path} className="mb-2">
               <Link 
                 to={link.path} 

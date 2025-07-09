@@ -12,6 +12,39 @@ couponController.getAll = async (req, res, next) => {
     res.status(200).json({ success: true, coupons : formatDates(coupons) });
 };
 
+couponController.update = async (req, res, next) => {
+    try {
+        const couponId = req.params.id;
+        const data = req.body;
+
+        const couponToUpdate = await couponService.findById(couponId);
+        if (!couponToUpdate) {
+            throw createError(404, "Coupon not found");
+        }
+
+        const updatedCoupon = await couponService.updateCoupon(couponId, data);
+        res.status(200).json({ coupon: updatedCoupon });
+    } catch (error) {
+        next(error);
+    }
+};
+
+
+couponController.delete = async (req, res, next) => {
+    try {
+        const couponId = req.params.id;
+
+        const couponToDelete = await couponService.findById(couponId);
+        if (!couponToDelete) {
+            throw createError(404, "Coupon not found");
+        }
+
+        await couponService.deleteCoupon(couponId);
+        res.status(204).send(); 
+    } catch (error) {
+        next(error);
+    }
+};
 
 couponController.applyToOrder = async (req, res, next) => {
     const { orderId } = req.params;

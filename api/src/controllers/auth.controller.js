@@ -44,26 +44,24 @@ authController.login = async (req, res, next) => {
     throw createError(401, 'Email or password invalid!')
   }
 
+  if (!findEmail.enabled) {
+    throw createError(403, "Your account has been disabled. Please contact support.");
+  }
+
   const isMatchPassword = await hashService.comparePassword(password, findEmail.password)
   if (!isMatchPassword) {
     throw createError(401, 'Email or password invalid!!')
   }
   await authService.updateLastLogin(findEmail.id)
 
-  // const preparePayload = { id: findEmail.id, role: findEmail.role }
-  // const accessToken = await jwtService.genToken(preparePayload)
+
   const accessToken = await jwtService.genToken({ id: findEmail.id, role: findEmail.role })
-      res.cookie('accessToken', accessToken, {
-        httpOnly: true, 
-        secure: process.env.NODE_ENV === 'production', 
-        sameSite: 'strict' 
-    })
   const { password: userPassword, ...userWithoutPassword } = findEmail;
-  res.status(200).json({ 
-        success: true, 
-        accessToken, 
-        user: formatDates(userWithoutPassword) 
-    });
+  res.status(200).json({
+    success: true,
+    accessToken,
+    user: formatDates(userWithoutPassword)
+  });
 }
 
 authController.getMe = async (req, res, next) => {

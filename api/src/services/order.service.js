@@ -107,6 +107,27 @@ orderService.findOrderById = async (orderId, user) => {
   return order;
 }
 
+orderService.findAllAdmin = () => {
+  return prisma.order.findMany({
+    include: {
+      cart: {
+        include: {
+          user: {
+            select: {
+              firstName: true,
+              lastName: true,
+            }
+          }
+        }
+      },
+      payment: true
+    },
+    orderBy: {
+      createdAt: 'desc'
+    }
+  });
+};
+
 orderService.updateOrderStatus = (orderId, orderStatus) => {
   return prisma.order.update({
     where: { id: orderId },

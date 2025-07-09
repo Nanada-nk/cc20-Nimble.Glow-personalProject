@@ -109,3 +109,27 @@ export const schemaChangePassword = Yup.object({
       .oneOf([Yup.ref("newPassword"), null], "Passwords must match")
       .required("Confirm password is required")
 }).noUnknown(true)
+
+export const categorySchema  = Yup.object({
+  name: Yup.string().required("name is required."),
+}).noUnknown(true)
+
+
+export const productSchema = Yup.object({
+  title: Yup.string().required(),
+  description: Yup.string(),
+  price: Yup.number().positive().required(),
+  stockQuantity: Yup.number().integer().min(0).required(),
+  categoryId: Yup.number().required("Please select a category."),
+}).noUnknown(true)
+
+export const orderStatusSchema = Yup.object({
+  orderStatus: Yup.string().required(),
+}).noUnknown(true)
+
+export const couponSchema = Yup.object({
+  code: Yup.string().required(),
+  discount: Yup.number().min(1).max(100).required(),
+  expiredAt: Yup.date().required(),
+  usageLimit: Yup.number().min(0).integer(),
+}).noUnknown(true)

@@ -1,0 +1,60 @@
+import { PencilIcon } from 'lucide-react';
+
+const getStatusBadgeColor = (status) => {
+  switch (status) {
+    case 'COMPLETED':
+    case 'DELIVERED':
+    case 'PAID':
+      return 'bg-green-100 text-green-800';
+    case 'CANCELLED':
+    case 'FAILED':
+      return 'bg-red-100 text-red-800';
+    case 'PENDING_PAYMENT':
+      return 'bg-yellow-100 text-yellow-800';
+    default:
+      return 'bg-blue-100 text-blue-800';
+  }
+};
+
+function useOrderTableColumns({ onEdit }) {
+  const columns = [
+    { name: 'Order #', selector: row => row.orderNumber, sortable: true },
+    { name: 'Customer', selector: row => `${row.cart.user.firstName} ${row.cart.user.lastName}`, sortable: true },
+    { name: 'Total', selector: row => row.cartTotal.toFixed(2), sortable: true },
+    {
+      name: 'Order Status',
+      selector: row => row.orderStatus,
+      sortable: true,
+      cell: row => (
+        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadgeColor(row.orderStatus)}`}>
+          {row.orderStatus.replace('_', ' ')}
+        </span>
+      ),
+    },
+    {
+      name: 'Payment',
+      selector: row => row.payment?.status || 'N/A',
+      sortable: true,
+      cell: row => (
+        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadgeColor(row.payment?.status)}`}>
+          {row.payment?.status || 'NOT_PAID'}
+        </span>
+      ),
+    },
+    { name: 'Date', selector: row => new Date(row.createdAt).toLocaleDateString(), sortable: true },
+    {
+      name: 'Action',
+      cell: row => (
+        <button onClick={() => onEdit(row)} className='text-blue-600 hover:text-blue-900' title='Edit Order Status'>
+          <PencilIcon size={20} />
+        </button>
+      )
+    },
+  ];
+
+  return columns;
+}
+
+
+
+export default useOrderTableColumns;

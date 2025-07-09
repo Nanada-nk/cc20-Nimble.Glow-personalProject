@@ -37,6 +37,29 @@ reviewService.getReviewsForProduct = (productId) => {
   });
 };
 
+reviewService.findAllReviews = () => {
+  return prisma.review.findMany({
+    orderBy: {
+      reviewDate: 'desc'
+    },
+    include: {
+      user: {
+        select: {
+          id: true,
+          firstName: true,
+          email: true
+        }
+      },
+      product: {
+        select: {
+          id: true,
+          title: true
+        }
+      }
+    }
+  });
+};
+
 reviewService.updateReview = async (reviewId, userId, dataToUpdate, newImageUrls = [], imagesToDelete = []) => {
 
   const review = await prisma.review.findUnique({ where: { id: reviewId } });

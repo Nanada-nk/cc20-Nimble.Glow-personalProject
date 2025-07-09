@@ -7,6 +7,10 @@ const couponRouter = express.Router();
 
 couponRouter.get('/', couponController.getAll)
 couponRouter.post('/', authenticateUser, checkRole("ADMIN", "SUPERADMIN"), couponController.create);
+
+couponRouter.patch('/:id', authenticateUser, checkRole("ADMIN", "SUPERADMIN"), couponController.update);
+couponRouter.delete('/:id', authenticateUser, checkRole("ADMIN", "SUPERADMIN"), couponController.delete);
+
 couponRouter.patch('/apply/orders/:orderId', authenticateUser, checkRole("CUSTOMER"), couponController.applyToOrder);
 
 

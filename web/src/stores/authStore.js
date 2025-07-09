@@ -7,8 +7,8 @@ const authStore = create(
     (set, get) => ({
       user: null,
       token: null,
-      isLoading: false,
-      isLoggedIn: true,
+      isLoading: true,
+      isLoggedIn: false,
 
 
       setAuthUser: (user) => {
@@ -62,6 +62,7 @@ const authStore = create(
       actionLogout: () => {
         // console.log("actionLogout: Logging out user.");
         // console.trace("Call stack:")
+        
         set({ user: null, token: null, isLoggedIn: false });
       },
     }),

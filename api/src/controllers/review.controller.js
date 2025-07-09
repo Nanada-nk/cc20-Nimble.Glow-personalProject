@@ -20,6 +20,11 @@ const uploadReviewImages = async (files) => {
     }
 }
 
+reviewController.getAll = async (req, res, next) => {
+    const reviews = await reviewService.findAllReviews();
+    res.status(200).json({ success: true, reviews: formatDates(reviews) });
+};
+
 reviewController.create = async (req, res, next) => {
     const productId = Number(req.params.productId);
     const userId = req.user.id

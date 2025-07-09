@@ -109,7 +109,7 @@ function EditProfilePage() {
             onClick={() => fileInputRef.current.click()}
           >
             <img
-              src={profileImagePreview || '../../assets/user-6-svgrepo-com.png'}
+              src={profileImagePreview || 'https://res.cloudinary.com/dhoyopcr7/image/upload/v1752042093/user-alt-1-svgrepo-com_i9clsu.png'}
               alt="Profile Preview"
               className="w-full h-full object-cover rounded-full border-2 border-pri-gr1"
             />

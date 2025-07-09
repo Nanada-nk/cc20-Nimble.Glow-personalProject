@@ -49,6 +49,7 @@ productService.findAll = () => {
     }
   });
 }
+
 productService.findById = (id) => {
   return prisma.product.findUnique({
     where: { id },
@@ -67,6 +68,7 @@ productService.findById = (id) => {
     }
   })
 }
+
 productService.updateProduct = (id, dataToUpdate, newImageUrls = [], imagesToDelete = []) => {
   const { title, description, price, stockQuantity, categoryId } = dataToUpdate
 

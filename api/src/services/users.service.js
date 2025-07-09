@@ -11,7 +11,9 @@ usersService.findUserById = (id) => {
 
 usersService.getAllUsers = () => {
   return prisma.user.findMany({
-    include: { addresses: true }
+    where:{enabled:true},
+    include: { addresses: true },
+    orderBy:{id:'asc'}
   })
 }
 

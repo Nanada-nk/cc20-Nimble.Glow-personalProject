@@ -4,7 +4,7 @@ import NimbleGlowLogo from "../../components/NimbleGlowLogo.jsx";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { toast } from "react-toastify";
-import { BubblesIcon } from 'lucide-react';
+import { BubblesIcon, LogOut } from 'lucide-react';
 import userApi from "../../api/userApi.js";
 import authStore from "../../stores/authStore.js";
 import { schemaChangePassword } from "../../validator/schema.js";
