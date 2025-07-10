@@ -35,6 +35,7 @@ import AdminCouponManagementPage from '../pages/admin/AdminCouponManagementPage.
 import AdminReviewManagementPage from '../pages/admin/AdminReviewManagementPage.jsx';
 import ProtectedRoute from './ProtectedRoute.jsx';
 import AdminRoute from './AdminRoute.jsx';
+import AboutUs from '../pages/AboutUs.jsx';
 
 function AppRouter() {
   const checkAuth = authStore((state) => state.checkAuth)
@@ -54,6 +55,7 @@ function AppRouter() {
           <Route path='products' element={<ProductListPage />} />
           <Route path='products/:id' element={<ProductDetailPage />} />
           <Route path='categories' element={<CategoryListPage />} />
+          <Route path='about' element={<AboutUs />} />
         </Route>
 
         <Route element={<ProtectedRoute />}>
