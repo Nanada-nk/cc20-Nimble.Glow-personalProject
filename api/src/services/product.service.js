@@ -32,22 +32,103 @@ productService.create = (productData, creatorId) => {
   });
 }
 
-productService.findAll = () => {
-  return prisma.product.findMany({
-    include: {
-      images: true,
-      category: true,
-      createdBy: {
-        select: {
-          id: true,
-          firstName: true,
-          lastName: true,
-          email: true,
-          role: true
-        }
+// // findAll แบบที่ 1
+// productService.findAll = () => {
+//   return prisma.product.findMany({
+//     include: {
+//       images: true,
+//       category: true,
+//       createdBy: {
+//         select: {
+//           id: true,
+//           firstName: true,
+//           lastName: true,
+//           email: true,
+//           role: true
+//         }
+//       }
+//     }
+//   });
+// }
+
+// // findAll แบบที่ 2
+// productService.findAll = async (queryOptions = {}) => {
+//   const { categoryId, minPrice, maxPrice, search, sortBy, order = 'asc', page = 1, limit = 10 } = queryOptions;
+
+//   const where = {};
+//   if (categoryId) where.categoryId = Number(categoryId);
+//   if (minPrice) where.price = { ...where.price, gte: Number(minPrice) };
+//   if (maxPrice) where.price = { ...where.price, lte: Number(maxPrice) };
+//   if (search) {
+//     where.OR = [
+//       { title: { contains: search } },
+//       { description: { contains: search } },
+//     ];
+//   }
+
+//   const orderBy = sortBy ? { [sortBy]: order } : { createdAt: 'desc' };
+//   const skip = (Number(page) - 1) * Number(limit);
+//   const take = Number(limit);
+//   const [products, totalProducts] = await prisma.$transaction([
+//     prisma.product.findMany({
+//       where,
+//       orderBy,
+//       skip,
+//       take,
+//       include: { 
+//         images: true, 
+//         category: true,
+//         createdBy: {
+//           select: {
+//             id: true,
+//             firstName: true,
+//             email: true,
+//             role: true
+//           }
+//         }
+//       }
+//     }),
+//     prisma.product.count({ where })
+//   ]);
+
+//   const totalPages = Math.ceil(totalProducts / take);
+
+//   return { products, currentPage: Number(page), totalPages, totalProducts };
+// };
+
+productService.findAll = async (queryOptions = {}) => {
+  const { categoryId, search, page = 1, limit = 1000 } = queryOptions; 
+
+  const where = {};
+  if (categoryId) where.categoryId = Number(categoryId);
+  if (search) {
+    where.OR = [
+      { title: { contains: search } },
+      { description: { contains: search } },
+    ];
+  }
+
+  const skip = (Number(page) - 1) * Number(limit);
+  const take = Number(limit);
+
+  const [products, totalProducts] = await prisma.$transaction([
+    prisma.product.findMany({
+      where,
+      orderBy: { createdAt: 'desc' },
+      skip,
+      take,
+      include: { 
+        images: true, 
+        category: true,
+        createdBy: { select: { id: true, firstName: true } }
       }
-    }
-  });
+    }),
+    prisma.product.count({ where })
+  ]);
+
+  const totalPages = Math.ceil(totalProducts / take);
+
+  return { products, currentPage: Number(page), totalPages, totalProducts };
 }
 
 productService.findById = (id) => {

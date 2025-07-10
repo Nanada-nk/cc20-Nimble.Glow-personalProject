@@ -4,8 +4,33 @@ import createError from "../utils/create-error.js";
 const couponService = {};
 
 
-couponService.createCoupon = (data) => prisma.coupon.create({ data });
-couponService.getAllCoupons = () => prisma.coupon.findMany();
+couponService.createCoupon = (data, creatorId) => {
+  return prisma.coupon.create({ 
+    data:
+    {
+      ...data,
+      createdById: creatorId
+    },
+    include:{
+      createdBy:{
+        select:{
+          firstName:true
+        }
+      }
+    }
+   })
+};
+couponService.getAllCoupons = () => {
+  return prisma.coupon.findMany({
+    include:{
+      createdBy:{
+        select:{
+          firstName:true
+        }
+      }
+    }
+  })
+}
 couponService.findById = (id) => prisma.coupon.findUnique({ where: { id: Number(id) } });
 
 

@@ -37,15 +37,35 @@ productController.create = async (req, res, next) => {
   res.status(201).json({ success: true, product: formatDates(newProduct) })
 }
 
+// // getAll แบบที่ 1
+// productController.getAll = async (req, res, next) => {
+
+//   const products = await productService.findAll()
+//   if (!products) {
+//     throw createError(404, 'Get category not found or unauthorized')
+//   }
+//   res.status(200).json({ success: true, products: formatDates(products) })
+// }
+
+// // getAll แบบที่ 2
+// productController.getAll = async (req, res, next) => {
+//   const queryOptions = req.query;
+//   const result = await productService.findAll(queryOptions);
+//   const formattedResult = {
+//     products: formatDates(result.products)
+//   };
+//   res.status(200).json({ success: true, ...formattedResult });
+// };
+
 productController.getAll = async (req, res, next) => {
-
-  const products = await productService.findAll()
-  if (!products) {
-    throw createError(404, 'Get category not found or unauthorized')
-  }
-  res.status(200).json({ success: true, products: formatDates(products) })
+  const queryOptions = req.query;
+  const result = await productService.findAll(queryOptions);
+  const formattedResult = {
+    ...result,
+    products: formatDates(result.products)
+  };
+  res.status(200).json({ success: true, ...formattedResult });
 }
-
 
 productController.getById = async (req, res, next) => {
 

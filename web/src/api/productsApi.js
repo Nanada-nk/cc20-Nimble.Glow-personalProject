@@ -4,8 +4,12 @@ const productsApi = {}
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL
 
-productsApi.getAll = () => {
-  return axios.get(`${BASE_URL}/products/`)
+productsApi.getAll = (params) => {
+  return axios.get(`${BASE_URL}/products/`, { params })
+}
+
+productsApi.search = (params) => {
+  return axios.get(`${BASE_URL}/products/`, { params });
 }
 
 productsApi.getById = (id) => {

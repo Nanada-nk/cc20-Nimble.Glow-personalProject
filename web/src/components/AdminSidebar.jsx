@@ -1,18 +1,19 @@
 
 import { Link, useLocation, useNavigate } from "react-router"; 
-import { TrashIcon } from 'lucide-react'; 
+import { ChartColumnStackedIcon, FolderCog, PackageSearch, Star, Ticket, TrashIcon, UsersRound } from 'lucide-react'; 
 import authStore from "../stores/authStore";
 import { toast } from "react-toastify"; 
+import NimbleGlowLogo from "./NimbleGlowLogo";
 
 
 
 const adminNavLinks = [
-  { path: '/admin/users', label: 'Customer Management' },
-  { path: '/admin/categories', label: 'Category Management' },
-  { path: '/admin/products', label: 'Product Management' },
-  { path: '/admin/orders', label: 'Order Management' },
-  { path: '/admin/coupons', label: 'Coupon Management' },
-  { path: '/admin/reviews', label: 'Review Management' },
+  { path: '/admin/users', label: 'Customer Management', icon: <UsersRound size={18} /> },
+  { path: '/admin/categories', label: 'Category Management' , icon: <ChartColumnStackedIcon size={20} /> },
+  { path: '/admin/products', label: 'Product Management', icon: <PackageSearch size={20} /> },
+  { path: '/admin/orders', label: 'Order Management', icon: <FolderCog size={20} /> },
+  { path: '/admin/coupons', label: 'Coupon Management', icon: <Ticket size={20} /> },
+  { path: '/admin/reviews', label: 'Review Management', icon: <Star size={20} /> },
 ];
 
 
@@ -28,11 +29,11 @@ function AdminSidebar() {
   };
 
   return (
-    <div className="w-64 bg-gray-800 text-white p-4 flex flex-col">
+    <div className="w-64 bg-pri-gr1 text-white p-4 flex flex-col">
       <div className="flex-shrink-0 mb-8">
          
           <Link to="/">
-              <h2 className="text-2xl font-bold text-pri-gr1">Nimble.Glow</h2>
+              <NimbleGlowLogo />
           </Link>
       </div>
       <nav className="flex-grow">
@@ -42,9 +43,9 @@ function AdminSidebar() {
               <Link 
                 to={link.path} 
                
-                className={`block p-2 rounded hover:bg-gray-700 ${location.pathname === link.path ? 'bg-gray-700' : ''}`}
+                className={`flex items-center gap-2 p-2 rounded hover:bg-green-950  ${location.pathname === link.path ? 'bg-green-950' : ''}`}
               >
-                {link.label}
+               {link.icon} {link.label}
               </Link>
             </li>
           ))}
@@ -53,7 +54,7 @@ function AdminSidebar() {
       <div className="mt-auto">
         <button 
           onClick={handleLogout} 
-          className="w-full text-left p-2 rounded hover:bg-gray-700 flex items-center"
+          className="w-full text-left p-2 rounded hover:bg-green-950 flex items-center"
         >
           <TrashIcon size={18} className="mr-2" /> Logout 
         </button>

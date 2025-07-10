@@ -11,6 +11,7 @@ function useCouponTableColumns({ onEdit, onDelete }) {
       selector: row => new Date(row.expiredAt).toLocaleString(),
       sortable: true
     },
+    { name: 'Created by', selector: row => row.createdBy?.firstName || 'N/A', sortable:true },
     {
       name: 'Action',
       cell: row => (

@@ -17,6 +17,7 @@ function useProductTableColumns({ onEdit, onDelete }) {
     { name: 'Category', selector: row => row.category?.name || 'N/A', sortable: true },
     { name: 'Price', selector: row => row.price, sortable: true },
     { name: 'Stock', selector: row => row.stockQuantity, sortable: true },
+    { name: 'Created by', selector: row => row.createdBy?.firstName || 'N/A', sortable:true },
     {
       name: 'Action',
       cell: row => (

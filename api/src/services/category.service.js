@@ -34,6 +34,15 @@ categoryService.findAll = () => {
           role:true
         },
       },
+      products:{
+        orderBy:{
+          id: "asc"
+        },
+        take:1,
+        include:{
+          images:true
+        }
+      }
     },
   })
 }

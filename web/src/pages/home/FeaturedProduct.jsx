@@ -12,7 +12,7 @@ function FeaturedProduct() {
             the skin to look brighter and smoother. It also helps increase moisture and strengthens the skin barrier to
             keep the skin moist for a long time.
           </p>
-          <Link to="/product/pineapple-lotion">
+          <Link to="/categories">
             <button className="mt-6 bg-white text-pri-gr1 font-bold py-2 px-6 rounded-md hover:bg-gray-200 transition-colors">
               Shop Now
             </button>

@@ -22,7 +22,7 @@ import couponRouter from './routes/coupon.route.js'
 const app = express()
 
 const limiter = rateLimit({
-  windowMs: 60 * 60 * 1000,
+  windowMs: 5 * 60 * 1000,
   max: 200,
   message: 'Too many requests, please try again later.'
 })

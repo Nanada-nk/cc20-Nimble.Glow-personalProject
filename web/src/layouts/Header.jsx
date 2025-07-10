@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router"
 import NimbleGlowLogo from "/src/components/NimbleGlowLogo.jsx"
-import { Search, User, ShoppingCart, Menu, LogOut } from "lucide-react"
+import { Search, User, ShoppingCart, Menu, LogOut, Store } from "lucide-react"
 import authStore from "../stores/authStore"
 import { toast } from "react-toastify"
 
@@ -27,8 +27,8 @@ function Header() {
           </div>
 
           <div className="hidden md:flex items-center space-x-6">
-            <Link to="/search" className="text-gray-600 hover:text-pri-gr1">
-              <Search size={20} />
+            <Link to="/categories" className="text-gray-600 hover:text-pri-gr1">
+              <Store size={20} />
             </Link>
 
             {isLoggedIn ? (

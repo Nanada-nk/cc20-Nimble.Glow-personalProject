@@ -37,6 +37,7 @@ model User {
 
   productsCreated   Product[]  @relation("ProductCreatedBy")
   categoriesCreated Category[] @relation("CategoryCreatedBy")
+  couponsCreated    Coupon[]   @relation("CouponCreatedBy")
 }
 
 enum Role {
@@ -253,6 +254,9 @@ model Coupon {
   users       UserOnCoupon[]
   Order       Order[]
   couponUsage CouponUsage[]
+
+  createdBy   User @relation("CouponCreatedBy", fields: [createdById], references: [id])
+  createdById Int  @map("created_by")
 }
 
 model UserOnCoupon {

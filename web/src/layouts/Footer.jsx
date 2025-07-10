@@ -21,7 +21,7 @@ function Footer() {
               </Link>
             </li>
             <li>
-              <Link to="/shop" className="text-gray-300 hover:text-white">
+              <Link to="/cate" className="text-gray-300 hover:text-white">
                 SHOP
               </Link>
             </li>

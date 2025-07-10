@@ -4,7 +4,7 @@ import { formatDates } from "../utils/formatter.js";
 const couponController = {};
 
 couponController.create = async (req, res, next) => {
-    const newCoupon = await couponService.createCoupon(req.body);
+    const newCoupon = await couponService.createCoupon(req.body, req.user.id);
     res.status(201).json({ success: true, coupon: formatDates(newCoupon) });
 };
 couponController.getAll = async (req, res, next) => {
