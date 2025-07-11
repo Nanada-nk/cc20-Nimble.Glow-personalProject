@@ -4,7 +4,6 @@ import useCartStore from '../stores/cartStore.js';
 import authStore from '../stores/authStore.js';
 import { toast } from 'react-toastify';
 import ordersApi from '../api/ordersApi.js';
-import userApi from '../api/userApi.js'
 import { useEffect, useState } from 'react';
 import authApi from '../api/authApi.js';
 

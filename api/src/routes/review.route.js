@@ -10,6 +10,6 @@ reviewRouter.get('/', authenticateUser, checkRole("SUPERADMIN", "ADMIN"), review
 reviewRouter.get('/product/:productId', reviewController.getByProduct);
 reviewRouter.post('/product/:productId', authenticateUser, checkRole("CUSTOMER"), upload.array('images', 5), reviewController.create);
 reviewRouter.patch('/:reviewId', authenticateUser, checkRole("CUSTOMER"),upload.array('images', 5), reviewController.update);
-reviewRouter.delete('/:reviewId', authenticateUser, checkRole("CUSTOMER"), reviewController.delete);
+
 
 export default reviewRouter;

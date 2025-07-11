@@ -20,24 +20,21 @@ const uploadReviewImages = async (files) => {
     }
 }
 
+reviewController.create = async (req, res, next) => {
+    const productId = Number(req.params.productId);
+    const userId = req.user.id
+    const { rating, comment } = req.body;
+    const newImageUrls = await uploadReviewImages(req.files)
+    const reviewData = { rating: Number(rating), comment, images: newImageUrls }
+    const newReview = await reviewService.createReviewForProduct(productId, userId, reviewData);
+    res.status(201).json({ success: true, review: formatDates(newReview) });
+};
+
 reviewController.getAll = async (req, res, next) => {
     const reviews = await reviewService.findAllReviews();
     res.status(200).json({ success: true, reviews: formatDates(reviews) });
 };
 
-reviewController.create = async (req, res, next) => {
-    const productId = Number(req.params.productId);
-    const userId = req.user.id
-
-    const { rating, comment } = req.body;
-    const reviewData = { rating: Number(rating), comment }
-
-    const newImageUrls = await uploadReviewImages(req.files)
-    reviewData.images = newImageUrls
-
-    const newReview = await reviewService.createReviewForProduct(productId, userId, reviewData);
-    res.status(201).json({ success: true, review: formatDates(newReview) });
-};
 
 reviewController.getByProduct = async (req, res, next) => {
     const productId = Number(req.params.productId);
@@ -46,22 +43,17 @@ reviewController.getByProduct = async (req, res, next) => {
 };
 
 reviewController.update = async (req, res, next) => {
-    const reviewId = Number(req.params.reviewId);
-    const userId = req.user.id;
-    const { rating, comment } = req.body;
-    const dataToUpdate = { rating: Number(rating), comment }
+    const { reviewId } = req.params;
+    const { id: userId } = req.user;
 
-    const newImageUrls = await uploadReviewImages(req.files)
-    const imagesToDelete = req.body.imagesToDelete ? JSON.parse(req.body.imagesToDelete) : []
+    const reviewToUpdate = await reviewService.findById(reviewId);
+    if (!reviewToUpdate) throw createError(404, "Review not found");
+    if (reviewToUpdate.userId !== userId) throw createError(403, "You are not allowed to edit this review.");
 
-    const updatedReview = await reviewService.updateReview(reviewId, userId, dataToUpdate, newImageUrls, imagesToDelete)
+    const updatedReview = await reviewService.update(reviewId, req.body);
     res.status(200).json({ success: true, review: formatDates(updatedReview) });
 };
 
-reviewController.delete = async (req, res, next) => {
-    const reviewId = Number(req.params.reviewId);
-    await reviewService.deleteReview(reviewId, req.user.id);
-    res.status(204).send();
-};
+
 
 export default reviewController;

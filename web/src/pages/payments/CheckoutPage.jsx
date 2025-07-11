@@ -7,8 +7,7 @@ import Footer from '../../layouts/Footer.jsx';
 import authStore from '../../stores/authStore.js';
 import ordersApi from '../../api/ordersApi.js';
 import paymentsApi from '../../api/paymentsApi.js';
-import userApi from '../../api/userApi.js';
-import shippingApi from '../../api/shippingApi.js';
+
 
 function CheckoutPage() {
   const { orderId } = useParams();

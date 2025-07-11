@@ -15,22 +15,29 @@ reviewService.createReviewForProduct = async (productId, userId, data) => {
 
   return prisma.review.create({
     data: {
-      ...data,
-      productId,
-      userId,
+      rating: data.rating,
+      comment: data.comment,
+      productId: Number(productId),
+      userId: userId,
       images: {
         create: data.images ? data.images.map(url => ({ url })) : []
       }
     },
     include: {
-      images: true
+      images: true,
+      user: {
+        select: {
+          firstName: true,
+          profileImage: true
+        }
+      }
     }
   });
 };
 
 reviewService.getReviewsForProduct = (productId) => {
   return prisma.review.findMany({
-    where: { productId },
+    where: { productId: Number(productId) },
     include: {
       images: true,
       user: {
@@ -70,45 +77,28 @@ reviewService.findAllReviews = () => {
   });
 };
 
-reviewService.updateReview = async (reviewId, userId, dataToUpdate, newImageUrls = [], imagesToDelete = []) => {
-
-  const review = await prisma.review.findUnique({ where: { id: reviewId } });
-  if (!review || review.userId !== userId) {
-    throw createError(403, "Not allowed to update this review.");
-  }
-
-
-  const { rating, comment } = dataToUpdate;
-  const textUpdateData = { rating, comment };
-
-  const imageUpdateLogic = {};
-  if (newImageUrls.length > 0) {
-    imageUpdateLogic.create = newImageUrls.map(url => ({ url }));
-  }
-  if (imagesToDelete.length > 0) {
-    imageUpdateLogic.deleteMany = {
-      id: { in: imagesToDelete.map(id => Number(id)) }
-    };
-  }
-
-
-  const finalUpdateData = { ...textUpdateData };
-  if (Object.keys(imageUpdateLogic).length > 0) {
-    finalUpdateData.images = imageUpdateLogic;
-  }
-
-  return prisma.review.update({
-    where: { id: reviewId },
-    data: finalUpdateData,
-    include: { images: true }
+reviewService.findById = (reviewId) => {
+  return prisma.review.findUnique({
+    where: {
+      id: Number(reviewId)
+    }
   });
 };
 
-reviewService.deleteReview = async (reviewId, userId) => {
-  throw createError(403, "Review deletion is not allowed.")
-  // const review = await prisma.review.findUnique({ where: { id: reviewId } });
-  // if (!review || review.userId !== userId) throw createError(403, "Not allowed.");
-  // return prisma.review.delete({ where: { id: reviewId } });
-};
+reviewService.update = (reviewId, dataToUpdate) => {
+  const { rating, comment } = dataToUpdate;
+
+  return prisma.review.update({
+    where: {
+      id: Number(reviewId)
+    },
+    data: {
+      rating,
+      comment
+    }
+  });
+}
+
+
 
 export default reviewService;

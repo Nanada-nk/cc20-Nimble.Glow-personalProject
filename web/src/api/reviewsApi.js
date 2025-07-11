@@ -15,9 +15,10 @@ reviewsApi.getByProduct = (id) => {
   return axios.get(`${BASE_URL}/reviews/product/${id}`)
 }
 
-reviewsApi.create = (id,body, token) => {
-  return axios.post(`${BASE_URL}/reviews/product/${id}`, body, {
+reviewsApi.create = (productId, formData, token) => {
+  return axios.post(`${BASE_URL}/reviews/product/${productId}`, formData, {
     headers: {
+      'Content-Type': 'multipart/form-data',
       Authorization: `Bearer ${token}`
     }
   })
@@ -32,12 +33,6 @@ reviewsApi.update = (id, body, token) => {
   })
 }
 
-reviewsApi.delete = (id, token) => {
-  return axios.delete(`${BASE_URL}/reviews/${id}`, {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  })
-}
+
 
 export default reviewsApi

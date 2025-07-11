@@ -22,7 +22,7 @@ const useCategoryStore = create(
     }),
     {
       name: "category-storage",
-      // เราอาจจะเก็บหมวดหมู่ไว้ใน localStorage ก็ได้ เพราะไม่ค่อยเปลี่ยนแปลงบ่อย
+     
       partialize: (state) => ({ categories: state.categories }),
     }
   )

@@ -63,7 +63,7 @@ function AppRouter() {
             <Route path='cart' element={<CartPage />} />
             <Route path='checkout/:orderId' element={<CheckoutPage />} />
             <Route path='orders' element={<UserOrdersPage />} />
-            <Route path='orders/:id' element={<OrderDetailPage />} />
+            <Route path='orders/:orderId' element={<OrderDetailPage />} />
             <Route path='profile' element={<UserProfilePage />} />
             <Route path='profile/edit' element={<EditProfilePage />} />
             <Route path='profile/addresses' element={<UserAddressesPage />} />

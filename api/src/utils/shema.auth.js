@@ -133,3 +133,8 @@ export const couponSchema = Yup.object({
   expiredAt: Yup.date().required(),
   usageLimit: Yup.number().min(0).integer(),
 }).noUnknown(true)
+
+export const reviewSchema = Yup.object({
+  rating: Yup.number().min(1, "Please provide a rating.").required(),
+  comment: Yup.string(),
+}).noUnknown(true)
