@@ -8,6 +8,7 @@ const shippingRouter = express.Router();
 
 shippingRouter.get('/methods', shippingController.getMethods);
 shippingRouter.get('/orders/:orderId/shipping', authenticateUser, checkRole("CUSTOMER"), shippingController.getStatus)
-shippingRouter.patch('/orders/:orderId/shipping', authenticateUser, checkRole("SUPERADMIN", "ADMIN"), shippingController.updateStatus)
+// shippingRouter.patch('/orders/:orderId/shipping', authenticateUser, checkRole("SUPERADMIN", "ADMIN"), shippingController.updateStatus)
+shippingRouter.patch('/orders/:orderId', authenticateUser, shippingController.updateShipping);
 
 export default shippingRouter

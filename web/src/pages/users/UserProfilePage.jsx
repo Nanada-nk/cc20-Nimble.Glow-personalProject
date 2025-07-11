@@ -75,20 +75,19 @@ function UserProfilePage() {
             Go to Admin Management
           </Link>
         )}
-
-
       </div>
-      <div className='flex gap-6 justify-center mt-4'>
-        <Link
-          to="/profile/change-password"
-          className="font-bold text-pri-gr1 hover:underline"
-        >Change Password</Link>
 
-        <Link
-          to="/profile/addresses"
-          className="font-bold text-pri-gr1 hover:underline"
-        >Manage Addresses</Link>
 
+      <div className='flex gap-4 justify-center mt-4'>
+        <Link to="/profile/change-password" className="btn btn-outline btn-sm border-pri-gr1 text-pri-gr1 hover:bg-pri-gr1 hover:text-white">
+          Change Password
+        </Link>
+        <Link to="/profile/addresses" className="btn btn-outline btn-sm border-pri-gr1 text-pri-gr1 hover:bg-pri-gr1 hover:text-white">
+          Manage Addresses
+        </Link>
+        <Link to="/orders" className="btn btn-outline btn-sm border-pri-gr1 text-pri-gr1 hover:bg-pri-gr1 hover:text-white">
+          My Orders
+        </Link>
       </div>
 
     </ProfileLayout>

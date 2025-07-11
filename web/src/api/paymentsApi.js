@@ -8,6 +8,16 @@ paymentsApi.getMethods = () => {
   return axios.get(`${BASE_URL}/payments/methods`,)
 }
 
+paymentsApi.uploadSlip = (paymentId, formData, token) => {
+
+  return axios.post(`${BASE_URL}/payments/${paymentId}/slip`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      Authorization: `Bearer ${token}`
+    }
+  });
+}
+
 
 paymentsApi.payForOrder = (id, body, token) => {
   return axios.post(`${BASE_URL}/payments/orders/${id}/pay`, body, {

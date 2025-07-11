@@ -11,6 +11,9 @@ const useCartStore = create(
       itemCount: 0,
       cartTotal: 0,
       isLoading: false,
+      isCartOpen: false,
+
+      toggleCart: () => set((state) => ({ isCartOpen: !state.isCartOpen })),
 
       fetchCart: async () => {
         const token = authStore.getState().token;
@@ -62,7 +65,7 @@ const useCartStore = create(
         }
       },
       
-      clearCart: () => set({ items: [], itemCount: 0, cartTotal: 0 }),
+      clearCart: () => set({ items: [], itemCount: 0, cartTotal: 0 ,isCartOpen: false }),
     }),
     {
       name: "cart-storage",

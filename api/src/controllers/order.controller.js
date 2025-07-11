@@ -8,9 +8,9 @@ const ordersController = {};
 
 ordersController.createOrder = async (req, res, next) => {
   const userId = req.user.id;
-  const { note } = req.body;
+  const data  = req.body;
 
-  const newOrder = await orderService.createOrderFromCart(userId, note);
+  const newOrder = await orderService.createOrderFromCart(userId, data );
   res.status(201).json({ success: true, order: formatDates(newOrder) });
 }
 

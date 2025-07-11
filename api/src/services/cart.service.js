@@ -10,8 +10,36 @@ const updateCartTotal = async (cartId) => {
   });
 
   const total = cartItems.reduce((sum, item) => sum + (item.price * item.count), 0);
-
   await prisma.cart.update({ where: { id: cartId }, data: { cartTotal: total } });
+}
+
+cartService.addItemToCart = async (userId, productId, count) => {
+  const product = await prisma.product.findUnique({ where: { id: productId } });
+  if (!product) throw createError(404, "Product not found");
+
+  const cart = await prisma.cart.upsert({
+    where: { userId },
+    update: {},
+    create: { userId, cartTotal: 0 },
+  });
+
+  const existingCartItem = await prisma.productOnCart.findFirst({
+    where: { cartId: cart.id, productId: productId },
+  });
+
+  const quantityInCart = existingCartItem ? existingCartItem.count : 0;
+  const requestedTotalQuantity = quantityInCart + count;
+
+  if (product.stockQuantity < requestedTotalQuantity) {
+    throw createError(400, `Not enough stock for product: ${product.title}. Only ${product.stockQuantity} available.`);
+  }
+
+  const updatedCartItem = existingCartItem ?
+    await prisma.productOnCart.update({ where: { id: existingCartItem.id }, data: { count: requestedTotalQuantity } }) :
+    await prisma.productOnCart.create({ data: { cartId: cart.id, productId, count, price: product.price } });
+
+  await updateCartTotal(cart.id);
+  return updatedCartItem;
 };
 
 
@@ -21,7 +49,11 @@ cartService.getCartForUser = async (userId) => {
     include: {
       products: {
         include: {
-          product: true,
+          product: {
+            include: {
+              images: true
+            }
+          }
         },
       },
     },
@@ -31,8 +63,8 @@ cartService.getCartForUser = async (userId) => {
 
 cartService.removeItemFromCart = async (userId, cartItemId) => {
 
-  const cartItem = await prisma.productOnCart.findUnique({
-    where: { id: cartItemId },
+  const cartItem = await prisma.productOnCart.findFirst({
+    where: { id: cartItemId, cart: { userId } },
     include: { cart: true }
   });
 

@@ -5,22 +5,25 @@ import useCartStore from "../../stores/cartStore.js";
 
 function ProductCard({ product }) {
   const imageUrl = product.images?.[0]?.url || "https://res.cloudinary.com/dhoyopcr7/image/upload/v1752044189/ad-product-svgrepo-com_zogf2n.png";
-  const token = authStore((state) => state.token);
-  const addItemToCartStore = useCartStore((state) => state.addItem);
-  const navigate = useNavigate()
+  // const token = authStore((state) => state.token);
+  const actionAddItem = useCartStore((state) => state.actionAddItem);
+  const user = authStore((state) => state.user);
+    const navigate = useNavigate()
 
   const handleAddToCart = (e) => {
     e.preventDefault();
-  
-
-    if (!token) {
-        toast.error("Please login to add items to your cart.");
-        navigate("/login")
-        return;
+    if (!user) {
+      toast.error("Please login to add items to your cart.");
+      navigate("/login");
+      return;
     }
-    
-   
-    addItemToCartStore({ productId: product.id, count: 1 });
+
+
+    if (user.role !== 'CUSTOMER') {
+      toast.info("Only customers can add items to the cart.");
+      return;
+    }
+    actionAddItem({ productId: product.id, count: 1 });
   };
 
   return (
@@ -28,10 +31,10 @@ function ProductCard({ product }) {
       <div>
         <Link to={`/products/${product.id}`}>
           <div className="relative w-full h-48 mb-4 overflow-hidden rounded-md">
-            <img 
-              src={imageUrl} 
-              alt={product.title} 
-              className="w-full h-full object-cover transition-transform group-hover:scale-110" 
+            <img
+              src={imageUrl}
+              alt={product.title}
+              className="w-full h-full object-cover transition-transform group-hover:scale-110"
             />
           </div>
           <h3 className="font-bold text-lg text-gray-800 truncate group-hover:text-pri-gr1">{product.title}</h3>
@@ -41,20 +44,20 @@ function ProductCard({ product }) {
 
       <div className="mt-4">
         <p className="font-semibold text-gray-700 mb-2">{product.price.toFixed(2)} THB</p>
-        
-        <div className="flex items-center justify-center gap-2">
-            <Link to={`/products/${product.id}`} className="flex-1">
-                <button className="w-full bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded-md hover:bg-gray-300 transition-colors text-sm">
-                    Details
-                </button>
-            </Link>
 
-            <button 
-                onClick={handleAddToCart}
-                className="flex-1 bg-pri-gr1 text-white font-bold py-2  rounded-md hover:bg-[#5a6e47] transition-colors text-sm"
-            >
-                Add to Cart
+        <div className="flex items-center justify-center gap-2">
+          <Link to={`/products/${product.id}`} className="flex-1">
+            <button className="w-full bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded-md hover:bg-gray-300 transition-colors text-sm">
+              Details
             </button>
+          </Link>
+
+          <button
+            onClick={handleAddToCart}
+            className="flex-1 bg-pri-gr1 text-white font-bold py-2  rounded-md hover:bg-[#5a6e47] transition-colors text-sm"
+          >
+            Add to Cart
+          </button>
         </div>
       </div>
     </div>

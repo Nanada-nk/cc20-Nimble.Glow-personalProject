@@ -1,14 +1,17 @@
 import { Link, useNavigate } from "react-router"
 import NimbleGlowLogo from "/src/components/NimbleGlowLogo.jsx"
-import { Search, User, ShoppingCart, Menu, LogOut, Store } from "lucide-react"
-import authStore from "../stores/authStore"
+import { User, ShoppingCart, Menu, LogOut, Store } from "lucide-react"
 import { toast } from "react-toastify"
+import authStore from "../stores/authStore.js"
+import useCartStore from "../stores/cartStore.js"
+import { useEffect } from "react"
 
 
 function Header() {
 
   const isLoggedIn = authStore((state) => state.isLoggedIn);
   const actionLogout = authStore((state) => state.actionLogout);
+  const { itemCount, fetchCart, toggleCart } = useCartStore()
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -17,6 +20,11 @@ function Header() {
     navigate("/")
   }
 
+  useEffect(() => {
+    if (isLoggedIn) {
+      fetchCart();
+    }
+  }, [isLoggedIn, fetchCart]);
 
   return (
     <header className="sticky top-0 z-50 bg-bg-cr4 shadow-sm">
@@ -46,9 +54,18 @@ function Header() {
               </Link>
             )}
 
-            <Link to="/cart" className="text-gray-600 hover:text-pri-gr1">
-              <ShoppingCart size={20} />
-            </Link>
+            <button onClick={toggleCart} className="text-gray-600 hover:text-pri-gr1 relative">
+              <ShoppingCart size={25} className="relative" />
+              {isLoggedIn && itemCount > 0 && (
+                <div className="absolute bg-bg-cr flex items-center justify-center w-6 h-6 top-2 -right-4 rounded-full text-red-500 font-bold text-md">
+                  {itemCount}
+                </div>
+              )}
+            </button>
+
+
+
+
           </div>
 
 

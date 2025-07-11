@@ -208,8 +208,9 @@ model Payment {
   order   Order? @relation(fields: [orderId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   orderId Int?   @unique @map("order_id")
 
-  user   User? @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  userId Int?  @map("user_id")
+  user         User?   @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  userId       Int?    @map("user_id")
+  slipImageUrl String? @map("slip_image_url")
 
   PaymentRefund PaymentRefund[]
 }
@@ -255,8 +256,8 @@ model Coupon {
   Order       Order[]
   couponUsage CouponUsage[]
 
-  createdBy   User @relation("CouponCreatedBy", fields: [createdById], references: [id])
-  createdById Int  @map("created_by")
+  createdBy   User? @relation("CouponCreatedBy", fields: [createdById], references: [id])
+  createdById Int?  @map("created_by")
 }
 
 model UserOnCoupon {
@@ -288,7 +289,7 @@ model CouponUsage {
 
 model Shipping {
   id             Int            @id @default(autoincrement())
-  trackingNumber String         @map("tracking_number")
+  trackingNumber String?         @map("tracking_number")
   method         ShippingMethod @default(PICKUP)
   status         ShippingStatus @default(PENDING)
   shippedAt      DateTime       @default(now()) @map("shipped_at") @db.Timestamp(0)

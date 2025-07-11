@@ -8,6 +8,22 @@ paymentController.getMethods = (req, res, next) => {
     res.status(200).json({ success: true, methods });
 };
 
+paymentController.uploadSlip = async (req, res, next) => {
+    try {
+        const { paymentId } = req.params;
+        const file = req.file;
+
+        if (!file) {
+            throw createError(400, "Slip image is required.");
+        }
+
+        const updatedPayment = await paymentService.handleSlipUpload(paymentId, file);
+        res.status(200).json({ message: "Slip uploaded successfully.", payment: updatedPayment });
+    } catch (error) {
+        next(error);
+    }
+}
+
 paymentController.payForOrder = async (req, res, next) => {
     const { orderId } = req.params;
     const userId = req.user.id;

@@ -61,7 +61,7 @@ function AppRouter() {
         <Route element={<ProtectedRoute />}>
           <Route path='/' element={<MainLayout />}>
             <Route path='cart' element={<CartPage />} />
-            <Route path='checkout' element={<CheckoutPage />} />
+            <Route path='checkout/:orderId' element={<CheckoutPage />} />
             <Route path='orders' element={<UserOrdersPage />} />
             <Route path='orders/:id' element={<OrderDetailPage />} />
             <Route path='profile' element={<UserProfilePage />} />

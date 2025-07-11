@@ -3,8 +3,13 @@ import createError from "../utils/create-error.js";
 
 const orderService = {};
 
-orderService.createOrderFromCart = async (userId, note) => {
 
+
+orderService.createOrderFromCart = async (userId, data) => {
+  const { note, addressId } = data
+  if (!addressId) {
+    throw createError(400, "Shipping address is required.");
+  }
   const cart = await prisma.cart.findUnique({
     where: { userId },
     include: { products: { include: { product: true } } },
@@ -30,7 +35,11 @@ orderService.createOrderFromCart = async (userId, note) => {
         cartTotal: cart.cartTotal,
         note: note,
         currency: "THB",
-        cartId: cart.id,
+        cart: {
+          connect: {
+            id: cart.id
+          }
+        },
       },
     });
 
@@ -52,18 +61,41 @@ orderService.createOrderFromCart = async (userId, note) => {
       });
     }
 
+    await transactionClientFromPrisma.payment.create({
+      data: {
+        orderId: order.id,
+        userId: userId,
+        amount: order.cartTotal,
+        status: 'PENDING',
+        method: 'PROMPTPAY'
+      }
+    })
+
+
+    await transactionClientFromPrisma.shipping.create({
+      data: {
+        orderId: order.id,
+        addressId: addressId,
+        status: 'PENDING',
+        method: 'THAILAND_POST'
+      }
+    })
+
+
     await transactionClientFromPrisma.productOnCart.deleteMany({
       where: { cartId: cart.id },
     });
-
 
     await transactionClientFromPrisma.cart.update({
       where: { id: cart.id },
       data: { cartTotal: 0 }
     });
 
+
     return order;
   });
+
+
 
 
   return prisma.order.findUnique({
@@ -79,7 +111,12 @@ orderService.findOrdersByUserId = (userId) => {
     orderBy: { createdAt: 'desc' },
     include: {
       products: { include: { product: { select: { title: true, id: true } } } },
-      payment: true
+      payment: true,
+      shipping: {
+        include: {
+          address: true
+        }
+      }
     }
   });
 }
@@ -87,12 +124,42 @@ orderService.findOrdersByUserId = (userId) => {
 
 orderService.findOrderById = async (orderId, user) => {
   const order = await prisma.order.findUnique({
-    where: { id: orderId },
+    where: { id: Number(orderId) },
     include: {
-      cart: true,
-      products: { include: { product: true } },
-      payment: true,
-      shipping: true
+      cart: {
+        include: {
+          user: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              email: true
+            }
+          }
+        }
+      },
+      products: {
+        include: {
+          product: {
+            include: {
+              images: true
+            }
+          }
+        }
+      },
+      payment: {
+        select: {
+          id: true,
+          amount: true,
+          status: true,
+          method: true
+        }
+      },
+      shipping: {
+        include:{
+          address: true
+        }
+      }
     }
   });
 
@@ -103,6 +170,9 @@ orderService.findOrderById = async (orderId, user) => {
   if (user.role === 'CUSTOMER' && order.cart.userId !== user.id) {
     throw createError(403, "You do not have permission to view this order.");
   }
+
+  console.log("--- Backend Service: Order data before sending ---");
+  console.log(order);
 
   return order;
 }

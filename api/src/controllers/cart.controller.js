@@ -37,10 +37,10 @@ cartController.removeItem = async (req, res, next) => {
   const userId = req.user.id;
   const cartItemId = Number(req.params.itemId);
 
-  const removeItem = await cartService.removeItemFromCart(userId, cartItemId);
+  await cartService.removeItemFromCart(userId, cartItemId);
 
 
-  res.status(204).json({ success: true, removeItem })
+  res.status(204).send()
 }
 
 export default cartController

@@ -32,7 +32,16 @@ reviewService.getReviewsForProduct = (productId) => {
   return prisma.review.findMany({
     where: { productId },
     include: {
-      images: true
+      images: true,
+      user: {
+        select: {
+          firstName: true,
+          profileImage: true
+        }
+      }
+    },
+    orderBy: {
+      reviewDate: "desc"
     }
   });
 };
@@ -47,7 +56,8 @@ reviewService.findAllReviews = () => {
         select: {
           id: true,
           firstName: true,
-          email: true
+          email: true,
+          profileImage: true
         }
       },
       product: {

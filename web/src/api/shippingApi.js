@@ -8,21 +8,27 @@ shippingApi.getMethods = () => {
   return axios.get(`${BASE_URL}/shipping/methods`,)
 }
 
-shippingApi.getStatus = (id, token) => {
-  return axios.get(`${BASE_URL}/shipping/orders/${id}/shipping`, {
+shippingApi.getStatus = (orderId, token) => {
+  return axios.get(`${BASE_URL}/shipping/orders/${orderId}`, {
     headers: {
       Authorization: `Bearer ${token}`
     }
   })
 }
 
+// // version 1
+// shippingApi.updateStatus = (id, body, token) => {
+//   return axios.patch(`${BASE_URL}/shipping/orders/${id}/shipping`, body, {
+//     headers: {
+//       Authorization: `Bearer ${token}`
+//     }
+//   })
+// }
 
-shippingApi.updateStatus = (id, body, token) => {
-  return axios.patch(`${BASE_URL}/shipping/orders/${id}/shipping`, body, {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  })
+shippingApi.updateShipping = (orderId, body, token) => {
+  return axios.patch(`${BASE_URL}/shipping/orders/${orderId}`, body, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
 }
 
 export default shippingApi

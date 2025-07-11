@@ -1,6 +1,8 @@
 import prisma from "../config/prisma.config.js";
 import createError from "../utils/create-error.js";
 import { PaymentMethod } from "../generated/prisma/client.js"
+import cloudinary from "../config/cloudinary.config.js";
+import fs from "fs/promises"
 
 const paymentService = {};
 
@@ -35,6 +37,33 @@ paymentService.createPaymentForOrder = async (orderId, userId, paymentData) => {
   });
 };
 
+paymentService.handleSlipUpload = async (paymentId, file) => {
+  const payment = await prisma.payment.findUnique({ where: { id: Number(paymentId) } });
+  if (!payment) {
+    throw createError(404, "Payment record not found.");
+  }
+
+  const result = await cloudinary.uploader.upload(file.path, {
+    folder: 'nimble-glow-slips'
+  });
+
+  await fs.unlink(file.path);
+  const [, updatedPayment] = await prisma.$transaction([
+    prisma.order.update({
+      where: { id: payment.orderId },
+      data: { orderStatus: 'PAID' }
+    }),
+    prisma.payment.update({
+      where: { id: Number(paymentId) },
+      data: {
+        status: 'PAID',
+        slipImageUrl: result.secure_url
+      }
+    })
+  ]);
+
+  return updatedPayment;
+};
 
 paymentService.getPaymentByOrderId = (orderId, userId) => {
   return prisma.payment.findFirst({

@@ -1,8 +1,4 @@
-/**
- * note for blur blur
- * @param {object|object[]} data 
- * @returns {object|object[]} 
- */
+
 export function formatDates(data) {
   const dateFields = [
     'createdAt', 'updatedAt', 'lastLogin', 'expiredAt',
