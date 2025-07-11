@@ -13,11 +13,15 @@ import { reviewSchema } from "../../validator/schema.js";
 import { BubblesIcon, UploadCloudIcon, XIcon } from "lucide-react";
 import Modal from "../../components/Modal.jsx";
 import RatingInput from "../../components/RatingInput";
+import OrderSummary from "../../components/OrderSummary.jsx";
+import OrderItemList from "../../components/OrderItemList.jsx";
+import ViewReviewModal from "../../components/ViewReviewModal.jsx"
 
 function OrderDetailPage() {
   const { orderId } = useParams();
   const navigate = useNavigate();
   const token = authStore((state) => state.token);
+  const fileInputRef = useRef(null);
 
   const [order, setOrder] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -26,7 +30,7 @@ function OrderDetailPage() {
   const [reviewingProduct, setReviewingProduct] = useState(null);
   const [reviewImages, setReviewImages] = useState([]);
   const [reviewImagePreviews, setReviewImagePreviews] = useState([]);
-  const fileInputRef = useRef(null);
+
 
   const {
     control,
@@ -37,6 +41,9 @@ function OrderDetailPage() {
   } = useForm({
     resolver: yupResolver(reviewSchema),
   });
+
+  const [isViewReviewModalOpen, setIsViewReviewModalOpen] = useState(false);
+  const [viewingReview, setViewingReview] = useState(null);
 
   const fetchOrderDetails = async () => {
     if (!token || !orderId) return;
@@ -67,8 +74,22 @@ function OrderDetailPage() {
     setIsReviewModalOpen(true);
   };
   console.log('handleOpenReviewModal', handleOpenReviewModal)
+
   const handleCloseReviewModal = () => setIsReviewModalOpen(false);
   console.log('handleCloseReviewModal', handleCloseReviewModal)
+
+  const handleOpenViewReviewModal = (product) => {
+    setViewingReview({
+      ...product.reviews[0],
+      productTitle: product.title,
+    });
+    setIsViewReviewModalOpen(true);
+  };
+  console.log('handleOpenViewReviewModal', handleOpenViewReviewModal)
+
+  const handleCloseViewReviewModal = () => setIsViewReviewModalOpen(false)
+  console.log('handleCloseViewReviewModal', handleCloseViewReviewModal)
+
   const handleReviewImageChange = (e) => {
     const files = Array.from(e.target.files).slice(0, 5 - reviewImages.length);
     console.log("files", files);
@@ -82,6 +103,7 @@ function OrderDetailPage() {
   console.log('handleReviewImageChange', handleReviewImageChange)
 
   const handleRemoveReviewImage = (indexToRemove) => {
+    console.log('indexToRemove', indexToRemove)
     setReviewImages((prev) =>
       prev.filter((_, index) => index !== indexToRemove)
     );
@@ -90,6 +112,7 @@ function OrderDetailPage() {
     );
   };
   console.log('handleRemoveReviewImage', handleRemoveReviewImage)
+
   const onReviewSubmit = async (data) => {
     try {
       const formData = new FormData();
@@ -113,6 +136,7 @@ function OrderDetailPage() {
     }
   };
   console.log('onReviewSubmit', onReviewSubmit)
+
   if (isLoading || !order) {
     return (
       <div className="flex flex-col justify-center items-center h-96">
@@ -121,87 +145,32 @@ function OrderDetailPage() {
     );
   }
 
+
+
+
+
   return (
     <>
       <div className="container mx-auto p-4 md:p-8 min-h-230">
         <h1 className="text-3xl font-bold mb-4">Order Details</h1>
 
-        <div className="bg-white p-6 rounded-lg shadow-md mb-6 space-y-2">
-          <p>
-            <strong>Order #:</strong> {order.orderNumber}
-          </p>
-          <p>
-            <strong>Order Status:</strong>{" "}
-            <span className="font-semibold">
-              {order.orderStatus.replace("_", " ")}
-            </span>
-          </p>
-          <p>
-            <strong>Shipping to:</strong>{" "}
-            {order.shipping?.address?.address || "N/A"}
-          </p>
-          <p>
-            <strong>Shipping Method:</strong>{" "}
-            {order.shipping?.method || "N/A"}
-          </p>
-          <p>
-            <strong>Tracking #:</strong>{" "}
-            {order.shipping?.trackingNumber || "Awaiting tracking information"}
-          </p>
-          <p>
-            <strong>Payment Status:</strong>{" "}
-            <span className="font-semibold">
-              {order.payment?.status || "N/A"}
-            </span>
-          </p>
-        </div>
+        <OrderSummary order={order} />
 
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-xl font-bold mb-4">Items in this order</h2>
-          <div className="space-y-4">
-            {order.products.map(({ product, count, price }) => (
-              <div
-                key={product.id}
-                className="flex flex-col sm:flex-row justify-between sm:items-center border-b pb-4">
-                <div className="flex items-center">
-                  <img
-                    src={
-                      product.images?.[0]?.url ||
-                      "https://res.cloudinary.com/dhoyopcr7/image/upload/v1752044189/ad-product-svgrepo-com_zogf2n.png"
-                    }
-                    alt={product.title}
-                    className="w-20 h-20 object-cover rounded-md mr-4"
-                  />
-                  <div>
-                    <p className="font-bold">{product.title}</p>
-                    <p className="text-sm text-gray-600">
-                      Qty: {count} @ {price.toFixed(2)} THB
-                    </p>
-                  </div>
-                </div>
-                <div className="mt-2 sm:mt-0">
-                  {(order.orderStatus === "DELIVERED" ||
-                    order.orderStatus === "COMPLETED") && (
-                      <button
-                        onClick={() =>
-                          handleOpenReviewModal({
-                            productId: product.id,
-                            product,
-                          })
-                        }
-                        className="btn btn-outline btn-primary btn-sm">
-                        Write a Review
-                      </button>
-                    )}
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="text-right mt-4 text-xl font-bold">
-            Total: {order.cartTotal.toFixed(2)} THB
-          </div>
-        </div>
+        <OrderItemList
+          order={order}
+          onOpenWriteReview={handleOpenReviewModal}
+          onOpenViewReview={handleOpenViewReviewModal}
+        />
+
       </div>
+
+      <ViewReviewModal
+        isOpen={isViewReviewModalOpen}
+        onClose={handleCloseViewReviewModal}
+        reviewData={viewingReview}
+        productTitle={viewingReview?.productTitle}
+        control={control}
+      />
 
       <Modal
         isOpen={isReviewModalOpen}
@@ -210,6 +179,7 @@ function OrderDetailPage() {
         title={`Reviewing: ${reviewingProduct?.product.title}`}
         confirmText={isSubmitting ? "Submitting..." : "Submit Review"}
         isConfirmDisabled={isSubmitting}>
+
         <div className="space-y-4">
           <RatingInput name="rating" control={control} />
           {errors.rating && (

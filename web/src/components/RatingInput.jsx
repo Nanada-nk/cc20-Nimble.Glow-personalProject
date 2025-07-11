@@ -1,9 +1,11 @@
 import { Controller } from 'react-hook-form';
 
 function RatingInput({ control, name }) {
+  
   return (
     <div>
-      <label className="label"><span className="label-text">Rating</span></label>
+      <label className="label">
+        <span className="label-text">Rating</span></label>
       <Controller
         name={name}
         control={control}

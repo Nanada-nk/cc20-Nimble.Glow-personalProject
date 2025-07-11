@@ -142,7 +142,15 @@ orderService.findOrderById = async (orderId, user) => {
         include: {
           product: {
             include: {
-              images: true
+              images: true,
+              reviews: {
+                where: {
+                  userId: user.id
+                },
+                include: {
+                  images: true
+                }
+              }
             }
           }
         }
