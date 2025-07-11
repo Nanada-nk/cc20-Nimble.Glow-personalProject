@@ -9,7 +9,14 @@ couponController.create = async (req, res, next) => {
 };
 couponController.getAll = async (req, res, next) => {
     const coupons = await couponService.getAllCoupons();
-    res.status(200).json({ success: true, coupons : formatDates(coupons) });
+    res.status(200).json({ success: true, coupons: formatDates(coupons) });
+};
+
+couponController.getAvailable = async (req, res, next) => {
+
+    const coupons = await couponService.findAvailableCoupons();
+    res.status(200).json({ success: true, coupons: formatDates(coupons) });
+
 };
 
 couponController.update = async (req, res, next) => {
@@ -40,7 +47,7 @@ couponController.delete = async (req, res, next) => {
         }
 
         await couponService.deleteCoupon(couponId);
-        res.status(204).send(); 
+        res.status(204).send();
     } catch (error) {
         next(error);
     }

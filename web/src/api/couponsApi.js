@@ -38,5 +38,12 @@ couponsApi.applyToOrder = (id, body, token) => {
   })
 }
 
+couponsApi.getAvailableCoupons = (token) => {
+    return axios.get(`${BASE_URL}/coupons/available`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
 
 export default couponsApi

@@ -20,6 +20,7 @@ couponService.createCoupon = (data, creatorId) => {
     }
    })
 };
+
 couponService.getAllCoupons = () => {
   return prisma.coupon.findMany({
     include:{
@@ -31,10 +32,26 @@ couponService.getAllCoupons = () => {
     }
   })
 }
+
+couponService.findAvailableCoupons = () => {
+  return prisma.coupon.findMany({
+    where: {
+      expiredAt: {
+        gt: new Date(), 
+      },
+     
+    },
+    orderBy: {
+      expiredAt: 'asc',
+    },
+  });
+}
+
 couponService.findById = (id) => prisma.coupon.findUnique({ where: { id: Number(id) } });
 
 
 couponService.updateCoupon = (id, data) => prisma.coupon.update({ where: { id: Number(id) }, data });
+
 couponService.deleteCoupon = (id) => prisma.coupon.delete({ where: { id : Number(id) } });
 
 

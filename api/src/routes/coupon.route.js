@@ -5,6 +5,8 @@ import couponController from '../controllers/coupon.controller.js';
 
 const couponRouter = express.Router();
 
+couponRouter.get('/available', authenticateUser, couponController.getAvailable);
+
 couponRouter.get('/', couponController.getAll)
 couponRouter.post('/', authenticateUser, checkRole("ADMIN", "SUPERADMIN"), couponController.create);
 

@@ -4,8 +4,12 @@ const shippingApi = {}
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL
 
-shippingApi.getMethods = () => {
-  return axios.get(`${BASE_URL}/shipping/methods`,)
+shippingApi.getMethods = (token) => {
+  return axios.get(`${BASE_URL}/shipping/methods`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
 }
 
 shippingApi.getStatus = (orderId, token) => {

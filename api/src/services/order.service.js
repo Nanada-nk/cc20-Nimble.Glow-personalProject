@@ -1,3 +1,4 @@
+import { connect } from "http2";
 import prisma from "../config/prisma.config.js";
 import createError from "../utils/create-error.js";
 
@@ -6,7 +7,7 @@ const orderService = {};
 
 
 orderService.createOrderFromCart = async (userId, data) => {
-  const { note, addressId } = data
+  const { note, addressId, couponId, shippingMethod } = data
   if (!addressId) {
     throw createError(400, "Shipping address is required.");
   }
@@ -27,12 +28,22 @@ orderService.createOrderFromCart = async (userId, data) => {
         throw createError(400, `Not enough stock for product: ${item.product.title}`);
       }
     }
+    let finalTotal = cart.cartTotal;
+    let orderDiscount = 0;
+    let appliedCoupon = null;
 
-
+    if (couponId) {
+      appliedCoupon = await transactionClientFromPrisma.coupon.findUnique({ where: { id: Number(couponId) } });
+      if (!appliedCoupon) throw createError(404, "Coupon not found.");
+      if (new Date() > new Date(appliedCoupon.expiredAt)) throw createError(400, "Coupon has expired.");
+      orderDiscount = cart.cartTotal * (appliedCoupon.discount / 100);
+      finalTotal = cart.cartTotal - orderDiscount;
+    }
     const order = await transactionClientFromPrisma.order.create({
       data: {
         orderNumber: `ORD-${Date.now()}-${userId}`,
         cartTotal: cart.cartTotal,
+        orderDiscount: orderDiscount,
         note: note,
         currency: "THB",
         cart: {
@@ -40,6 +51,11 @@ orderService.createOrderFromCart = async (userId, data) => {
             id: cart.id
           }
         },
+        coupon: couponId ? {
+          connect: {
+            id: Number(couponId)
+          }
+        } : undefined,
       },
     });
 
@@ -65,7 +81,7 @@ orderService.createOrderFromCart = async (userId, data) => {
       data: {
         orderId: order.id,
         userId: userId,
-        amount: order.cartTotal,
+        amount: finalTotal,
         status: 'PENDING',
         method: 'PROMPTPAY'
       }
@@ -77,9 +93,19 @@ orderService.createOrderFromCart = async (userId, data) => {
         orderId: order.id,
         addressId: addressId,
         status: 'PENDING',
-        method: 'THAILAND_POST'
+        method: shippingMethod || 'THAILAND_POST'
       }
     })
+
+    if (appliedCoupon) {
+      await transactionClientFromPrisma.coupon.update({
+        where: { id: appliedCoupon.id },
+        data: { usageCount: { increment: 1 } },
+      });
+      await transactionClientFromPrisma.couponUsage.create({
+        data: { userId, couponId: appliedCoupon.id, orderId: order.id },
+      });
+    }
 
 
     await transactionClientFromPrisma.productOnCart.deleteMany({
@@ -217,12 +243,12 @@ orderService.updateOrderStatus = (orderId, orderStatus) => {
 orderService.updateAdminOrderDetails = (orderId, data) => {
   const { orderStatus, trackingNumber } = data;
 
-  return prisma.$transaction(async (tx) => {
+  return prisma.$transaction(async (transactionClientFromPrisma) => {
     let updatedOrder;
 
 
     if (orderStatus) {
-      updatedOrder = await tx.order.update({
+      updatedOrder = await transactionClientFromPrisma.order.update({
         where: { id: Number(orderId) },
         data: { orderStatus },
       });
@@ -230,7 +256,7 @@ orderService.updateAdminOrderDetails = (orderId, data) => {
 
 
     if (trackingNumber !== undefined) {
-      await tx.shipping.upsert({
+      await transactionClientFromPrisma.shipping.upsert({
         where: { orderId: Number(orderId) },
         update: { trackingNumber },
         create: {
@@ -243,7 +269,7 @@ orderService.updateAdminOrderDetails = (orderId, data) => {
     }
 
 
-    const finalOrder = await tx.order.findUnique({
+    const finalOrder = await transactionClientFromPrisma.order.findUnique({
       where: { id: Number(orderId) },
       include: {
         shipping: true,
