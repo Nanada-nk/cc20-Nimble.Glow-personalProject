@@ -8,9 +8,9 @@ const ordersController = {};
 
 ordersController.createOrder = async (req, res, next) => {
   const userId = req.user.id;
-  const data  = req.body;
+  const data = req.body;
 
-  const newOrder = await orderService.createOrderFromCart(userId, data );
+  const newOrder = await orderService.createOrderFromCart(userId, data);
   res.status(201).json({ success: true, order: formatDates(newOrder) });
 }
 
@@ -58,5 +58,14 @@ ordersController.updateStatus = async (req, res, next,) => {
   );
   res.status(200).json({ success: true, order: formatDates(updatedOrder) });
 }
+
+ordersController.updateAdminDetails = async (req, res, next) => {
+
+  const orderId = Number(req.params.id);
+  const data = req.body;
+  const updatedOrder = await orderService.updateAdminOrderDetails(orderId, data);
+  res.status(200).json({ success: true, order: formatDates(updatedOrder) });
+
+};
 
 export default ordersController;

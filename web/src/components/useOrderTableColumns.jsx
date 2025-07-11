@@ -32,6 +32,12 @@ function useOrderTableColumns({ onEdit }) {
       ),
     },
     {
+      name: 'Tracking #',
+      selector: row => row.shipping?.trackingNumber,
+      sortable: true,
+      cell: row => row.shipping?.trackingNumber || <span className="text-gray-400">N/A</span>
+    },
+    {
       name: 'Payment',
       selector: row => row.payment?.status || 'N/A',
       sortable: true,

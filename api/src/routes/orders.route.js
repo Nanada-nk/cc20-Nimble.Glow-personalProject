@@ -7,6 +7,7 @@ const ordersRouter = express.Router();
 
 
 ordersRouter.get('/admin', checkRole("SUPERADMIN", "ADMIN"), ordersController.getAllAdmin);
+ordersRouter.patch('/admin/:id', checkRole("SUPERADMIN", "ADMIN"), ordersController.updateAdminDetails)
 ordersRouter.get('/', ordersController.getUserOrders);
 ordersRouter.post('/', ordersController.createOrder);
 ordersRouter.get('/:id', ordersController.getOrderById);

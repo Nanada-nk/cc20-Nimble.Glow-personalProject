@@ -26,7 +26,7 @@ shippingController.updateShipping = async (req, res, next) => {
     const { orderId } = req.params;
     const shippingData = req.body;
     const updatedShipping = await shippingService.upsertShipping(orderId, shippingData);
-    res.status(200).json({ shipping: formatDates(updatedShipping) });
+    res.status(200).json({ success: true, shipping: formatDates(updatedShipping) });
 };
 
 export default shippingController;

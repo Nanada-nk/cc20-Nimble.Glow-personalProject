@@ -156,7 +156,7 @@ orderService.findOrderById = async (orderId, user) => {
         }
       },
       shipping: {
-        include:{
+        include: {
           address: true
         }
       }
@@ -190,7 +190,8 @@ orderService.findAllAdmin = () => {
           }
         }
       },
-      payment: true
+      payment: true,
+      shipping: true
     },
     orderBy: {
       createdAt: 'desc'
@@ -204,5 +205,46 @@ orderService.updateOrderStatus = (orderId, orderStatus) => {
     data: { orderStatus }
   });
 }
+
+orderService.updateAdminOrderDetails = (orderId, data) => {
+  const { orderStatus, trackingNumber } = data;
+
+  return prisma.$transaction(async (tx) => {
+    let updatedOrder;
+
+
+    if (orderStatus) {
+      updatedOrder = await tx.order.update({
+        where: { id: Number(orderId) },
+        data: { orderStatus },
+      });
+    }
+
+
+    if (trackingNumber !== undefined) {
+      await tx.shipping.upsert({
+        where: { orderId: Number(orderId) },
+        update: { trackingNumber },
+        create: {
+          order: { connect: { id: Number(orderId) } },
+          trackingNumber: trackingNumber,
+          status: 'PENDING',
+          method: 'THAILAND_POST'
+        },
+      });
+    }
+
+
+    const finalOrder = await tx.order.findUnique({
+      where: { id: Number(orderId) },
+      include: {
+        shipping: true,
+
+      }
+    });
+
+    return finalOrder;
+  });
+};
 
 export default orderService;

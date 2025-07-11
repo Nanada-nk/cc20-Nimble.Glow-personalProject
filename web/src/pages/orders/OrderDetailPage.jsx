@@ -117,7 +117,6 @@ function OrderDetailPage() {
     return (
       <div className="flex flex-col justify-center items-center h-96">
         <BubblesIcon className="w-12 h-12 animate-spin text-pri-gr1" />
-        <div className="text-center text-red-500"><p>Order not found.</p></div>
       </div>
     );
   }

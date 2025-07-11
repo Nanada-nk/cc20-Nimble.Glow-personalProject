@@ -16,7 +16,7 @@ function ProductDetailPage() {
   const navigate = useNavigate()
   const user = authStore((state) => state.user)
   const actionAddItem = useCartStore((state) => state.actionAddItem)
-  const isLoggedIn = useCartStore((state) => state.isLoggedIn)
+  
 
   const [product, setProduct] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -39,6 +39,7 @@ function ProductDetailPage() {
     setIsLoading(true);
     try {
       const resp = await productsApi.getById(id);
+      console.log('resp', resp)
       const fetchedProduct = resp.data.product;
       setProduct(fetchedProduct);
 
@@ -59,7 +60,7 @@ function ProductDetailPage() {
 
   const onAddToCartSubmit = async (data) => {
 
-    if (!isLoggedIn || !user) {
+    if (!user) {
       navigate("/login")
       toast.error("Please login to add items to your cart.");
       return;
@@ -70,7 +71,7 @@ function ProductDetailPage() {
     }
     await actionAddItem({ productId: product.id, count: Number(data.quantity) });
   };
-
+  console.log('onAddToCartSubmit', onAddToCartSubmit)
   if (isLoading || !product) {
     return (
       <div className="flex justify-center items-center h-screen">

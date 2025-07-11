@@ -129,6 +129,7 @@ export const editUserSchema = Yup.object({
 
 export const orderStatusSchema = Yup.object({
   orderStatus: Yup.string().required(),
+  trackingNumber: Yup.string().nullable(),
 }).noUnknown(true)
 
 export const couponSchema = Yup.object({
@@ -142,3 +143,4 @@ export const reviewSchema = Yup.object({
   rating: Yup.number().min(1, "Please provide a rating.").required(),
   comment: Yup.string(),
 }).noUnknown(true)
+

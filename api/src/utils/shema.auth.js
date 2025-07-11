@@ -110,7 +110,7 @@ export const schemaChangePassword = Yup.object({
       .required("Confirm password is required")
 }).noUnknown(true)
 
-export const categorySchema  = Yup.object({
+export const categorySchema = Yup.object({
   name: Yup.string().required("name is required."),
 }).noUnknown(true)
 
@@ -125,6 +125,7 @@ export const productSchema = Yup.object({
 
 export const orderStatusSchema = Yup.object({
   orderStatus: Yup.string().required(),
+  trackingNumber: Yup.string().nullable(),
 }).noUnknown(true)
 
 export const couponSchema = Yup.object({

@@ -40,17 +40,37 @@ shippingService.getShippingStatusForOrder = (orderId) => {
 
 shippingService.upsertShipping = (orderId, shippingData) => {
 
-  if (shippingData.addressId) shippingData.addressId = Number(shippingData.addressId);
-  if (shippingData.fee) shippingData.fee = Number(shippingData.fee);
+  const {
+    trackingNumber,
+    method,
+    status,
+    shippedAt,
+    deliveredAt,
+    fee,
+    addressId
+  } = shippingData;
+
+  const safeUpdateData = {
+    trackingNumber,
+    method,
+    status,
+    fee: fee ? Number(fee) : undefined,
+    addressId: addressId ? Number(addressId) : undefined,
+    shippedAt: shippedAt ? new Date(shippedAt) : undefined,
+    deliveredAt: deliveredAt ? new Date(deliveredAt) : undefined,
+  };
+  Object.keys(safeUpdateData).forEach(key => safeUpdateData[key] === undefined && delete safeUpdateData[key]);
+
 
   return prisma.shipping.upsert({
     where: { orderId: Number(orderId) },
-    update: shippingData,
+    update: safeUpdateData,
     create: {
-      orderId: Number(orderId),
-      method: 'PICKUP',
-      status: 'PENDING',
-      ...shippingData
+      order: { connect: { id: Number(orderId) } },
+      ...safeUpdateData,
+
+      method: safeUpdateData.method || 'PICKUP',
+      status: safeUpdateData.status || 'PENDING',
     }
   });
 };
