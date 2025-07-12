@@ -47,9 +47,9 @@ function UserOrdersPage() {
   }
 
   return (
-    <>
+    <div className='bg-bg-cr3'>
 
-      <div className="container mx-auto min-h-1/2 px-4 py-8">
+      <div className="container mx-auto min-h-240 px-4 py-8">
         <h1 className="text-3xl font-bold mb-6">My Orders</h1>
         <div className="space-y-4">
           {currentOrders.length === 0 && !isLoading ? (
@@ -90,7 +90,7 @@ function UserOrdersPage() {
         />
       </div>
       <Footer />
-    </>
+    </div>
   );
 }
 
