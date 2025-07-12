@@ -12,6 +12,7 @@ import UserReviewHistoryPage from "../reviews/UserReviewHistoryPage.jsx";
 import authStore from "../../stores/authStore.js";
 import usePagination from "../../hooks/usePagination.js";
 import Pagination from "../../components/Pagination.jsx";
+import ImageModal from "../../components/ImageModal.jsx";
 
 function ProductDetailPage() {
   const { id } = useParams();
@@ -104,13 +105,25 @@ function ProductDetailPage() {
         <div className="container mx-auto px-4 py-12">
           <div className="grid md:grid-cols-2 gap-8 lg:gap-16">
             <div className="flex flex-col gap-4">
-              <div className="aspect-square bg-white rounded-lg shadow-lg shadow-pri-ic overflow-hidden">
+
+              {/* <div className="aspect-square bg-white rounded-lg shadow-lg shadow-pri-ic overflow-hidden">
                 <img
                   src={mainImage || "https://res.cloudinary.com/dhoyopcr7/image/upload/v1752044189/ad-product-svgrepo-com_zogf2n.png"}
                   alt={product.title}
                   className="w-full h-full object-cover"
                 />
-              </div>
+              </div> */}
+
+              <label htmlFor="image-modal" className="cursor-pointer">
+                <div className="aspect-square bg-white rounded-lg shadow-lg shadow-pri-ic overflow-hidden">
+                  <img
+                    src={mainImage || "https://res.cloudinary.com/dhoyopcr7/image/upload/v1752044189/ad-product-svgrepo-com_zogf2n.png"}
+                    alt={product.title}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              </label>
+
               <div className="grid grid-cols-5 gap-2">
                 {product.images.map((image) => (
                   <div
@@ -229,6 +242,11 @@ function ProductDetailPage() {
           </div>
         </div>
       </div>
+      <ImageModal
+        modalId="image-modal"
+        imageUrl={mainImage}
+        altText={product.title}
+      />
       <Footer />
     </>
   );
