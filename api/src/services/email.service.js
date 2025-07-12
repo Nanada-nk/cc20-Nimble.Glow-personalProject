@@ -57,7 +57,11 @@ emailService.sendPaymentConfirmationEmail = async (payment) => {
 
   const { user, order } = payment;
   const shippingAddress = order.shipping?.address?.address || 'N/A';
-  const trackingNumber = order.shipping?.trackingNumber || 'Awaiting processing';
+  const formattedOrderDate = new Date(order.createdAt).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
 
   const mailOptions = {
     from: `"Nimble.Glow" <${process.env.EMAIL_USER}>`,
@@ -69,6 +73,7 @@ emailService.sendPaymentConfirmationEmail = async (payment) => {
         <div style="padding: 25px; border-bottom: 1px solid #e0e0e0;">
           <h2 style="color: #2F3C25; margin: 0;">Thank you for your order, ${user.firstName}!</h2>
           <p style="margin: 5px 0 0;">Here is your receipt for order #${order.orderNumber}</p>
+          <p style="margin: 5px 0 0; font-size: 14px; color: #666;">Order Date: ${formattedOrderDate}</p>
         </div>
 
         <div style="padding: 25px;">
@@ -117,9 +122,8 @@ emailService.sendPaymentConfirmationEmail = async (payment) => {
         </div>
 
         <div style="padding: 25px; border-top: 1px solid #e0e0e0; background-color: #f7f7f7;">
-            <h3 style="color: #333; margin-top: 0;">Shipping Information</h3>
-            <p style="margin: 0;"><strong>Address:</strong><br>${shippingAddress}</p>
-            <p style="margin-top: 10px;"><strong>Tracking Number:</strong><br>${trackingNumber}</p>
+            <h3 style="color: #333; margin-top: 0;">Address:</h3>
+            <p style="margin: 0;">${shippingAddress}</p>
         </div>
 
         <div style="padding: 20px; text-align: left;">
@@ -129,7 +133,12 @@ emailService.sendPaymentConfirmationEmail = async (payment) => {
     `,
   };
 
-  await transporter.sendMail(mailOptions);
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log(`Receipt email sent for Order #${order.orderNumber}`);
+  } catch (error) {
+    console.error("Error sending receipt email:", error);
+  }
 };
 
 export default emailService
