@@ -1,6 +1,6 @@
 /** @format */
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useParams } from "react-router";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -10,7 +10,8 @@ import { BubblesIcon, CheckCircle, Truck, Info } from "lucide-react";
 import Footer from "../../layouts/Footer.jsx";
 import UserReviewHistoryPage from "../reviews/UserReviewHistoryPage.jsx";
 import authStore from "../../stores/authStore.js";
-import { useMemo } from "react";
+import usePagination from "../../hooks/usePagination.js";
+import Pagination from "../../components/Pagination.jsx";
 
 function ProductDetailPage() {
   const { id } = useParams();
@@ -45,6 +46,12 @@ function ProductDetailPage() {
       .map(item => item.review)
   }, [product])
   console.log('reviews', reviews)
+
+  const {
+    currentPage,
+    currentData: currentReviews,
+    handlePageChange,
+  } = usePagination(reviews, 3)
 
   const fetchProduct = async () => {
     setIsLoading(true);
@@ -206,10 +213,18 @@ function ProductDetailPage() {
             )}
 
             {activeTab === "reviews" && (
-              <UserReviewHistoryPage
-                reviews={reviews}
-                isLoading={isLoading}
-              />
+              <div>
+                <UserReviewHistoryPage
+                  reviews={currentReviews}
+                  isLoading={isLoading}
+                />
+                <Pagination
+                  totalItems={reviews.length}
+                  itemsPerPage={3}
+                  currentPage={currentPage}
+                  onPageChange={handlePageChange}
+                />
+              </div>
             )}
           </div>
         </div>

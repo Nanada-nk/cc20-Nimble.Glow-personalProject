@@ -23,7 +23,7 @@ function Pagination({ totalItems, itemsPerPage, currentPage, onPageChange }) {
         {pageNumbers.map((number) => (
           <button
             key={number}
-            className={`join-item btn btn-md ${currentPage === number ? 'btn-active' : ''}`}
+            className={`join-item btn bg-bg-cr border-none ${currentPage === number ? 'btn-active border-2 bg-pri-gr2' : ''}`}
             onClick={() => onPageChange(number)}
           >
             {number}
