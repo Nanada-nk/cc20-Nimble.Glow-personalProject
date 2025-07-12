@@ -17,6 +17,10 @@ function OrderSummary({ order }) {
         {order.shipping?.address?.address || 'N/A'}
       </p>
       <p>
+        <strong>Shipping Method:</strong>{' '}
+        {order.shipping?.method.replace(/_/g, ' ') || 'N/A'}
+      </p>
+      <p>
         <strong>Tracking #:</strong>{' '}
         {order.shipping?.trackingNumber || 'Awaiting tracking information'}
       </p>

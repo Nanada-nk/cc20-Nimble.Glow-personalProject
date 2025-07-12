@@ -151,7 +151,7 @@ function OrderDetailPage() {
 
 
   return (
-    <>
+    <div className="bg-bg-cr3">
       <div className="container mx-auto p-4 md:p-8 min-h-240">
         <h1 className="text-3xl font-bold mb-4">Order Details</h1>
 
@@ -233,7 +233,7 @@ function OrderDetailPage() {
         </div>
       </Modal>
       <Footer />
-    </>
+    </div>
   );
 }
 
