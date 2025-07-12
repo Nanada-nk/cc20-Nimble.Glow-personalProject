@@ -2,17 +2,24 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
 import { BubblesIcon } from 'lucide-react';
-
-
 import authStore from '../../stores/authStore.js';
 import ordersApi from '../../api/ordersApi.js';
 import Footer from '../../layouts/Footer.jsx';
+import Pagination from '../../components/Pagination.jsx'
+import usePagination from '../../hooks/usePagination.js'
 
 function UserOrdersPage() {
   const navigate = useNavigate();
   const token = authStore((state) => state.token);
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  const {
+    currentPage,
+    currentData: currentOrders,
+    handlePageChange,
+    totalPages
+  } = usePagination(orders, 5)
 
   const fetchUserOrders = async () => {
     if (!token) {
@@ -42,13 +49,13 @@ function UserOrdersPage() {
   return (
     <>
 
-      <div className="container mx-auto min-h-230 px-4 py-8">
+      <div className="container mx-auto min-h-1/2 px-4 py-8">
         <h1 className="text-3xl font-bold mb-6">My Orders</h1>
         <div className="space-y-4">
-          {orders.length === 0 ? (
+          {currentOrders.length === 0 && !isLoading ? (
             <p>You have no orders yet.</p>
           ) : (
-            orders.map(order => (
+            currentOrders.map(order => (
               <div key={order.id} className="bg-white p-4 rounded-lg shadow-md flex justify-between items-center">
                 <div>
                   <p className="font-bold">Order #{order.orderNumber}</p>
@@ -75,6 +82,12 @@ function UserOrdersPage() {
             ))
           )}
         </div>
+        <Pagination
+          totalItems={orders.length}
+          itemsPerPage={5}
+          currentPage={currentPage}
+          onPageChange={handlePageChange}
+        />
       </div>
       <Footer />
     </>
