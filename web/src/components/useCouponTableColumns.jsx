@@ -8,7 +8,7 @@ function useCouponTableColumns({ onEdit, onDelete }) {
     { name: 'Usage', selector: row => `${row.usageCount || 0} / ${row.usageLimit || '∞'}`, sortable: true },
     {
       name: 'Expires At',
-      selector: row => new Date(row.expiredAt).toLocaleString(),
+      selector: row => new Date(row.expiredAt).toLocaleString('th-TH'),
       sortable: true
     },
     { name: 'Created by', selector: row => row.createdBy?.firstName || 'N/A', sortable:true },

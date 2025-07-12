@@ -11,7 +11,7 @@ const useCategoryTableColumns = ({ onEdit, onDelete }) => {
     },
     { 
       name: 'Created At', 
-      selector: row => new Date(row.createdAt).toLocaleString(),
+      selector: row => new Date(row.createdAt).toLocaleString('th-TH'),
       sortable: true,
     },
     {

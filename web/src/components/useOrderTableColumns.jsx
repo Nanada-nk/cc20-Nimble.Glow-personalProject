@@ -59,7 +59,7 @@ function useOrderTableColumns({ onEdit }) {
         </span>
       ),
     },
-    { name: 'Date', selector: row => new Date(row.createdAt).toLocaleDateString(), sortable: true },
+    { name: 'Date', selector: row => new Date(row.createdAt).toLocaleString('th-TH'), sortable: true },
     {
       name: 'Action',
       cell: row => (

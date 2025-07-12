@@ -18,6 +18,7 @@ function useProductTableColumns({ onEdit, onDelete }) {
     { name: 'Price', selector: row => row.price, sortable: true },
     { name: 'Stock', selector: row => row.stockQuantity, sortable: true },
     { name: 'Created by', selector: row => row.createdBy?.firstName || 'N/A', sortable:true },
+    { name: 'Created At', selector: row => (row.createdAt ? new Date(row.createdAt).toLocaleString('th-TH') : 'N/A'), sortable:true },
     {
       name: 'Action',
       cell: row => (
