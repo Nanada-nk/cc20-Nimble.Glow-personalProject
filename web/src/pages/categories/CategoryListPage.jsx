@@ -53,7 +53,7 @@ function CategoryListPage() {
 
   return (
     <section className="pt-12 bg-bg-cr3">
-      <div className="container mx-auto  px-4 text-center min-h-220">
+      <div className="container mx-auto  px-4 text-center min-h-230">
         <h2 className="text-3xl font-bold text-gray-800 mb-8">Shop by Category</h2>
         <div className="flex flex-wrap justify-center gap-4 mb-12">
           {categories.map((category) => {

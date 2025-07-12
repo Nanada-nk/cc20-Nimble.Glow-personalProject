@@ -1,4 +1,4 @@
-import { PencilIcon } from 'lucide-react';
+import { ImageIcon, PencilIcon } from 'lucide-react';
 
 const getStatusBadgeColor = (status) => {
   switch (status) {
@@ -20,6 +20,18 @@ function useOrderTableColumns({ onEdit }) {
   const columns = [
     { name: 'Order #', selector: row => row.orderNumber, sortable: true },
     { name: 'Customer', selector: row => `${row.cart.user.firstName} ${row.cart.user.lastName}`, sortable: true },
+    {
+      name: 'Proof of payment',
+      cell: row => (
+        row.payment?.slipImageUrl ? (
+          <a href={row.payment.slipImageUrl} target="_blank" rel="noopener noreferrer">
+            <ImageIcon size={20} className="text-blue-500 hover:text-blue-700" />
+          </a>
+        ) : (
+          <span className="text-gray-400">N/A</span>
+        )
+      )
+    },
     { name: 'Total', selector: row => row.cartTotal.toFixed(2), sortable: true },
     {
       name: 'Order Status',

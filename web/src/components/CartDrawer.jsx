@@ -27,22 +27,6 @@ function CartDrawer() {
   const navigate = useNavigate();
   const token = authStore((state) => state.token);
 
-  // const fetchAddresses = async () => {
-  //   if (!token) return
-  //   try {
-  //     const resp = await authApi.getMe(token);
-  //     console.log('resp', resp)
-  //     const userAddresses = resp.data.user.addresses;
-  //     console.log('userAddresses', userAddresses)
-  //     setAddresses(userAddresses);
-  //     if (userAddresses.length > 0 && !selectedAddressId) {
-  //       setSelectedAddressId(userAddresses[0].id);
-  //     }
-  //   } catch (error) {
-  //     console.log('error', error)
-  //     toast.error("Could not load addresses.");
-  //   }
-  // };
 
 const fetchData = async () => {
   if (!token) {
@@ -87,29 +71,6 @@ const fetchData = async () => {
     }
   }, [isCartOpen])
 
-
-  // const handleCheckout = async () => {
-  //   if (items.length === 0) {
-  //     return toast.warn("Your cart is empty.");
-  //   }
-  //   if (!selectedAddressId) {
-  //     return toast.error("Please select a shipping address.");
-  //   }
-  //   try {
-  //     const response = await ordersApi.createOrder({ addressId: selectedAddressId }, token);
-  //     console.log('response', response)
-  //     const newOrder = response.data.order;
-  //     console.log('newOrder', newOrder)
-
-  //     toast.success("Order created successfully!");
-  //     toggleCart();
-  //     clearCart();
-  //     navigate(`/checkout/${newOrder.id}`);
-  //   } catch (err) {
-  //     console.log('err', err)
-  //     toast.error(err.response?.data?.message || "Failed to create order.");
-  //   }
-  // };
 
   const handleCheckout = async () => {
     if (items.length === 0) return toast.warn("Your cart is empty.");
@@ -178,28 +139,7 @@ const fetchData = async () => {
           )}
         </div>
 
-        {/* {items.length > 0 && (
-          <div className="p-4 border-t border-pri-gr1">
-            <h3 className="font-bold mb-2">Shipping Address</h3>
-            <div className='space-y-2 max-h-32 overflow-y-auto'>
-              {addresses.map(address => (
-                <div key={address.id} className="p-2 border border-pri-gr1 rounded-lg flex items-center gap-4 text-sm cursor-pointer" onClick={() => setSelectedAddressId(address.id)}>
-                  <input
-                    type="radio"
-                    name="shipping-address"
-                    className="radio radio-primary radio-sm"
-                    checked={selectedAddressId === address.id}
-                    readOnly
-                  />
-                  <p>{address.address}</p>
-                </div>
-              ))}
-            </div>
-            <Link to="/profile/addresses" className="text-xs text-blue-600 hover:underline mt-2 inline-block">+ Add/Manage Addresses</Link>
-          </div>
-
-            
-        )} */}
+        
 
         {items.length > 0 && (
           <>

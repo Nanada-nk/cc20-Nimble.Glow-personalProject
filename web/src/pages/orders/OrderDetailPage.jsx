@@ -26,11 +26,13 @@ function OrderDetailPage() {
   const [order, setOrder] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
-  const [reviewingProduct, setReviewingProduct] = useState(null);
+  const [isWriteReviewModalOpen, setIsWriteReviewModalOpen] = useState(false);
+  const [reviewingItem, setReviewingItem] = useState(null);
   const [reviewImages, setReviewImages] = useState([]);
   const [reviewImagePreviews, setReviewImagePreviews] = useState([]);
-
+  
+  const [isViewReviewModalOpen, setIsViewReviewModalOpen] = useState(false);
+  const [viewingReview, setViewingReview] = useState(null);
 
   const {
     control,
@@ -42,8 +44,6 @@ function OrderDetailPage() {
     resolver: yupResolver(reviewSchema),
   });
 
-  const [isViewReviewModalOpen, setIsViewReviewModalOpen] = useState(false);
-  const [viewingReview, setViewingReview] = useState(null);
 
   const fetchOrderDetails = async () => {
     if (!token || !orderId) return;
@@ -66,22 +66,22 @@ function OrderDetailPage() {
     fetchOrderDetails();
   }, []);
 
-  const handleOpenReviewModal = (product) => {
-    setReviewingProduct(product);
+  const handleOpenWriteReviewModal = (item) => {
+    setReviewingItem(item);
     reset({ rating: 0, comment: "" });
     setReviewImages([]);
     setReviewImagePreviews([]);
-    setIsReviewModalOpen(true);
+    setIsWriteReviewModalOpen(true);
   };
-  console.log('handleOpenReviewModal', handleOpenReviewModal)
+  console.log('handleOpenWriteReviewModal', handleOpenWriteReviewModal)
 
-  const handleCloseReviewModal = () => setIsReviewModalOpen(false);
-  console.log('handleCloseReviewModal', handleCloseReviewModal)
+  const handleCloseWriteReviewModal = () => setIsWriteReviewModalOpen(false);
+  console.log('handleCloseWriteReviewModal', handleCloseWriteReviewModal)
 
-  const handleOpenViewReviewModal = (product) => {
+  const handleOpenViewReviewModal = (item) => {
     setViewingReview({
-      ...product.reviews[0],
-      productTitle: product.title,
+      ...item.review,
+      productTitle: item.product.title,
     });
     setIsViewReviewModalOpen(true);
   };
@@ -114,6 +114,7 @@ function OrderDetailPage() {
   console.log('handleRemoveReviewImage', handleRemoveReviewImage)
 
   const onReviewSubmit = async (data) => {
+     if (!reviewingItem) return
     try {
       const formData = new FormData();
       console.log("formData", formData);
@@ -122,13 +123,13 @@ function OrderDetailPage() {
       reviewImages.forEach((file) => formData.append("images", file));
 
       const createReviewsApi = await reviewsApi.create(
-        reviewingProduct.productId,
+        reviewingItem.id,
         formData,
         token
       );
       console.log("createReviewsApi", createReviewsApi);
-      toast.success(`Review for ${reviewingProduct.product.title} submitted!`);
-      handleCloseReviewModal();
+      toast.success(`Review for ${reviewingItem.product.title} submitted!`);
+      handleCloseWriteReviewModal();
       fetchOrderDetails();
     } catch (err) {
       console.log("err", err);
@@ -151,14 +152,14 @@ function OrderDetailPage() {
 
   return (
     <>
-      <div className="container mx-auto p-4 md:p-8 min-h-230">
+      <div className="container mx-auto p-4 md:p-8 min-h-240">
         <h1 className="text-3xl font-bold mb-4">Order Details</h1>
 
         <OrderSummary order={order} />
 
         <OrderItemList
           order={order}
-          onOpenWriteReview={handleOpenReviewModal}
+          onOpenWriteReview={handleOpenWriteReviewModal}
           onOpenViewReview={handleOpenViewReviewModal}
         />
 
@@ -169,14 +170,13 @@ function OrderDetailPage() {
         onClose={handleCloseViewReviewModal}
         reviewData={viewingReview}
         productTitle={viewingReview?.productTitle}
-        control={control}
       />
 
       <Modal
-        isOpen={isReviewModalOpen}
-        onClose={handleCloseReviewModal}
+        isOpen={isWriteReviewModalOpen}
+        onClose={handleCloseWriteReviewModal}
         onConfirm={handleSubmit(onReviewSubmit)}
-        title={`Reviewing: ${reviewingProduct?.product.title}`}
+        title={`Reviewing: ${reviewingItem?.product.title}`}
         confirmText={isSubmitting ? "Submitting..." : "Submit Review"}
         isConfirmDisabled={isSubmitting}>
 

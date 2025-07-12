@@ -36,6 +36,9 @@ orderService.createOrderFromCart = async (userId, data) => {
       appliedCoupon = await transactionClientFromPrisma.coupon.findUnique({ where: { id: Number(couponId) } });
       if (!appliedCoupon) throw createError(404, "Coupon not found.");
       if (new Date() > new Date(appliedCoupon.expiredAt)) throw createError(400, "Coupon has expired.");
+      if (appliedCoupon.usageLimit !== null && (appliedCoupon.usageCount || 0) >= appliedCoupon.usageLimit) {
+        throw createError(400, "Coupon has reached its usage limit.");
+      }
       orderDiscount = cart.cartTotal * (appliedCoupon.discount / 100);
       finalTotal = cart.cartTotal - orderDiscount;
     }
@@ -98,10 +101,17 @@ orderService.createOrderFromCart = async (userId, data) => {
     })
 
     if (appliedCoupon) {
-      await transactionClientFromPrisma.coupon.update({
-        where: { id: appliedCoupon.id },
-        data: { usageCount: { increment: 1 } },
-      });
+      if (appliedCoupon.usageCount === null) {
+        await transactionClientFromPrisma.coupon.update({
+          where: { id: appliedCoupon.id },
+          data: { usageCount: 1 },
+        });
+      } else {
+        await transactionClientFromPrisma.coupon.update({
+          where: { id: appliedCoupon.id },
+          data: { usageCount: { increment: 1 } },
+        });
+      }
       await transactionClientFromPrisma.couponUsage.create({
         data: { userId, couponId: appliedCoupon.id, orderId: order.id },
       });
@@ -117,17 +127,18 @@ orderService.createOrderFromCart = async (userId, data) => {
       data: { cartTotal: 0 }
     });
 
-
+    console.log('error1', error)
     return order;
   });
 
 
 
-
+  console.log('error2', error)
   return prisma.order.findUnique({
     where: { id: newOrder.id },
     include: { products: { include: { product: true } } },
   });
+
 }
 
 
@@ -166,17 +177,17 @@ orderService.findOrderById = async (orderId, user) => {
       },
       products: {
         include: {
+          review: {
+            where: {
+              userId: user.id
+            },
+            include: {
+              images: true
+            }
+          },
           product: {
             include: {
-              images: true,
-              reviews: {
-                where: {
-                  userId: user.id
-                },
-                include: {
-                  images: true
-                }
-              }
+              images: true
             }
           }
         }

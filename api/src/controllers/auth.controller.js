@@ -75,14 +75,6 @@ authController.getMe = async (req, res, next) => {
 
   const { password, ...userWithoutPassword } = user
 
-  // res.status(200).json({
-  //   user: {
-  //     ...userWithoutPasswordAndRole,
-  //     createdAt: new Date(user.createdAt).toLocaleString(),
-  //     updatedAt: new Date(user.updatedAt).toLocaleString(),
-  //     lastLogin: new Date(user.lastLogin).toLocaleString(),
-  //   }
-  // })
   res.status(200).json({ user: formatDates(userWithoutPassword) })
 }
 

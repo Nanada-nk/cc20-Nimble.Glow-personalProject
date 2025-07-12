@@ -32,69 +32,6 @@ productService.create = (productData, creatorId) => {
   });
 }
 
-// // findAll แบบที่ 1
-// productService.findAll = () => {
-//   return prisma.product.findMany({
-//     include: {
-//       images: true,
-//       category: true,
-//       createdBy: {
-//         select: {
-//           id: true,
-//           firstName: true,
-//           lastName: true,
-//           email: true,
-//           role: true
-//         }
-//       }
-//     }
-//   });
-// }
-
-// // findAll แบบที่ 2
-// productService.findAll = async (queryOptions = {}) => {
-//   const { categoryId, minPrice, maxPrice, search, sortBy, order = 'asc', page = 1, limit = 10 } = queryOptions;
-
-//   const where = {};
-//   if (categoryId) where.categoryId = Number(categoryId);
-//   if (minPrice) where.price = { ...where.price, gte: Number(minPrice) };
-//   if (maxPrice) where.price = { ...where.price, lte: Number(maxPrice) };
-//   if (search) {
-//     where.OR = [
-//       { title: { contains: search } },
-//       { description: { contains: search } },
-//     ];
-//   }
-
-//   const orderBy = sortBy ? { [sortBy]: order } : { createdAt: 'desc' };
-//   const skip = (Number(page) - 1) * Number(limit);
-//   const take = Number(limit);
-//   const [products, totalProducts] = await prisma.$transaction([
-//     prisma.product.findMany({
-//       where,
-//       orderBy,
-//       skip,
-//       take,
-//       include: { 
-//         images: true, 
-//         category: true,
-//         createdBy: {
-//           select: {
-//             id: true,
-//             firstName: true,
-//             email: true,
-//             role: true
-//           }
-//         }
-//       }
-//     }),
-//     prisma.product.count({ where })
-//   ]);
-
-//   const totalPages = Math.ceil(totalProducts / take);
-
-//   return { products, currentPage: Number(page), totalPages, totalProducts };
-// };
 
 productService.findAll = async (queryOptions = {}) => {
   const { categoryId, search, page = 1, limit = 1000 } = queryOptions; 
@@ -133,17 +70,36 @@ productService.findAll = async (queryOptions = {}) => {
 
 productService.findById = (id) => {
   return prisma.product.findUnique({
-    where: { id },
+    where: { id: Number(id) },
     include: {
       images: true,
       category: true,
-      reviews: true,
       createdBy: {
         select: {
           firstName: true,
           lastName: true,
           email: true,
           role: true
+        }
+      },
+      orderItems:{
+        where:{
+          review:{
+            isNot: null
+          }
+        },
+        include:{
+          review: {
+            include: {
+              user: {
+                select: {
+                  firstName: true,
+                  profileImage: true
+                },
+              },
+              images: true
+            }
+          }
         }
       }
     }
@@ -174,7 +130,7 @@ productService.updateProduct = (id, dataToUpdate, newImageUrls = [], imagesToDel
     updateData.images = imageUpdateLogic;
   }
   return prisma.product.update({
-    where: { id },
+    where: { id: Number(id) },
     data: updateData,
     include: {
       images: true,
@@ -192,7 +148,7 @@ productService.updateProduct = (id, dataToUpdate, newImageUrls = [], imagesToDel
 
 productService.deleteProduct = (id) => {
   return prisma.product.delete({
-    where: { id },
+    where: { id: Number(id) },
     include: {
       createdBy: {
         select: {

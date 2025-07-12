@@ -44,6 +44,7 @@ function AdminCouponManagementPage() {
   };
 
   useEffect(() => {
+    console.log('fetchCoupons', fetchCoupons)
     fetchCoupons();
   }, []);
 
@@ -52,20 +53,48 @@ function AdminCouponManagementPage() {
     reset({ code: '', discount: 0, expiredAt: '', usageLimit: 0 });
     setIsModalOpen(true);
   };
+  console.log('handleOpenCreateModal', handleOpenCreateModal)
+
+  // const handleOpenEditModal = (coupon) => {
+  //   setEditingCoupon(coupon);
+  //   const localDateTime = new Date(new Date(coupon.expiredAt).getTime() - (new Date().getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
+  //   reset({
+  //     code: coupon.code,
+  //     discount: coupon.discount,
+  //     expiredAt: localDateTime,
+  //     usageLimit: coupon.usageLimit,
+  //   });
+  //   setIsModalOpen(true);
+  // };
 
   const handleOpenEditModal = (coupon) => {
     setEditingCoupon(coupon);
-    const localDateTime = new Date(new Date(coupon.expiredAt).getTime() - (new Date().getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
+    let formattedExpiredAt = '';
+    console.log('formattedExpiredAt', formattedExpiredAt)
+
+    if (coupon.expiredAt && !isNaN(new Date(coupon.expiredAt).getTime())) {
+      const date = new Date(coupon.expiredAt);
+      console.log('date', date)
+      
+      const localDateTime = new Date(date.getTime() - (new Date().getTimezoneOffset() * 60000));
+      console.log('localDateTime', localDateTime)
+      
+      formattedExpiredAt = localDateTime.toISOString().slice(0, 16);
+    }
+
     reset({
       code: coupon.code,
       discount: coupon.discount,
-      expiredAt: localDateTime,
+      expiredAt: formattedExpiredAt,
       usageLimit: coupon.usageLimit,
     });
+
     setIsModalOpen(true);
   };
-  
+  console.log('handleOpenEditModal', handleOpenEditModal)
+
   const handleCloseModal = () => setIsModalOpen(false);
+  console.log('handleCloseModal', handleCloseModal)
 
   const handleDelete = async (coupon) => {
     const { isConfirmed } = await confirm({ text: `Delete coupon: ${coupon.code}?` });
@@ -75,17 +104,20 @@ function AdminCouponManagementPage() {
         toast.success("Coupon deleted!");
         fetchCoupons();
       } catch (err) {
+        console.log('err', err)
         toast.error(err.response?.data?.message || "Failed to delete coupon.");
       }
     }
   };
-  
+  console.log('handleDelete', handleDelete)
+
   const onSubmit = async (data) => {
     try {
       const payload = {
         ...data,
-        expiredAt: new Date(data.expiredAt).toISOString(), 
+        expiredAt: data.expiredAt ? new Date(data.expiredAt).toISOString() : null,
       };
+      console.log('payload', payload)
 
       if (editingCoupon) {
         await couponsApi.update(editingCoupon.id, payload, token);
@@ -97,12 +129,17 @@ function AdminCouponManagementPage() {
       fetchCoupons();
       handleCloseModal();
     } catch (err) {
+      console.log('err', err)
       toast.error(err.response?.data?.message || "An error occurred.");
     }
   };
+  console.log('onSubmit', onSubmit)
 
   const columns = useCouponTableColumns({ onEdit: handleOpenEditModal, onDelete: handleDelete });
+  console.log('columns', columns)
+
   const filteredCoupons = coupons.filter(c => c.code.toLowerCase().includes(searchTerm.toLowerCase()));
+  console.log('filteredCoupons', filteredCoupons)
 
   if (isLoading) { return <div className="flex items-center justify-center min-h-screen"><BubblesIcon className="w-10 h-10 animate-spin text-pri-gr1" /></div>; }
 
@@ -112,11 +149,11 @@ function AdminCouponManagementPage() {
         <h1 className="text-3xl font-bold text-gray-800">Coupon Management</h1>
         <button onClick={handleOpenCreateModal} className="btn btn-primary">Create New Coupon</button>
       </header>
-      
+
       <SearchInput value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search by coupon code..." />
 
       <DataTable columns={columns} data={filteredCoupons} pagination responsive highlightOnHover />
-      
+
       <Modal
         isOpen={isModalOpen}
         onClose={handleCloseModal}

@@ -16,7 +16,7 @@ function useReviewTableColumns() {
     { name: 'ID', selector: row => row.id, sortable: true, width: '80px' },
     {
       name: 'Product',
-      selector: row => row.product?.title || 'N/A',
+      selector: row => row.productOnOrder?.product?.title || 'N/A',
       sortable: true,
       wrap: true
     },

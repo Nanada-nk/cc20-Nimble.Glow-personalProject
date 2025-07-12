@@ -10,13 +10,14 @@ import { BubblesIcon, CheckCircle, Truck, Info } from "lucide-react";
 import Footer from "../../layouts/Footer.jsx";
 import UserReviewHistoryPage from "../reviews/UserReviewHistoryPage.jsx";
 import authStore from "../../stores/authStore.js";
+import { useMemo } from "react";
 
 function ProductDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate()
   const user = authStore((state) => state.user)
   const actionAddItem = useCartStore((state) => state.actionAddItem)
-  
+
 
   const [product, setProduct] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -34,6 +35,16 @@ function ProductDetailPage() {
 
   const quantity = watch("quantity", 1);
   const totalPrice = (product?.price * quantity).toFixed(2);
+
+  const reviews = useMemo(() => {
+    if (!product?.orderItems) {
+      return []
+    }
+    return product.orderItems
+      .filter(item => item.review)
+      .map(item => item.review)
+  }, [product])
+  console.log('reviews', reviews)
 
   const fetchProduct = async () => {
     setIsLoading(true);
@@ -182,7 +193,7 @@ function ProductDetailPage() {
               <a
                 className={`tab ${activeTab === "reviews" ? "tab-active" : ""}`}
                 onClick={() => setActiveTab("reviews")}>
-                Reviews ({product.reviews.length})
+                Reviews ({reviews.length})
               </a>
             </div>
 
@@ -195,7 +206,10 @@ function ProductDetailPage() {
             )}
 
             {activeTab === "reviews" && (
-              <UserReviewHistoryPage productId={product.id} />
+              <UserReviewHistoryPage
+                reviews={reviews}
+                isLoading={isLoading}
+              />
             )}
           </div>
         </div>

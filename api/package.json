@@ -5,8 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node --watch src/server.js",
-    "dev": "node --watch src/server.js"
+    "start": "cross-env NODE_ENV=production node src/server.js",
+    "dev": "cross-env NODE_ENV=development node --watch src/server.js"
   },
   "type": "module",
   "keywords": [],
@@ -31,6 +31,7 @@
     "yup": "^1.6.1"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "prisma": "^6.10.1"
   }
 }

@@ -21,12 +21,13 @@ const uploadReviewImages = async (files) => {
 }
 
 reviewController.create = async (req, res, next) => {
-    const productId = Number(req.params.productId);
+    const productOnOrderId  = Number(req.params.productOnOrderId );
     const userId = req.user.id
+    
     const { rating, comment } = req.body;
     const newImageUrls = await uploadReviewImages(req.files)
     const reviewData = { rating: Number(rating), comment, images: newImageUrls }
-    const newReview = await reviewService.createReviewForProduct(productId, userId, reviewData);
+    const newReview = await reviewService.createReview(productOnOrderId, userId, reviewData);
     res.status(201).json({ success: true, review: formatDates(newReview) });
 };
 

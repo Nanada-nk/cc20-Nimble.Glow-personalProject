@@ -11,33 +11,40 @@ ordersController.createOrder = async (req, res, next) => {
   const data = req.body;
 
   const newOrder = await orderService.createOrderFromCart(userId, data);
+  console.log('newOrder', newOrder)
   res.status(201).json({ success: true, order: formatDates(newOrder) });
+  console.log('error', error)
 }
 
 ordersController.getUserOrders = async (req, res, next) => {
   const userId = req.user.id;
   const orders = await orderService.findOrdersByUserId(userId);
+  console.log('orders', orders)
   res.status(200).json({ success: true, orders: formatDates(orders) })
+  console.log('error', error)
 }
 
 ordersController.getOrderById = async (req, res, next) => {
   const orderId = Number(req.params.id);
   const user = req.user
   const order = await orderService.findOrderById(orderId, user);
+  console.log('order', order)
   res.status(200).json({ success: true, order: formatDates(order) })
+  console.log('error', error)
 }
 
 ordersController.getAllAdmin = async (req, res, next) => {
-  try {
+ 
     const orders = await orderService.findAllAdmin();
+    console.log('orders', orders)
     res.status(200).json({ success: true, orders: formatDates(orders) });
-  } catch (error) {
-    next(error);
-  }
+    console.log('error', error)
+ 
 };
 
 ordersController.updateStatus = async (req, res, next,) => {
   const orderId = Number(req.params.id);
+  console.log('orderId', orderId)
   const { orderStatus } = req.body;
 
   if (!orderStatus) {
@@ -56,7 +63,9 @@ ordersController.updateStatus = async (req, res, next,) => {
     orderId,
     orderStatus
   );
+  console.log('updatedOrder', updatedOrder)
   res.status(200).json({ success: true, order: formatDates(updatedOrder) });
+  console.log('error', error)
 }
 
 ordersController.updateAdminDetails = async (req, res, next) => {
@@ -64,8 +73,9 @@ ordersController.updateAdminDetails = async (req, res, next) => {
   const orderId = Number(req.params.id);
   const data = req.body;
   const updatedOrder = await orderService.updateAdminOrderDetails(orderId, data);
+  console.log('updatedOrder', updatedOrder)
   res.status(200).json({ success: true, order: formatDates(updatedOrder) });
-
+  console.log('error', error)
 };
 
 export default ordersController;

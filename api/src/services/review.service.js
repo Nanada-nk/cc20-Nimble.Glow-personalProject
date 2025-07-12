@@ -3,41 +3,53 @@ import createError from "../utils/create-error.js";
 
 const reviewService = {};
 
-reviewService.createReviewForProduct = async (productId, userId, data) => {
-  const canReview = await prisma.order.findFirst({
-    where: {
-      cart: { userId },
-      orderStatus: { in: ['DELIVERED', 'COMPLETED'] },
-      products: { some: { productId } },
+reviewService.createReview = async (productOnOrderId, userId, data) => {
+
+  const productInOrder = await prisma.productOnOrder.findUnique({
+    where: { id: Number(productOnOrderId) },
+    include: {
+      order: { include: { cart: true } },
+      review: true,
     },
   });
-  if (!canReview) throw createError(403, "You can only review products you have purchased.");
+
+  if (!productInOrder) {
+    throw createError(404, "Product in order not found.");
+  }
+  if (productInOrder.order.cart.userId !== userId) {
+    throw createError(403, "You can only review products from your own orders.");
+  }
+  if (!['DELIVERED', 'COMPLETED'].includes(productInOrder.order.orderStatus)) {
+    throw createError(403, "You can only review products after the order is delivered or completed.");
+  }
+  if (productInOrder.review) {
+    throw createError(400, "You have already reviewed this item.");
+  }
 
   return prisma.review.create({
     data: {
       rating: data.rating,
       comment: data.comment,
-      productId: Number(productId),
       userId: userId,
+      productOnOrderId: Number(productOnOrderId),
       images: {
-        create: data.images ? data.images.map(url => ({ url })) : []
+        create: data.images ? data.images.map(url => ({ url })) : undefined
       }
     },
     include: {
       images: true,
-      user: {
-        select: {
-          firstName: true,
-          profileImage: true
-        }
-      }
+      user: { select: { firstName: true, profileImage: true } }
     }
   });
 };
 
 reviewService.getReviewsForProduct = (productId) => {
   return prisma.review.findMany({
-    where: { productId: Number(productId) },
+    where: {
+      productOnOrder: {
+        productId: Number(productId),
+      }
+    },
     include: {
       images: true,
       user: {
@@ -67,10 +79,14 @@ reviewService.findAllReviews = () => {
           profileImage: true
         }
       },
-      product: {
+      productOnOrder: {
         select: {
-          id: true,
-          title: true
+          product: {
+            select: {
+              id: true,
+              title: true
+            }
+          }
         }
       }
     }

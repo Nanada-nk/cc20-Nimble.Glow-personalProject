@@ -1,15 +1,15 @@
 
-import { Link, useLocation, useNavigate } from "react-router"; 
-import { ChartColumnStackedIcon, FolderCog, PackageSearch, Star, Ticket, TrashIcon, UsersRound } from 'lucide-react'; 
+import { Link, useLocation, useNavigate } from "react-router";
+import { ChartColumnStackedIcon, FolderCog, PackageSearch, Star, Ticket, TrashIcon, UsersRound } from 'lucide-react';
 import authStore from "../stores/authStore";
-import { toast } from "react-toastify"; 
+import { toast } from "react-toastify";
 import NimbleGlowLogo from "./NimbleGlowLogo";
 
 
 
 const adminNavLinks = [
   { path: '/admin/users', label: 'Customer Management', icon: <UsersRound size={18} /> },
-  { path: '/admin/categories', label: 'Category Management' , icon: <ChartColumnStackedIcon size={20} /> },
+  { path: '/admin/categories', label: 'Category Management', icon: <ChartColumnStackedIcon size={20} /> },
   { path: '/admin/products', label: 'Product Management', icon: <PackageSearch size={20} /> },
   { path: '/admin/orders', label: 'Order Management', icon: <FolderCog size={20} /> },
   { path: '/admin/coupons', label: 'Coupon Management', icon: <Ticket size={20} /> },
@@ -18,45 +18,45 @@ const adminNavLinks = [
 
 
 function AdminSidebar() {
-  const location = useLocation(); 
-  const navigate = useNavigate(); 
-  const actionLogout = authStore((state) => state.actionLogout); 
+  const location = useLocation();
+  const navigate = useNavigate();
+  const actionLogout = authStore((state) => state.actionLogout);
 
   const handleLogout = () => {
     actionLogout();
     toast.success("Logged out successfully!");
-    navigate("/login"); 
+    navigate("/login");
   };
 
   return (
     <div className="w-64 bg-pri-gr1 text-white p-4 flex flex-col">
       <div className="flex-shrink-0 mb-8">
-         
-          <Link to="/">
-              <NimbleGlowLogo />
-          </Link>
+
+
+        <NimbleGlowLogo />
+
       </div>
       <nav className="flex-grow">
         <ul>
-          {adminNavLinks.map((link) => (
-            <li key={link.path} className="mb-2">
-              <Link 
-                to={link.path} 
-               
-                className={`flex items-center gap-2 p-2 rounded hover:bg-green-950  ${location.pathname === link.path ? 'bg-green-950' : ''}`}
+          {adminNavLinks.map((linker) => (
+            <li key={linker.path} className="mb-2">
+              <Link
+                to={linker.path}
+
+                className={`flex items-center gap-2 p-2 rounded hover:bg-green-950  ${location.pathname === linker.path ? 'bg-green-950' : ''}`}
               >
-               {link.icon} {link.label}
+                {linker.icon} {linker.label}
               </Link>
             </li>
           ))}
         </ul>
       </nav>
       <div className="mt-auto">
-        <button 
-          onClick={handleLogout} 
+        <button
+          onClick={handleLogout}
           className="w-full text-left p-2 rounded hover:bg-green-950 flex items-center"
         >
-          <TrashIcon size={18} className="mr-2" /> Logout 
+          <TrashIcon size={18} className="mr-2" /> Logout
         </button>
       </div>
     </div>

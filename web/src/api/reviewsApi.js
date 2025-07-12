@@ -15,8 +15,8 @@ reviewsApi.getByProduct = (id) => {
   return axios.get(`${BASE_URL}/reviews/product/${id}`)
 }
 
-reviewsApi.create = (productId, formData, token) => {
-  return axios.post(`${BASE_URL}/reviews/product/${productId}`, formData, {
+reviewsApi.create = (productOnOrderId, formData, token) => {
+  return axios.post(`${BASE_URL}/reviews/product-on-order/${productOnOrderId}`, formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
       Authorization: `Bearer ${token}`

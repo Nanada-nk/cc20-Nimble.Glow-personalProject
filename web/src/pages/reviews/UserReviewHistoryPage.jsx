@@ -6,26 +6,26 @@ import reviewsApi from "../../api/reviewsApi.js";
 import ReviewCard from "../../components/ReviewCard.jsx";
 import { BubblesIcon } from "lucide-react";
 
-function UserReviewHistoryPage({ productId }) {
-  const [reviews, setReviews] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+function UserReviewHistoryPage({ reviews, isLoading }) {
+  // const [reviews, setReviews] = useState([]);
+  // const [isLoading, setIsLoading] = useState(true);
 
-  const fetchReviews = async () => {
-    if (!productId) return;
-    setIsLoading(true);
-    try {
-      const resp = await reviewsApi.getByProduct(productId);
-      setReviews(resp.data.reviews || []);
-    } catch (error) {
-      toast.error("Failed to load reviews.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // const fetchReviews = async () => {
+  //   if (!productId) return;
+  //   setIsLoading(true);
+  //   try {
+  //     const resp = await reviewsApi.getByProduct(productId);
+  //     setReviews(resp.data.reviews || []);
+  //   } catch (error) {
+  //     toast.error("Failed to load reviews.");
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
-  useEffect(() => {
-    fetchReviews();
-  }, [productId]);
+  // useEffect(() => {
+  //   fetchReviews();
+  // }, [productId]);
 
   return (
     <div className="bg-white p-8 rounded-b-lg rounded-tr-lg shadow-lg">

@@ -48,7 +48,7 @@ const useCartStore = create(
           await get().fetchCart(); 
         } catch (error) {
           toast.error(error.response?.data?.message || "Failed to add item.");
-          throw error;
+          next(error);
         }
       },
 
@@ -61,7 +61,7 @@ const useCartStore = create(
           await get().fetchCart();
         } catch (error) {
           toast.error(error.response?.data?.message || "Failed to remove item.");
-          throw error;
+          next(error);
         }
       },
       

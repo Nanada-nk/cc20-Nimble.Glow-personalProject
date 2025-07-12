@@ -35,7 +35,7 @@ function AdminReviewManagementPage() {
 
   const filteredReviews = reviews.filter(review =>
     (review.comment?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
-    (review.product?.title.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+    (review.productOnOrder?.product?.title.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
     (review.user?.firstName.toLowerCase() || '').includes(searchTerm.toLowerCase())
   );
 

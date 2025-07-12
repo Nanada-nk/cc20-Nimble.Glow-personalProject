@@ -19,13 +19,6 @@ shippingController.getStatus = async (req, res, next) => {
     res.status(200).json({ success: true, shipping: formatDates(shipping) });
 };
 
-// // version1
-// shippingController.updateStatus = async (req, res, next) => {
-//     const { orderId } = req.params;
-//     const shippingData = req.body;
-//     const updatedShipping = await shippingService.updateShippingForOrder(Number(orderId), shippingData);
-//     res.status(200).json({ success: true, shipping: formatDates(updatedShipping) });
-// };
 
 shippingController.updateShipping = async (req, res, next) => {
     const { orderId } = req.params;

@@ -40,7 +40,7 @@ const authStore = create(
           const response = await authApi.register(registerData);
           return response;
         } catch (error) {
-          throw error;
+          next(error);
         }
       },
 
@@ -55,7 +55,7 @@ const authStore = create(
         } catch (error) {
           // console.error("actionLogin: Login failed, error =", error)
           set({ isLoading: false });
-          throw error;
+          next(error);
         }
       },
 

@@ -31,7 +31,7 @@ function ViewReviewModal({ isOpen, onClose, reviewData, productTitle }) {
 
   useEffect(() => {
     manageModalLifecycle()
-  }, [isOpen, handleClose]);
+  }, [isOpen]);
 
 
   if (!reviewData) return null;

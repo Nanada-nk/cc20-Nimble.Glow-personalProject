@@ -5,23 +5,25 @@ const paymentController = {};
 
 paymentController.getMethods = (req, res, next) => {
     const methods = paymentService.getPaymentMethods();
+    console.log('methods', methods)
     res.status(200).json({ success: true, methods });
+    console.log('error', error)
 };
 
 paymentController.uploadSlip = async (req, res, next) => {
-    try {
-        const { paymentId } = req.params;
-        const file = req.file;
 
-        if (!file) {
-            throw createError(400, "Slip image is required.");
-        }
+    const { paymentId } = req.params;
+    const file = req.file;
 
-        const updatedPayment = await paymentService.handleSlipUpload(paymentId, file);
-        res.status(200).json({ message: "Slip uploaded successfully.", payment: updatedPayment });
-    } catch (error) {
-        next(error);
+    if (!file) {
+        throw createError(400, "Slip image is required.");
     }
+
+    const updatedPayment = await paymentService.handleSlipUpload(paymentId, file);
+    console.log('updatedPayment', updatedPayment)
+    res.status(200).json({ message: "Slip uploaded successfully.", payment: updatedPayment });
+    console.log('error', error)
+
 }
 
 paymentController.payForOrder = async (req, res, next) => {
@@ -30,7 +32,9 @@ paymentController.payForOrder = async (req, res, next) => {
     const paymentData = req.body;
 
     const newPayment = await paymentService.createPaymentForOrder(Number(orderId), userId, paymentData);
+    console.log('newPayment', newPayment)
     res.status(201).json({ success: true, payment: formatDates(newPayment) });
+    console.log('error', error)
 };
 
 paymentController.getPaymentForOrder = async (req, res, next) => {

@@ -5,28 +5,28 @@ const couponService = {};
 
 
 couponService.createCoupon = (data, creatorId) => {
-  return prisma.coupon.create({ 
+  return prisma.coupon.create({
     data:
     {
       ...data,
       createdById: creatorId
     },
-    include:{
-      createdBy:{
-        select:{
-          firstName:true
+    include: {
+      createdBy: {
+        select: {
+          firstName: true
         }
       }
     }
-   })
+  })
 };
 
 couponService.getAllCoupons = () => {
   return prisma.coupon.findMany({
-    include:{
-      createdBy:{
-        select:{
-          firstName:true
+    include: {
+      createdBy: {
+        select: {
+          firstName: true
         }
       }
     }
@@ -36,10 +36,27 @@ couponService.getAllCoupons = () => {
 couponService.findAvailableCoupons = () => {
   return prisma.coupon.findMany({
     where: {
-      expiredAt: {
-        gt: new Date(), 
-      },
-     
+      AND: [
+        {
+
+          expiredAt: {
+            gt: new Date(),
+          },
+        },
+        {
+          OR: [
+            {
+              usageLimit: null,
+            },
+            {
+              usageCount: {
+                lt: prisma.coupon.fields.usageLimit
+              }
+            }
+          ]
+        }
+      ]
+
     },
     orderBy: {
       expiredAt: 'asc',
@@ -52,13 +69,14 @@ couponService.findById = (id) => prisma.coupon.findUnique({ where: { id: Number(
 
 couponService.updateCoupon = (id, data) => prisma.coupon.update({ where: { id: Number(id) }, data });
 
-couponService.deleteCoupon = (id) => prisma.coupon.delete({ where: { id : Number(id) } });
+couponService.deleteCoupon = (id) => prisma.coupon.delete({ where: { id: Number(id) } });
 
 
 couponService.applyCouponToOrder = async (orderId, couponCode, userId) => {
   const coupon = await prisma.coupon.findUnique({ where: { code: couponCode } });
+  console.log('coupon', coupon)
   const order = await prisma.order.findFirst({ where: { id: orderId, cart: { userId } } });
-
+  console.log('order', order)
   if (!order) throw createError(404, "Order not found.");
   if (order.couponId) throw createError(400, "Coupon already applied.");
   if (!coupon) throw createError(404, "Coupon code is invalid.");
