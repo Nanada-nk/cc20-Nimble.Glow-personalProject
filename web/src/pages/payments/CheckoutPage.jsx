@@ -63,10 +63,13 @@ function CheckoutPage() {
       setIsSubmitting(true);
       const formData = new FormData();
       console.log('formData', formData)
+
       formData.append('slipImage', slipFile);
+
       const uploadSlip = await paymentsApi.uploadSlip(order.payment.id, formData, token);
       console.log('uploadSlip', uploadSlip)
-      toast.success("Payment confirmation sent successfully!");
+
+      toast.success("Payment confirmation sent successfully!"); 
       navigate(`/orders/${order.id}`);
     } catch (error) {
       console.log('error', error)
@@ -85,7 +88,7 @@ function CheckoutPage() {
   }
 
   return (
-    <>
+    <div className='bg-bg-cr4'>
       <div className="p-10 flex justify-center">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start duration-700">
 
@@ -111,12 +114,12 @@ function CheckoutPage() {
 
             <div className='mt-8 mb-4'>
               <h2 className='text-xl font-bold mb-4'>Shipping to:</h2>
-              <div className="p-4 rounded-lg bg-gray-50">
+              <div className="p-4 rounded-lg bg-gray-50 shadow">
                 <p className="text-gray-700">{order.shipping?.address?.address || 'No address selected.'}</p>
               </div>
             </div>
 
-            <div className='p-6 bg-gray-50 rounded-lg'>
+            <div className='p-6 bg-gray-50 rounded-lg shadow'>
               <h3 className='text-lg font-bold'>Your Order ID: {order.orderNumber}</h3>
               <div className='mt-4 space-y-4'>
                 {order.products.map(item => (
@@ -139,7 +142,7 @@ function CheckoutPage() {
                   <span>{order.cartTotal.toFixed(2)} THB</span>
                 </div>
 
-               
+
                 {order.orderDiscount > 0 && (
                   <div className="flex justify-between text-green-600">
                     <span>Coupon Discount</span>
@@ -147,7 +150,7 @@ function CheckoutPage() {
                   </div>
                 )}
 
-               
+
                 <div className="flex justify-between font-bold text-xl mt-2">
                   <span>TOTAL</span>
                   <span className='text-pri-gr1'>{order.payment?.amount.toFixed(2)} THB</span>
@@ -160,7 +163,7 @@ function CheckoutPage() {
 
 
 
-          <div className='outline-2 outline-pri-gr1 py-10 px-6 h-auto w-[427px] rounded-lg flex flex-col items-center shadow-lg shadow-pri-gr1 duration-700'>
+          <div className='outline-2 outline-pri-gr1 bg-white py-10 px-6 h-auto w-[427px] rounded-lg flex flex-col items-center shadow-lg shadow-pri-gr1 duration-700'>
             <h2 className='text-2xl font-bold mb-2'>THAI QR PAYMENT</h2>
             <img src="https://res.cloudinary.com/dhoyopcr7/image/upload/v1752200246/QRcode_nofkwy.jpg" alt="QR Code" className='h-[500px]' />
             <div className='w-full max-w-sm mt-4'>
@@ -194,7 +197,7 @@ function CheckoutPage() {
         </div>
       </div>
       <Footer />
-    </>
+    </div>
   );
 }
 

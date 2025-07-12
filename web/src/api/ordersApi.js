@@ -48,11 +48,13 @@ ordersApi.updateStatus = (id, body, token) => {
 }
 
 ordersApi.updateAdminOrderDetails = (id, body, token) => {
-  return axios.patch(`${BASE_URL}/orders/admin/${id}`, body, { 
+  return axios.patch(`${BASE_URL}/orders/admin/${id}`, body, {
     headers: {
       Authorization: `Bearer ${token}`
     }
   })
 }
+
+
 
 export default ordersApi

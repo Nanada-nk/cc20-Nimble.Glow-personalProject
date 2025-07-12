@@ -32,7 +32,23 @@ function useOrderTableColumns({ onEdit }) {
         )
       )
     },
-    { name: 'Total', selector: row => row.cartTotal.toFixed(2), sortable: true },
+    {
+      name: 'Discount',
+      selector: row => row.orderDiscount,
+      sortable: true,
+      cell: row => (
+        <span className={row.orderDiscount > 0 ? 'text-red-600' : 'text-gray-400'}>
+          {row.orderDiscount.toFixed(2)}
+        </span>
+      )
+    },
+    {
+      name: 'Total',
+      selector: row => (row.payment?.amount ?? row.cartTotal),
+      sortable: true,
+      cell: row => (row.payment?.amount ?? row.cartTotal).toFixed(2)
+    },
+    { name: 'Coupon Used', selector: row => row.coupon?.code || 'N/A', sortable: true },
     {
       name: 'Order Status',
       selector: row => row.orderStatus,

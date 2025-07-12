@@ -1,6 +1,6 @@
-import { connect } from "http2";
 import prisma from "../config/prisma.config.js";
 import createError from "../utils/create-error.js";
+
 
 const orderService = {};
 
@@ -127,13 +127,15 @@ orderService.createOrderFromCart = async (userId, data) => {
       data: { cartTotal: 0 }
     });
 
-    
+
     return order;
   });
-  return prisma.order.findUnique({
-    where: { id: newOrder.id },
-    include: { products: { include: { product: true } } },
-  });
+
+  
+
+
+
+return newOrder
 
 }
 
@@ -229,7 +231,8 @@ orderService.findAllAdmin = () => {
         }
       },
       payment: true,
-      shipping: true
+      shipping: true,
+      coupon:true,
     },
     orderBy: {
       createdAt: 'desc'
@@ -284,5 +287,7 @@ orderService.updateAdminOrderDetails = (orderId, data) => {
     return finalOrder;
   });
 };
+
+
 
 export default orderService;

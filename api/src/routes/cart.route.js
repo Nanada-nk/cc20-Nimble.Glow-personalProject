@@ -4,7 +4,7 @@ import cartController from '../controllers/cart.controller.js'
 
 const cartRouter = express.Router()
 
-cartRouter.get('/', checkRole("CUSTOMER"), cartController.getCart)
+cartRouter.get('/', cartController.getCart)
 cartRouter.post('/', checkRole("CUSTOMER"), cartController.addItemToCart)
 cartRouter.delete('/items/:itemId', checkRole("CUSTOMER"), cartController.removeItem)
 
