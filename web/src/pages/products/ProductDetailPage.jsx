@@ -106,13 +106,6 @@ function ProductDetailPage() {
           <div className="grid md:grid-cols-2 gap-8 lg:gap-16">
             <div className="flex flex-col gap-4">
 
-              {/* <div className="aspect-square bg-white rounded-lg shadow-lg shadow-pri-ic overflow-hidden">
-                <img
-                  src={mainImage || "https://res.cloudinary.com/dhoyopcr7/image/upload/v1752044189/ad-product-svgrepo-com_zogf2n.png"}
-                  alt={product.title}
-                  className="w-full h-full object-cover"
-                />
-              </div> */}
 
               <label htmlFor="image-modal" className="cursor-pointer">
                 <div className="aspect-square bg-white rounded-lg shadow-lg shadow-pri-ic overflow-hidden">

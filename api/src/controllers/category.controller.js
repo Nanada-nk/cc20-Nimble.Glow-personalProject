@@ -1,6 +1,6 @@
 import categoryService from "../services/category.service.js"
 import createError from "../utils/create-error.js";
-import { formatDates } from "../utils/formatter.js";
+
 
 const categoryController = {}
 
@@ -12,12 +12,12 @@ categoryController.create = async (req, res, next) => {
   }
 
   const newCategory = await categoryService.create(name, createdById)
-  res.status(201).json({ success: true, category: formatDates(newCategory) })
+  res.status(201).json({ success: true, category: newCategory })
 }
 
 categoryController.getAll = async (req, res, next) => {
   const categories = await categoryService.findAll()
-  res.status(200).json({ success: true, categories: formatDates(categories) })
+  res.status(200).json({ success: true, categories: categories })
 }
 
 categoryController.updateCategory = async (req, res, next) => {
@@ -34,7 +34,7 @@ categoryController.updateCategory = async (req, res, next) => {
   }
 
   const updatedCategory = await categoryService.updateCategory(id, { name })
-  res.status(200).json({ success: true, category: formatDates(updatedCategory) })
+  res.status(200).json({ success: true, category: updatedCategory })
 }
 
 categoryController.deleteCategory = async (req, res, next) => {
@@ -45,7 +45,7 @@ categoryController.deleteCategory = async (req, res, next) => {
     throw createError(404, "Category not found");
   }
   const deleteCategory = await categoryService.deleteCategory(id)
-  res.status(200).json({ success: true, message: "Category deleted successfully",deleteCategory : formatDates(deleteCategory) })
+  res.status(200).json({ success: true, message: "Category deleted successfully",deleteCategory : deleteCategory })
 }
 
 

@@ -1,6 +1,6 @@
 import cartService from "../services/cart.service.js";
 import createError from "../utils/create-error.js";
-import { formatDates } from "../utils/formatter.js";
+
 
 const cartController = {};
 
@@ -32,7 +32,7 @@ cartController.getCart = async (req, res, next) => {
       return res.status(200).json({ success: true, cart: null });
     }
 
-    res.status(200).json({ success: true, cart: formatDates(cart) })
+    res.status(200).json({ success: true, cart: cart })
  
     
     

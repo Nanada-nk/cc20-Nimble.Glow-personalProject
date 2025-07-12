@@ -34,7 +34,7 @@ function useReviewTableColumns() {
     },
     {
       name: 'Date',
-      selector: row => row.reviewDate,
+      selector: row => new Date(row.reviewDate).toLocaleString('th-TH'),
       sortable: true,
     },
   ];

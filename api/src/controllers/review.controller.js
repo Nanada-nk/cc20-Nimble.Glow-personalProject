@@ -1,5 +1,4 @@
 import reviewService from "../services/review.service.js";
-import { formatDates } from "../utils/formatter.js";
 import cloudinary from "../config/cloudinary.config.js";
 import fs from "fs/promises"
 
@@ -28,19 +27,19 @@ reviewController.create = async (req, res, next) => {
     const newImageUrls = await uploadReviewImages(req.files)
     const reviewData = { rating: Number(rating), comment, images: newImageUrls }
     const newReview = await reviewService.createReview(productOnOrderId, userId, reviewData);
-    res.status(201).json({ success: true, review: formatDates(newReview) });
+    res.status(201).json({ success: true, review: newReview });
 };
 
 reviewController.getAll = async (req, res, next) => {
     const reviews = await reviewService.findAllReviews();
-    res.status(200).json({ success: true, reviews: formatDates(reviews) });
+    res.status(200).json({ success: true, reviews: reviews });
 };
 
 
 reviewController.getByProduct = async (req, res, next) => {
     const productId = Number(req.params.productId);
     const reviews = await reviewService.getReviewsForProduct(productId);
-    res.status(200).json({ success: true, reviews: formatDates(reviews) });
+    res.status(200).json({ success: true, reviews: reviews });
 };
 
 reviewController.update = async (req, res, next) => {
@@ -52,7 +51,7 @@ reviewController.update = async (req, res, next) => {
     if (reviewToUpdate.userId !== userId) throw createError(403, "You are not allowed to edit this review.");
 
     const updatedReview = await reviewService.update(reviewId, req.body);
-    res.status(200).json({ success: true, review: formatDates(updatedReview) });
+    res.status(200).json({ success: true, review: updatedReview });
 };
 
 

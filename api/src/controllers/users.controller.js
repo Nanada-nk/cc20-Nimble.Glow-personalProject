@@ -2,7 +2,6 @@ import hashService from "../services/hash.service.js"
 import usersService from "../services/users.service.js"
 import createError from "../utils/create-error.js"
 import fs from 'fs/promises';
-import { formatDates } from "../utils/formatter.js"
 import cloudinary from "../config/cloudinary.config.js"
 
 const usersController = {}
@@ -12,7 +11,7 @@ usersController.getListAllUser = async (req, res, next) => {
     throw createError(401, "Unauthorized")
   }
   const users = await usersService.getAllUsers()
-  res.status(200).json({ success: true, users: formatDates(users) })
+  res.status(200).json({ success: true, users: users })
 }
 
 
@@ -28,7 +27,7 @@ usersController.updateUserStatus = async (req, res, next) => {
   if (enabled !== undefined) dataToUpdate.enabled = JSON.parse(enabled)
 
   const updatedUser = await usersService.updateUser(targetUserId, dataToUpdate);
-  res.status(200).json({ success: true, user: formatDates(updatedUser) });
+  res.status(200).json({ success: true, user: updatedUser });
 }
 
 usersController.updateMyProfile = async (req, res, next) => {
@@ -46,7 +45,7 @@ usersController.updateMyProfile = async (req, res, next) => {
   }
   const updatedUser = await usersService.updateUser(myUserId, data);
   const { password, ...userWithoutPassword } = updatedUser
-  res.status(200).json({ success: true, user: formatDates(userWithoutPassword) });
+  res.status(200).json({ success: true, user: userWithoutPassword });
 }
 
 usersController.getAddressesForCurrentUser = async (req, res, next) => {
@@ -94,7 +93,7 @@ usersController.disableUser = async (req, res, next) => {
   res.status(200).json({
     success: true,
     message: `User with ID ${id} has been disabled successfully.`,
-    softDeleteUser: formatDates(softDeleteUser)
+    softDeleteUser: softDeleteUser
   });
 }
 

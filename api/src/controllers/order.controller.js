@@ -1,8 +1,7 @@
 import { OrderStatus } from "../generated/prisma/client.js"
 import orderService from "../services/order.service.js";
-
 import createError from "../utils/create-error.js";
-import { formatDates } from "../utils/formatter.js";
+
 
 const ordersController = {};
 
@@ -12,7 +11,7 @@ ordersController.createOrder = async (req, res, next) => {
 
   const newOrder = await orderService.createOrderFromCart(userId, data);
   console.log('newOrder', newOrder)
-  res.status(201).json({ success: true, order: formatDates(newOrder) });
+  res.status(201).json({ success: true, order: newOrder });
   
 }
 
@@ -20,7 +19,7 @@ ordersController.getUserOrders = async (req, res, next) => {
   const userId = req.user.id;
   const orders = await orderService.findOrdersByUserId(userId);
   console.log('orders', orders)
-  res.status(200).json({ success: true, orders: formatDates(orders) })
+  res.status(200).json({ success: true, orders: orders })
   
 }
 
@@ -29,7 +28,7 @@ ordersController.getOrderById = async (req, res, next) => {
   const user = req.user
   const order = await orderService.findOrderById(orderId, user);
   console.log('order', order)
-  res.status(200).json({ success: true, order: formatDates(order) })
+  res.status(200).json({ success: true, order: order })
   
 }
 
@@ -37,7 +36,7 @@ ordersController.getAllAdmin = async (req, res, next) => {
  
     const orders = await orderService.findAllAdmin();
     console.log('orders', orders)
-    res.status(200).json({ success: true, orders: formatDates(orders) });
+    res.status(200).json({ success: true, orders: orders });
     
  
 };
@@ -64,7 +63,7 @@ ordersController.updateStatus = async (req, res, next,) => {
     orderStatus
   );
   console.log('updatedOrder', updatedOrder)
-  res.status(200).json({ success: true, order: formatDates(updatedOrder) });
+  res.status(200).json({ success: true, order: updatedOrder });
   
 }
 
@@ -74,7 +73,7 @@ ordersController.updateAdminDetails = async (req, res, next) => {
   const data = req.body;
   const updatedOrder = await orderService.updateAdminOrderDetails(orderId, data);
   console.log('updatedOrder', updatedOrder)
-  res.status(200).json({ success: true, order: formatDates(updatedOrder) });
+  res.status(200).json({ success: true, order: updatedOrder });
   
 };
 

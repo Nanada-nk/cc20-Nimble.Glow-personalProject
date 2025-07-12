@@ -58,6 +58,7 @@ const fetchData = async () => {
       if (results[2].status === 'fulfilled') {
         setCoupons(results[2].value.data.coupons);
       }
+      console.log('Coupon API Result:', results[2])
 
     } catch (error) {
       console.error("A critical error occurred in fetchData:", error);

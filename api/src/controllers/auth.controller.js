@@ -2,7 +2,7 @@ import authService from "../services/auth.service.js"
 import hashService from "../services/hash.service.js"
 import jwtService from "../services/jwt.service.js"
 import createError from "../utils/create-error.js"
-import { formatDates } from "../utils/formatter.js"
+
 
 
 const authController = {}
@@ -33,7 +33,7 @@ authController.register = async (req, res, next) => {
   };
 
   const newUser = await authService.createUser(data)
-  res.status(201).json({ message: "Register User Successfully", user: formatDates(newUser) })
+  res.status(201).json({ message: "Register User Successfully", user: newUser })
 }
 
 
@@ -60,7 +60,7 @@ authController.login = async (req, res, next) => {
   res.status(200).json({
     success: true,
     accessToken,
-    user: formatDates(userWithoutPassword)
+    user: userWithoutPassword
   });
 }
 
@@ -75,7 +75,7 @@ authController.getMe = async (req, res, next) => {
 
   const { password, ...userWithoutPassword } = user
 
-  res.status(200).json({ user: formatDates(userWithoutPassword) })
+  res.status(200).json({ user: userWithoutPassword })
 }
 
 

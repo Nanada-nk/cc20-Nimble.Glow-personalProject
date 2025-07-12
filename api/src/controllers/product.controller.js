@@ -2,7 +2,6 @@ import productService from "../services/product.service.js"
 import createError from "../utils/create-error.js"
 import cloudinary from "../config/cloudinary.config.js";
 import fs from "fs/promises"
-import { formatDates } from "../utils/formatter.js";
 
 const productController = {}
 
@@ -34,7 +33,7 @@ productController.create = async (req, res, next) => {
   productData.images = imageUrls
 
   const newProduct = await productService.create(productData, creatorId)
-  res.status(201).json({ success: true, product: formatDates(newProduct) })
+  res.status(201).json({ success: true, product: newProduct })
 }
 
 productController.getAll = async (req, res, next) => {
@@ -42,7 +41,7 @@ productController.getAll = async (req, res, next) => {
   const result = await productService.findAll(queryOptions);
   const formattedResult = {
     ...result,
-    products: formatDates(result.products)
+    products: result.products
   };
   res.status(200).json({ success: true, ...formattedResult });
 }
@@ -55,7 +54,7 @@ productController.getById = async (req, res, next) => {
   if (!product) {
     throw createError(404, 'Product not found')
   }
-  res.status(200).json({ success: true, product: formatDates(product) })
+  res.status(200).json({ success: true, product: product })
 }
 
 productController.updateProduct = async (req, res, next) => {
@@ -77,7 +76,7 @@ productController.updateProduct = async (req, res, next) => {
   }
 
   const updatedProduct = await productService.updateProduct(id, dataToUpdate, newImageUrls, imagesToDelete);
-  res.status(200).json({ success: true, product: formatDates(updatedProduct) });
+  res.status(200).json({ success: true, product: updatedProduct });
 }
 
 productController.deleteProduct = async (req, res, next) => {
@@ -95,7 +94,7 @@ productController.deleteProduct = async (req, res, next) => {
   res.status(200).json({
     success: true,
     message: "Product deleted successfully",
-    product: formatDates(deletedProduct)
+    product: deletedProduct
   });
 }
 

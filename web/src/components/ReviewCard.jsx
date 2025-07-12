@@ -24,7 +24,7 @@ function ReviewCard({ review }) {
               <p className="font-semibold text-gray-800">
                 {review.user?.firstName || "Anonymous"}
               </p>
-              <p className="text-xs text-gray-500">{review.reviewDate}</p>
+              <p className="text-xs text-gray-500">{new Date(review.reviewDate).toLocaleString('th-TH')}</p>
             </div>
            
             <Rating rating={review.rating} />
