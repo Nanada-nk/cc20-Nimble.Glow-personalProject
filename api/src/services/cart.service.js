@@ -72,8 +72,6 @@ cartService.getCartForUser = async (userId) => {
     console.log('[Cart Service] Successfully fetched cart data.')
     return cart;
   } catch (error) {
-    console.error("--- CRITICAL ERROR IN getCartForUser ---");
-    console.error(error);
     next(error)
   }
 }

@@ -7,7 +7,7 @@ paymentController.getMethods = (req, res, next) => {
     const methods = paymentService.getPaymentMethods();
     console.log('methods', methods)
     res.status(200).json({ success: true, methods });
-    console.log('error', error)
+    
 };
 
 paymentController.uploadSlip = async (req, res, next) => {
@@ -22,7 +22,7 @@ paymentController.uploadSlip = async (req, res, next) => {
     const updatedPayment = await paymentService.handleSlipUpload(paymentId, file);
     console.log('updatedPayment', updatedPayment)
     res.status(200).json({ message: "Slip uploaded successfully.", payment: updatedPayment });
-    console.log('error', error)
+    
 
 }
 
@@ -34,7 +34,7 @@ paymentController.payForOrder = async (req, res, next) => {
     const newPayment = await paymentService.createPaymentForOrder(Number(orderId), userId, paymentData);
     console.log('newPayment', newPayment)
     res.status(201).json({ success: true, payment: formatDates(newPayment) });
-    console.log('error', error)
+    
 };
 
 paymentController.getPaymentForOrder = async (req, res, next) => {

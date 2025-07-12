@@ -48,7 +48,7 @@ authService.requestPasswordReset = async (email) => {
   try {
     await sendPasswordResetEmail(user.email, resetToken);
   } catch (error) {
-    console.error("Failed to send password reset email.", error);
+    
     throw createError(500, "Could not send password reset email.");
   }
 }

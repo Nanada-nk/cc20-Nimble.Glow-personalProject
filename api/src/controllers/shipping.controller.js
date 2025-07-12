@@ -9,8 +9,6 @@ shippingController.getMethods = (req, res, next) => {
     console.log("--- shippingService.getMethods() was successful ---")
     console.log('methods', methods)
     res.status(200).json({ success: true, methods });
-    console.error("--- SHIPPING CONTROLLER CRASHED ---", error)
-    console.error(error)
 };
 
 shippingController.getStatus = async (req, res, next) => {

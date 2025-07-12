@@ -127,13 +127,9 @@ orderService.createOrderFromCart = async (userId, data) => {
       data: { cartTotal: 0 }
     });
 
-    console.log('error1', error)
+    
     return order;
   });
-
-
-
-  console.log('error2', error)
   return prisma.order.findUnique({
     where: { id: newOrder.id },
     include: { products: { include: { product: true } } },
@@ -215,9 +211,6 @@ orderService.findOrderById = async (orderId, user) => {
   if (user.role === 'CUSTOMER' && order.cart.userId !== user.id) {
     throw createError(403, "You do not have permission to view this order.");
   }
-
-  console.log("--- Backend Service: Order data before sending ---");
-  console.log(order);
 
   return order;
 }

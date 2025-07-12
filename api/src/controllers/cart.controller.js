@@ -34,7 +34,7 @@ cartController.getCart = async (req, res, next) => {
 
     res.status(200).json({ success: true, cart: formatDates(cart) })
  
-    console.log('error', error)
+    
     
   
 }

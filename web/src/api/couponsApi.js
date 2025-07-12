@@ -42,6 +42,9 @@ couponsApi.getAvailableCoupons = (token) => {
     return axios.get(`${BASE_URL}/coupons/available`, {
     headers: {
       Authorization: `Bearer ${token}`,
+      'Cache-Control': 'no-cache',
+      'Pragma': 'no-cache',
+      'Expires': '0',
     },
   });
 };

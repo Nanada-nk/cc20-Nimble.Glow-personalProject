@@ -38,7 +38,6 @@ couponService.findAvailableCoupons = () => {
     where: {
       AND: [
         {
-
           expiredAt: {
             gt: new Date(),
           },
@@ -47,6 +46,9 @@ couponService.findAvailableCoupons = () => {
           OR: [
             {
               usageLimit: null,
+            },
+            {
+              usageCount: null
             },
             {
               usageCount: {
