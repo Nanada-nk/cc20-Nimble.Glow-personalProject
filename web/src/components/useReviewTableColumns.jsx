@@ -1,11 +1,11 @@
-import { Star } from 'lucide-react';
+import { Heart } from 'lucide-react';
 
 
 const renderRating = (rating) => {
   const stars = [];
   for (let i = 1; i <= 5; i++) {
     stars.push(
-      <Star key={i} size={16} className={i <= rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'} />
+      <Heart key={i} size={16} className={ i <= rating ? 'text-pri-gr2 fill-pri-gr2' : 'text-pri-gr2'} />
     );
   }
   return <div className="flex">{stars}</div>;
