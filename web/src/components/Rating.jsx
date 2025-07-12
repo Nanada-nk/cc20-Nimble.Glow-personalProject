@@ -7,7 +7,7 @@ function Rating({ rating = 0 }) {
       {[...Array(5)].map((_, index) => {
         const starValue = index + 1;
         return (
-          <Star
+          <div
             key={starValue}
             className={`mask mask-heart ${starValue <= rating ? 'bg-green-900' : 'bg-gray-300'}`}
           />
