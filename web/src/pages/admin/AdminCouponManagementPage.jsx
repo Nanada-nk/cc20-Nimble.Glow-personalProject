@@ -55,18 +55,6 @@ function AdminCouponManagementPage() {
   };
   console.log('handleOpenCreateModal', handleOpenCreateModal)
 
-  // const handleOpenEditModal = (coupon) => {
-  //   setEditingCoupon(coupon);
-  //   const localDateTime = new Date(new Date(coupon.expiredAt).getTime() - (new Date().getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
-  //   reset({
-  //     code: coupon.code,
-  //     discount: coupon.discount,
-  //     expiredAt: localDateTime,
-  //     usageLimit: coupon.usageLimit,
-  //   });
-  //   setIsModalOpen(true);
-  // };
-
   const handleOpenEditModal = (coupon) => {
     setEditingCoupon(coupon);
     let formattedExpiredAt = '';
