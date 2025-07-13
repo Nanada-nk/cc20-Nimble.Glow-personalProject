@@ -12,7 +12,8 @@ authRouter.post('/login', validatorMiddleware(schemaLogin), authController.login
 authRouter.get('/me', authenticateUser, authController.getMe)
 authRouter.post('/forgot-password', authController.forgotPassword);
 authRouter.post('/reset-password', authController.resetPassword);
-// authRouter.post('/logout',authController)
+
+
 
 
 export default authRouter
