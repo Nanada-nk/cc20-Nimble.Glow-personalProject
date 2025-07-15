@@ -1,6 +1,6 @@
 import { Slide, ToastContainer } from "react-toastify"
-import AppRouter from "./router/AppRouter"
-import authStore from "./stores/authStore";
+import AppRouter from "./router/AppRouter.jsx"
+import authStore from "./stores/authStore.js";
 import { useEffect } from "react";
 
 
@@ -9,6 +9,7 @@ function App() {
   useEffect(() => {
     checkAuth();
   }, []);
+  
   return (
     <>
       <AppRouter />

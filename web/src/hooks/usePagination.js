@@ -6,7 +6,7 @@ function usePagination(data, itemsPerPage) {
   
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(data.length / itemsPerPage);
-  console.log('totalPages', totalPages)
+  // console.log('totalPages', totalPages)
 
  
   const currentData = useMemo(() => {
@@ -14,7 +14,7 @@ function usePagination(data, itemsPerPage) {
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     return data.slice(indexOfFirstItem, indexOfLastItem);
   }, [data, currentPage, itemsPerPage]);
-  console.log('currentData', currentData)
+  // console.log('currentData', currentData)
 
   
   const handlePageChange = (pageNumber) => {
@@ -22,7 +22,7 @@ function usePagination(data, itemsPerPage) {
     if (pageNumber < 1 || pageNumber > totalPages) return;
     setCurrentPage(pageNumber);
   };
-  console.log('handlePageChange', handlePageChange)
+  // console.log('handlePageChange', handlePageChange)
   
   return { currentPage, currentData, handlePageChange, totalPages };
 }

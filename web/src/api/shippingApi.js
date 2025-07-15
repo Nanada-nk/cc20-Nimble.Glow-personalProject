@@ -20,14 +20,6 @@ shippingApi.getStatus = (orderId, token) => {
   })
 }
 
-// // version 1
-// shippingApi.updateStatus = (id, body, token) => {
-//   return axios.patch(`${BASE_URL}/shipping/orders/${id}/shipping`, body, {
-//     headers: {
-//       Authorization: `Bearer ${token}`
-//     }
-//   })
-// }
 
 shippingApi.updateShipping = (orderId, body, token) => {
   return axios.patch(`${BASE_URL}/shipping/orders/${orderId}`, body, {

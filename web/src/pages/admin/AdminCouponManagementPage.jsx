@@ -44,7 +44,7 @@ function AdminCouponManagementPage() {
   };
 
   useEffect(() => {
-    console.log('fetchCoupons', fetchCoupons)
+    // console.log('fetchCoupons', fetchCoupons)
     fetchCoupons();
   }, []);
 
@@ -53,19 +53,19 @@ function AdminCouponManagementPage() {
     reset({ code: '', discount: 0, expiredAt: '', usageLimit: 0 });
     setIsModalOpen(true);
   };
-  console.log('handleOpenCreateModal', handleOpenCreateModal)
+  // console.log('handleOpenCreateModal', handleOpenCreateModal)
 
   const handleOpenEditModal = (coupon) => {
     setEditingCoupon(coupon);
     let formattedExpiredAt = '';
-    console.log('formattedExpiredAt', formattedExpiredAt)
+    // console.log('formattedExpiredAt', formattedExpiredAt)
 
     if (coupon.expiredAt && !isNaN(new Date(coupon.expiredAt).getTime())) {
       const date = new Date(coupon.expiredAt);
-      console.log('date', date)
+      // console.log('date', date)
       
       const localDateTime = new Date(date.getTime() - (new Date().getTimezoneOffset() * 60000));
-      console.log('localDateTime', localDateTime)
+      // console.log('localDateTime', localDateTime)
       
       formattedExpiredAt = localDateTime.toISOString().slice(0, 16);
     }
@@ -79,10 +79,10 @@ function AdminCouponManagementPage() {
 
     setIsModalOpen(true);
   };
-  console.log('handleOpenEditModal', handleOpenEditModal)
+  // console.log('handleOpenEditModal', handleOpenEditModal)
 
   const handleCloseModal = () => setIsModalOpen(false);
-  console.log('handleCloseModal', handleCloseModal)
+  // console.log('handleCloseModal', handleCloseModal)
 
   const handleDelete = async (coupon) => {
     const { isConfirmed } = await confirm({ text: `Delete coupon: ${coupon.code}?` });
@@ -92,12 +92,12 @@ function AdminCouponManagementPage() {
         toast.success("Coupon deleted!");
         fetchCoupons();
       } catch (err) {
-        console.log('err', err)
+        // console.log('err', err)
         toast.error(err.response?.data?.message || "Failed to delete coupon.");
       }
     }
   };
-  console.log('handleDelete', handleDelete)
+  // console.log('handleDelete', handleDelete)
 
   const onSubmit = async (data) => {
     try {
@@ -105,7 +105,7 @@ function AdminCouponManagementPage() {
         ...data,
         expiredAt: data.expiredAt ? new Date(data.expiredAt).toISOString() : null,
       };
-      console.log('payload', payload)
+      // console.log('payload', payload)
 
       if (editingCoupon) {
         await couponsApi.update(editingCoupon.id, payload, token);
@@ -117,17 +117,17 @@ function AdminCouponManagementPage() {
       fetchCoupons();
       handleCloseModal();
     } catch (err) {
-      console.log('err', err)
+      // console.log('err', err)
       toast.error(err.response?.data?.message || "An error occurred.");
     }
   };
-  console.log('onSubmit', onSubmit)
+  // console.log('onSubmit', onSubmit)
 
   const columns = useCouponTableColumns({ onEdit: handleOpenEditModal, onDelete: handleDelete });
-  console.log('columns', columns)
+  // console.log('columns', columns)
 
   const filteredCoupons = coupons.filter(c => c.code.toLowerCase().includes(searchTerm.toLowerCase()));
-  console.log('filteredCoupons', filteredCoupons)
+  // console.log('filteredCoupons', filteredCoupons)
 
   if (isLoading) { return <div className="flex items-center justify-center min-h-screen"><BubblesIcon className="w-10 h-10 animate-spin text-pri-gr1" /></div>; }
 

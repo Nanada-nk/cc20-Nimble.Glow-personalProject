@@ -46,7 +46,7 @@ function ProductDetailPage() {
       .filter(item => item.review)
       .map(item => item.review)
   }, [product])
-  console.log('reviews', reviews)
+  // console.log('reviews', reviews)
 
   const {
     currentPage,
@@ -58,7 +58,7 @@ function ProductDetailPage() {
     setIsLoading(true);
     try {
       const resp = await productsApi.getById(id);
-      console.log('resp', resp)
+      // console.log('resp', resp)
       const fetchedProduct = resp.data.product;
       setProduct(fetchedProduct);
 
@@ -66,7 +66,7 @@ function ProductDetailPage() {
         setMainImage(fetchedProduct.images[0].url);
       }
     } catch (error) {
-      console.error("Failed to fetch product:", error);
+      // console.error("Failed to fetch product:", error);
       toast.error("Could not load product details.");
     } finally {
       setIsLoading(false);
@@ -90,7 +90,7 @@ function ProductDetailPage() {
     }
     await actionAddItem({ productId: product.id, count: Number(data.quantity) });
   };
-  console.log('onAddToCartSubmit', onAddToCartSubmit)
+  // console.log('onAddToCartSubmit', onAddToCartSubmit)
   if (isLoading || !product) {
     return (
       <div className="flex justify-center items-center h-screen">

@@ -57,11 +57,11 @@ function AdminOrderManagementPage() {
       setIsLoading(true);
       setError(null)
       const resp = await ordersApi.getAllAdminOrders(token)
-      console.log('resp', resp)
-      console.log('Data received from server:', resp.data.orders)
+      // console.log('resp', resp)
+      // console.log('Data received from server:', resp.data.orders)
       setOrders(resp.data.orders || [])
     } catch (err) {
-      console.error("Full error object:", err)
+      // console.error("Full error object:", err)
       setError(err.response?.data?.message || "Failed to load orders.");
       toast.error(err.response?.data?.message || "Failed to load orders.");
     } finally {
@@ -78,31 +78,31 @@ function AdminOrderManagementPage() {
     });
     setIsModalOpen(true);
   };
-  console.log('handleOpenEditModal', handleOpenEditModal)
+  // console.log('handleOpenEditModal', handleOpenEditModal)
 
   const handleCloseModal = () => setIsModalOpen(false);
-  console.log('handleCloseModal', handleCloseModal)
+  // console.log('handleCloseModal', handleCloseModal)
 
   const onSubmit = async (data) => {
     if (!editingOrder) return;
-    console.log('Data being sent to the NEW API:', data)
+    // console.log('Dat/a being sent to the NEW API:', data)
     try {
       const updateStatus = await ordersApi.updateAdminOrderDetails(editingOrder.id, data, token);
-      console.log('updateStatus', updateStatus)
+      // console.log('updateStatus', updateStatus)
       toast.success("Order details updated successfully!");
       fetchOrders();
       handleCloseModal();
     } catch (err) {
-      console.log('err', err)
+      // console.log('err', err)
       toast.error(err.response?.data?.message || "Failed to update status.");
     }
   };
 
   const columns = useOrderTableColumns({ onEdit: handleOpenEditModal });
-  console.log('columns', columns)
+  // console.log('columns', columns)
 
   const filteredOrders = orders.filter(o => o.orderNumber.toLowerCase().includes(searchTerm.toLowerCase()));
-  console.log('filteredOrders', filteredOrders)
+  // console.log('filteredOrders', filteredOrders)
 
   if (isLoading) {
     return <div className="flex items-center justify-center min-h-screen"><BubblesIcon className="w-10 h-10 animate-spin text-pri-gr1" /></div>;

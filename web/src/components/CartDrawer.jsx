@@ -34,7 +34,7 @@ const fetchData = async () => {
       return;
     }
 
-    console.log("fetchData running with token:", token);
+    // console.log("fetchData running with token:", token);
 
     try {
       const results = await Promise.allSettled([
@@ -58,7 +58,7 @@ const fetchData = async () => {
       if (results[2].status === 'fulfilled') {
         setCoupons(results[2].value.data.coupons);
       }
-      console.log('Coupon API Result:', results[2])
+      // console.log('Coupon API Result:', results[2])
 
     } catch (error) {
       console.error("A critical error occurred in fetchData:", error);
@@ -84,21 +84,23 @@ const fetchData = async () => {
         shippingMethod: selectedShippingMethod,
         couponId: selectedCouponId || null,
       };
-      console.log('orderData', orderData)
+      // console.log('orderData', orderData)
       const response = await ordersApi.createOrder(orderData, token);
-      console.log('response', response)
+      // console.log('response', response)
+
       const newOrder = response.data.order;
-      console.log('newOrder', newOrder)
+      // console.log('newOrder', newOrder)
+
       toast.success("Order created successfully!");
       toggleCart();
       clearCart();
       navigate(`/checkout/${newOrder.id}`);
     } catch (err) {
-      console.log('err', err)
+      // console.log('err', err)
       toast.error(err.response?.data?.message || "Failed to create order.");
     }
   };
-  console.log('handleCheckout', handleCheckout)
+  // console.log('handleCheckout', handleCheckout)
   
   if (!isCartOpen) return null;
 

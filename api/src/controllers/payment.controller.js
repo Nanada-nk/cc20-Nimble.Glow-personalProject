@@ -7,7 +7,7 @@ const paymentController = {};
 
 paymentController.getMethods = (req, res, next) => {
     const methods = paymentService.getPaymentMethods();
-    console.log('methods', methods)
+    // console.log('methods', methods)
     res.status(200).json({ success: true, methods });
     
 };
@@ -22,13 +22,13 @@ paymentController.uploadSlip = async (req, res, next) => {
     const result = await cloudinary.uploader.upload(req.file.path, {
       folder: "nimble-glow-slips",
     });
-    console.log('result', result)
+    // console.log('result', result)
     
     const updatedPayment = await paymentService.handleSlipUpload(
       paymentId,
       result.secure_url
     );
-    console.log('updatedPayment', updatedPayment)
+    // console.log('updatedPayment', updatedPayment)
 
     res.status(200).json({
       success: true,
@@ -51,7 +51,7 @@ paymentController.payForOrder = async (req, res, next) => {
     const paymentData = req.body;
 
     const newPayment = await paymentService.createPaymentForOrder(Number(orderId), userId, paymentData);
-    console.log('newPayment', newPayment)
+    // console.log('newPayment', newPayment)
     res.status(201).json({ success: true, payment: newPayment });
     
 };

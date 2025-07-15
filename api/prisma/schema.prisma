@@ -48,8 +48,8 @@ enum Role {
 
 model AuditLog {
   id        Int      @id @default(autoincrement())
-  action    String // เช่น "LOGIN", "ORDER_CREATED", "PAYMENT_FAILED"
-  details   String? // JSON string หรือ message อธิบายเพิ่มเติม
+  action    String 
+  details   String? 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(0)
 
   user   User? @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
@@ -143,7 +143,7 @@ model ProductOnCart {
 
 model Order {
   id            Int         @id @default(autoincrement())
-  orderNumber   String      @unique //รหัสเฉพาะ เช่น “ORD202406300001” หรือใช้ prefix/รันเลข/สุ่ม
+  orderNumber   String      @unique 
   note          String?
   cartTotal     Float       @map("cart_total")
   orderStatus   OrderStatus @default(NOT_PROCESSED) @map("order_status")

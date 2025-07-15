@@ -4,10 +4,10 @@ import shippingService from "../services/shipping.service.js";
 const shippingController = {};
 
 shippingController.getMethods = (req, res, next) => {
-    console.log("--- API /api/shipping/methods was called ---")
+    // console.log("--- API /api/shipping/methods was called ---")
     const methods = shippingService.getShippingMethods();
-    console.log("--- shippingService.getMethods() was successful ---")
-    console.log('methods', methods)
+    // console.log("--- shippingService.getMethods() was successful ---")
+    // console.log('methods', methods)
     res.status(200).json({ success: true, methods });
 };
 

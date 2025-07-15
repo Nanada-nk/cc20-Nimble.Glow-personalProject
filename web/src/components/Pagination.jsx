@@ -5,13 +5,13 @@ function Pagination({ totalItems, itemsPerPage, currentPage, onPageChange }) {
 
   
   const totalPages = Math.ceil(totalItems / itemsPerPage);
-  console.log('totalPages', totalPages)
+  // console.log('totalPages', totalPages)
  
   const pageNumbers = [];
   for (let i = 1; i <= totalPages; i++) {
     pageNumbers.push(i);
   }
-  console.log('pageNumbers', pageNumbers)
+  // console.log('pageNumbers', pageNumbers)
  
   if (totalPages <= 1) {
     return null;

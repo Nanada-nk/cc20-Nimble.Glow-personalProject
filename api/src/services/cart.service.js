@@ -8,15 +8,15 @@ const updateCartTotal = async (cartId) => {
     where: { cartId },
     include: { product: true },
   });
-  console.log('cartItems', cartItems)
+  // console.log('cartItems', cartItems)
   const total = cartItems.reduce((sum, item) => sum + (item.price * item.count), 0);
-  console.log('total', total)
+  // console.log('total', total)
   await prisma.cart.update({ where: { id: cartId }, data: { cartTotal: total } });
 }
 
 cartService.addItemToCart = async (userId, productId, count) => {
   const product = await prisma.product.findUnique({ where: { id: productId } });
-  console.log('product', product)
+  // console.log('product', product)
 
   if (!product) throw createError(404, "Product not found");
 
@@ -25,18 +25,18 @@ cartService.addItemToCart = async (userId, productId, count) => {
     update: {},
     create: { userId, cartTotal: 0 },
   });
-  console.log('cart', cart)
+  // console.log('cart', cart)
 
   const existingCartItem = await prisma.productOnCart.findFirst({
     where: { cartId: cart.id, productId: productId },
   });
-  console.log('existingCartItem', existingCartItem)
+  // console.log('existingCartItem', existingCartItem)
 
   const quantityInCart = existingCartItem ? existingCartItem.count : 0;
-  console.log('quantityInCart', quantityInCart)
+  // console.log('quantityInCart', quantityInCart)
 
   const requestedTotalQuantity = quantityInCart + count;
-  console.log('requestedTotalQuantity', requestedTotalQuantity)
+  // console.log('requestedTotalQuantity', requestedTotalQuantity)
 
   if (product.stockQuantity < requestedTotalQuantity) {
     throw createError(400, `Not enough stock for product: ${product.title}. Only ${product.stockQuantity} available.`);
@@ -45,7 +45,7 @@ cartService.addItemToCart = async (userId, productId, count) => {
   const updatedCartItem = existingCartItem ?
     await prisma.productOnCart.update({ where: { id: existingCartItem.id }, data: { count: requestedTotalQuantity } }) :
     await prisma.productOnCart.create({ data: { cartId: cart.id, productId, count, price: product.price } });
-  console.log('updatedCartItem', updatedCartItem)
+  // console.log('updatedCartItem', updatedCartItem)
 
   await updateCartTotal(cart.id);
   return updatedCartItem;
@@ -54,7 +54,7 @@ cartService.addItemToCart = async (userId, productId, count) => {
 
 cartService.getCartForUser = async (userId) => {
   try {
-    console.log(`[Cart Service] Attempting to fetch cart for userId: ${userId}`)
+    // console.log(`[Cart Service] Attempting to fetch cart for userId: ${userId}`)
     const cart = await prisma.cart.findUnique({
       where: { userId },
       include: {
@@ -69,7 +69,7 @@ cartService.getCartForUser = async (userId) => {
         },
       },
     })
-    console.log('[Cart Service] Successfully fetched cart data.')
+    // console.log('[Cart Service] Successfully fetched cart data.')
     return cart;
   } catch (error) {
     next(error)

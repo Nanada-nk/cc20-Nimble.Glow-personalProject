@@ -43,7 +43,7 @@ authService.requestPasswordReset = async (email) => {
     data: { passwordResetToken, passwordResetExpires }
   });
 
-  console.log("Password Reset Token (for testing):", resetToken)
+  // console.log("Password Reset Token (for testing):", resetToken)
 
   try {
     await emailService.sendPasswordResetEmail(user.email, resetToken);

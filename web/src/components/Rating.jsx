@@ -1,4 +1,4 @@
-import { Star } from 'lucide-react';
+
 
 
 function Rating({ rating = 0 }) {

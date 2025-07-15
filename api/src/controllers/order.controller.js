@@ -10,7 +10,7 @@ ordersController.createOrder = async (req, res, next) => {
   const data = req.body;
 
   const newOrder = await orderService.createOrderFromCart(userId, data);
-  console.log('newOrder', newOrder)
+  // console.log('newOrder', newOrder)
   res.status(201).json({ success: true, order: newOrder });
   
 }
@@ -18,7 +18,7 @@ ordersController.createOrder = async (req, res, next) => {
 ordersController.getUserOrders = async (req, res, next) => {
   const userId = req.user.id;
   const orders = await orderService.findOrdersByUserId(userId);
-  console.log('orders', orders)
+  // console.log('orders', orders)
   res.status(200).json({ success: true, orders: orders })
   
 }
@@ -27,7 +27,7 @@ ordersController.getOrderById = async (req, res, next) => {
   const orderId = Number(req.params.id);
   const user = req.user
   const order = await orderService.findOrderById(orderId, user);
-  console.log('order', order)
+  // console.log('order', order)
   res.status(200).json({ success: true, order: order })
   
 }
@@ -35,7 +35,7 @@ ordersController.getOrderById = async (req, res, next) => {
 ordersController.getAllAdmin = async (req, res, next) => {
  
     const orders = await orderService.findAllAdmin();
-    console.log('orders', orders)
+    // console.log('orders', orders)
     res.status(200).json({ success: true, orders: orders });
     
  
@@ -43,7 +43,7 @@ ordersController.getAllAdmin = async (req, res, next) => {
 
 ordersController.updateStatus = async (req, res, next,) => {
   const orderId = Number(req.params.id);
-  console.log('orderId', orderId)
+  // console.log('orderId', orderId)
   const { orderStatus } = req.body;
 
   if (!orderStatus) {
@@ -62,7 +62,7 @@ ordersController.updateStatus = async (req, res, next,) => {
     orderId,
     orderStatus
   );
-  console.log('updatedOrder', updatedOrder)
+  // console.log('updatedOrder', updatedOrder)
   res.status(200).json({ success: true, order: updatedOrder });
   
 }
@@ -72,7 +72,7 @@ ordersController.updateAdminDetails = async (req, res, next) => {
   const orderId = Number(req.params.id);
   const data = req.body;
   const updatedOrder = await orderService.updateAdminOrderDetails(orderId, data);
-  console.log('updatedOrder', updatedOrder)
+  // console.log('updatedOrder', updatedOrder)
   res.status(200).json({ success: true, order: updatedOrder });
   
 };

@@ -10,7 +10,7 @@ const transporter = nodemailer.createTransport({
 });
 
 emailService.sendPasswordResetEmail = async (to, token) => {
-  const resetUrl = `http://localhost:5173/reset-password?token=${token}`;
+  const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
 
   const mailOptions = {
     from: `"Nimble.Glow Support" <${process.env.EMAIL_USER}>`,
@@ -45,7 +45,7 @@ emailService.sendPasswordResetEmail = async (to, token) => {
 
   try {
     await transporter.sendMail(mailOptions);
-    console.log("Password reset email sent to:", to);
+    // console.log("Password reset email sent to:", to);
   } catch (error) {
     console.error("Error sending email:", error);
     throw new Error("Failed to send password reset email.")
@@ -135,7 +135,7 @@ emailService.sendPaymentConfirmationEmail = async (payment) => {
 
   try {
     await transporter.sendMail(mailOptions);
-    console.log(`Receipt email sent for Order #${order.orderNumber}`);
+    // console.log(`Receipt email sent for Order #${order.orderNumber}`);
   } catch (error) {
     console.error("Error sending receipt email:", error);
   }

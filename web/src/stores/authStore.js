@@ -30,6 +30,7 @@ const authStore = create(
           } catch (error) {
             // console.error("4. getMe API call FAILED.", error);
             set({ user: null, token: null, isLoggedIn: false, isLoading: false })
+            throw error;
           }
         } else {
           set({ isLoading: false });
@@ -40,7 +41,7 @@ const authStore = create(
           const response = await authApi.register(registerData);
           return response;
         } catch (error) {
-          next(error);
+          throw error;
         }
       },
 
@@ -55,14 +56,14 @@ const authStore = create(
         } catch (error) {
           // console.error("actionLogin: Login failed, error =", error)
           set({ isLoading: false });
-          next(error);
+          throw error; 
         }
       },
 
       actionLogout: () => {
         // console.log("actionLogout: Logging out user.");
         // console.trace("Call stack:")
-        
+
         set({ user: null, token: null, isLoggedIn: false });
       },
     }),

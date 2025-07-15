@@ -27,10 +27,10 @@ function CheckoutPage() {
     try {
       setIsLoading(true);
       const response = await ordersApi.getOrderById(orderId, token);
-      console.log('response', response)
+      // console.log('response', response)
       setOrder(response.data.order);
     } catch (error) {
-      console.log('error', error)
+      // console.log('error', error)
       toast.error("Failed to load order details.");
       navigate('/');
     } finally {
@@ -45,7 +45,7 @@ function CheckoutPage() {
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    console.log('file', file)
+    // console.log('file', file)
     if (file) {
       setSlipFile(file);
       setSlipPreview(URL.createObjectURL(file));
@@ -62,17 +62,17 @@ function CheckoutPage() {
     try {
       setIsSubmitting(true);
       const formData = new FormData();
-      console.log('formData', formData)
+      // console.log('formData', formData)
 
       formData.append('slipImage', slipFile);
 
       const uploadSlip = await paymentsApi.uploadSlip(order.payment.id, formData, token);
-      console.log('uploadSlip', uploadSlip)
+      // console.log('uploadSlip', uploadSlip)
 
       toast.success("Payment confirmation sent successfully!"); 
       navigate(`/orders/${order.id}`);
     } catch (error) {
-      console.log('error', error)
+      // console.log('error', error)
       toast.error(error.response?.data?.message || "Failed to confirm payment.");
     } finally {
       setIsSubmitting(false);
@@ -127,11 +127,11 @@ function CheckoutPage() {
                     <div className="flex items-center">
                       <img src={item.product.images[0]?.url} alt={item.product.title} className="w-16 h-16 object-cover rounded-md mr-4" />
                       <div>
-                        <p className='font-semibold'>{item.product.title}</p>
+                        <p className='font-semibold text-sm'>{item.product.title}</p>
                         <p className='text-sm text-gray-500'>Qty: {item.count}</p>
                       </div>
                     </div>
-                    <p className='font-semibold'>{(item.price * item.count).toFixed(2)} THB</p>
+                    <p className='font-semibold text-sm'>{(item.price * item.count).toFixed(2)} THB</p>
                   </div>
                 ))}
               </div>

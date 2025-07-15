@@ -50,4 +50,5 @@ function AuthFormCard({ title, subtitle, children, onSubmit, isSubmitting, butto
     </div>
   )
 }
+
 export default AuthFormCard

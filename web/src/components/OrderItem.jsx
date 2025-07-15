@@ -1,7 +1,7 @@
 function OrderItem({ item, orderStatus, onOpenWriteReview, onOpenViewReview }) {
   const { product, count, price } = item;
   const userReview = item.review
-  console.log('userReview', userReview)
+  // console.log('userReview', userReview)
 
   return (
     <div className="flex flex-col sm:flex-row justify-between sm:items-center border-b pb-4">

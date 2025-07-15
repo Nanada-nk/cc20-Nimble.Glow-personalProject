@@ -6,7 +6,7 @@ import shutdownUtil from './utils/shutdown.util.js'
 
 dotenv.config()
 
-const PORT = process.env.PORT || 8000 // 8000 play save
+const PORT = process.env.PORT || 8000 
 app.listen(PORT,()=> console.log(`Server on : http://localhost:${PORT}`)) 
 
 process.on("SIGINT",()=>shutdownUtil("SIGINT"))

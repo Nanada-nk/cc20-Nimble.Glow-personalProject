@@ -24,9 +24,9 @@ cartController.addItemToCart = async (req, res, next) => {
 cartController.getCart = async (req, res, next) => {
  
     const userId = req.user.id;
-    console.log('userId', userId)
+    // console.log('userId', userId)
     const cart = await cartService.getCartForUser(userId);
-    console.log('cart', cart)
+    // console.log('cart', cart)
 
     if (!cart) {
       return res.status(200).json({ success: true, cart: null });

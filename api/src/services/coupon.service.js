@@ -76,9 +76,9 @@ couponService.deleteCoupon = (id) => prisma.coupon.delete({ where: { id: Number(
 
 couponService.applyCouponToOrder = async (orderId, couponCode, userId) => {
   const coupon = await prisma.coupon.findUnique({ where: { code: couponCode } });
-  console.log('coupon', coupon)
+  // console.log('coupon', coupon)
   const order = await prisma.order.findFirst({ where: { id: orderId, cart: { userId } } });
-  console.log('order', order)
+  // console.log('order', order)
   if (!order) throw createError(404, "Order not found.");
   if (order.couponId) throw createError(400, "Coupon already applied.");
   if (!coupon) throw createError(404, "Coupon code is invalid.");

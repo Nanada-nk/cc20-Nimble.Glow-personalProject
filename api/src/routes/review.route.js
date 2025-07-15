@@ -8,7 +8,6 @@ const reviewRouter = express.Router();
 
 reviewRouter.get('/', authenticateUser, checkRole("SUPERADMIN", "ADMIN"), reviewController.getAll);
 reviewRouter.get('/product/:productId', reviewController.getByProduct);
-// reviewRouter.post('/product/:productId', authenticateUser, checkRole("CUSTOMER"), upload.array('images', 5), reviewController.create);
 reviewRouter.post('/product-on-order/:productOnOrderId', authenticateUser, checkRole("CUSTOMER"), upload.array('images', 5), reviewController.create);
 reviewRouter.patch('/:reviewId', authenticateUser, checkRole("CUSTOMER"),upload.array('images', 5), reviewController.update);
 

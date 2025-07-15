@@ -8,13 +8,8 @@ const usersRouter = express.Router()
 
 usersRouter.get('/', checkRole("SUPERADMIN", "ADMIN"), usersController.getListAllUser);
 usersRouter.delete('/:id', checkRole("SUPERADMIN"), usersController.disableUser);
-
-
 usersRouter.patch('/status/:id', checkRole("SUPERADMIN"), usersController.updateUserStatus)
-
-
 usersRouter.patch('/profile/me', upload.single('profileImage'), usersController.updateMyProfile);
-
 usersRouter.get('/addresses', usersController.getAddressesForCurrentUser);
 usersRouter.post('/addresses', usersController.addMyAddress);
 usersRouter.patch('/addresses/:addressId', usersController.updateMyAddress);

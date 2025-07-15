@@ -32,7 +32,7 @@ const useProductStore = create(
             isLoading: false,
           });
         } catch (err) {
-          const errorMessage = err.response?.data?.message || "Failed to load products.";
+          // const errorMessage = err.response?.data?.message || "Failed to load products.";
           set({ error: errorMessage, isLoading: false });
           toast.error(errorMessage);
         }

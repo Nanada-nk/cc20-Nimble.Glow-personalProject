@@ -3,11 +3,9 @@ import cors from 'cors'
 import compression from 'compression'
 import morgan from 'morgan'
 import rateLimit from 'express-rate-limit'
-
 import authenticateUser from './middlewares/authenticate.middleware.js'
 import notFoundMiddleware from './middlewares/not-found.middleware.js'
 import errorMiddleware from './middlewares/error.middleware.js'
-
 import authRouter from './routes/auth.route.js'
 import usersRouter from './routes/users.route.js'
 import categoriesRouter from './routes/categories.route.js'

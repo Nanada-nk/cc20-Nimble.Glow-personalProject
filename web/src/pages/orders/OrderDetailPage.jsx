@@ -12,7 +12,7 @@ import reviewsApi from "../../api/reviewsApi.js";
 import { reviewSchema } from "../../validator/schema.js";
 import { BubblesIcon, UploadCloudIcon, XIcon } from "lucide-react";
 import Modal from "../../components/Modal.jsx";
-import RatingInput from "../../components/RatingInput";
+import RatingInput from "../../components/RatingInput.jsx";
 import OrderSummary from "../../components/OrderSummary.jsx";
 import OrderItemList from "../../components/OrderItemList.jsx";
 import ViewReviewModal from "../../components/ViewReviewModal.jsx"
@@ -50,10 +50,10 @@ function OrderDetailPage() {
     try {
       setIsLoading(true);
       const response = await ordersApi.getOrderById(orderId, token);
-      console.log("response", response);
+      // console.log("response", response);
       setOrder(response.data.order);
     } catch (error) {
-      console.log("error", error);
+      // console.log("error", error);
       toast.error("Failed to load order details.");
       navigate("/orders");
     } finally {
@@ -62,7 +62,7 @@ function OrderDetailPage() {
   };
 
   useEffect(() => {
-    console.log('fetchOrderDetails', fetchOrderDetails)
+    // console.log('fetchOrderDetails', fetchOrderDetails)
     fetchOrderDetails();
   }, []);
 
@@ -73,10 +73,10 @@ function OrderDetailPage() {
     setReviewImagePreviews([]);
     setIsWriteReviewModalOpen(true);
   };
-  console.log('handleOpenWriteReviewModal', handleOpenWriteReviewModal)
+  // console.log('handleOpenWriteReviewModal', handleOpenWriteReviewModal)
 
   const handleCloseWriteReviewModal = () => setIsWriteReviewModalOpen(false);
-  console.log('handleCloseWriteReviewModal', handleCloseWriteReviewModal)
+  // console.log('handleCloseWriteReviewModal', handleCloseWriteReviewModal)
 
   const handleOpenViewReviewModal = (item) => {
     setViewingReview({
@@ -85,25 +85,25 @@ function OrderDetailPage() {
     });
     setIsViewReviewModalOpen(true);
   };
-  console.log('handleOpenViewReviewModal', handleOpenViewReviewModal)
+  // console.log('handleOpenViewReviewModal', handleOpenViewReviewModal)
 
   const handleCloseViewReviewModal = () => setIsViewReviewModalOpen(false)
-  console.log('handleCloseViewReviewModal', handleCloseViewReviewModal)
+  // console.log('handleCloseViewReviewModal', handleCloseViewReviewModal)
 
   const handleReviewImageChange = (e) => {
     const files = Array.from(e.target.files).slice(0, 5 - reviewImages.length);
-    console.log("files", files);
+    // console.log("files", files);
     if (files.length > 0) {
       setReviewImages((prev) => [...prev, ...files]);
       const newPreviews = files.map((file) => URL.createObjectURL(file));
-      console.log("newPreviews", newPreviews);
+      // console.log("newPreviews", newPreviews);
       setReviewImagePreviews((prev) => [...prev, ...newPreviews]);
     }
   };
-  console.log('handleReviewImageChange', handleReviewImageChange)
+  // console.log('handleReviewImageChange', handleReviewImageChange)
 
   const handleRemoveReviewImage = (indexToRemove) => {
-    console.log('indexToRemove', indexToRemove)
+    // console.log('indexToRemove', indexToRemove)
     setReviewImages((prev) =>
       prev.filter((_, index) => index !== indexToRemove)
     );
@@ -111,13 +111,13 @@ function OrderDetailPage() {
       prev.filter((_, index) => index !== indexToRemove)
     );
   };
-  console.log('handleRemoveReviewImage', handleRemoveReviewImage)
+  // console.log('handleRemoveReviewImage', handleRemoveReviewImage)
 
   const onReviewSubmit = async (data) => {
      if (!reviewingItem) return
     try {
       const formData = new FormData();
-      console.log("formData", formData);
+      // console.log("formData", formData);
       formData.append("rating", data.rating);
       formData.append("comment", data.comment || "");
       reviewImages.forEach((file) => formData.append("images", file));
@@ -127,16 +127,16 @@ function OrderDetailPage() {
         formData,
         token
       );
-      console.log("createReviewsApi", createReviewsApi);
+      // console.log("createReviewsApi", createReviewsApi);
       toast.success(`Review for ${reviewingItem.product.title} submitted!`);
       handleCloseWriteReviewModal();
       fetchOrderDetails();
     } catch (err) {
-      console.log("err", err);
+      // console.log("err", err);
       toast.error(err.response?.data?.message || "Failed to submit review.");
     }
   };
-  console.log('onReviewSubmit', onReviewSubmit)
+  // console.log('onReviewSubmit', onReviewSubmit)
 
   if (isLoading || !order) {
     return (

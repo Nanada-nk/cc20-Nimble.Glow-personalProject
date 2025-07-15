@@ -12,7 +12,7 @@ import ProductListPage from '../pages/products/ProductListPage.jsx';
 import ProductDetailPage from '../pages/products/ProductDetailPage.jsx';
 import CategoryListPage from '../pages/categories/CategoryListPage.jsx';
 
-import CartPage from '../pages/cart/CartPage.jsx';
+
 import CheckoutPage from '../pages/payments/CheckoutPage.jsx';
 import UserOrdersPage from '../pages/orders/UserOrdersPage.jsx';
 import OrderDetailPage from '../pages/orders/OrderDetailPage.jsx';
@@ -21,7 +21,6 @@ import EditProfilePage from '../pages/users/EditProfilePage.jsx';
 import UserAddressesPage from '../pages/users/UserAddressesPage.jsx';
 import ChangePasswordPage from '../pages/users/ChangePasswordPage.jsx';
 import UserReviewHistoryPage from '../pages/reviews/UserReviewHistoryPage.jsx';
-
 
 import NotFoundPage from '../pages/NotFoundPage.jsx';
 import HomePage from '../pages/HomePage.jsx';
@@ -42,6 +41,7 @@ function AppRouter() {
   useEffect(() => {
     checkAuth();
   }, [])
+
   return (
     <BrowserRouter>
       <Routes>
@@ -60,7 +60,6 @@ function AppRouter() {
 
         <Route element={<ProtectedRoute />}>
           <Route path='/' element={<MainLayout />}>
-            <Route path='cart' element={<CartPage />} />
             <Route path='checkout/:orderId' element={<CheckoutPage />} />
             <Route path='orders' element={<UserOrdersPage />} />
             <Route path='orders/:orderId' element={<OrderDetailPage />} />

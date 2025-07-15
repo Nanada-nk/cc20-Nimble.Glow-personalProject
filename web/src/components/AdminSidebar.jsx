@@ -1,9 +1,9 @@
 
 import { Link, useLocation, useNavigate } from "react-router";
 import { ChartColumnStackedIcon, FolderCog, PackageSearch, Star, Ticket, TrashIcon, UsersRound } from 'lucide-react';
-import authStore from "../stores/authStore";
+import authStore from "../stores/authStore.js";
 import { toast } from "react-toastify";
-import NimbleGlowLogo from "./NimbleGlowLogo";
+import NimbleGlowLogo from "./NimbleGlowLogo.jsx";
 
 
 
@@ -31,10 +31,7 @@ function AdminSidebar() {
   return (
     <div className="w-64 bg-pri-gr1 text-white p-4 flex flex-col">
       <div className="flex-shrink-0 mb-8">
-
-
         <NimbleGlowLogo />
-
       </div>
       <nav className="flex-grow">
         <ul>
