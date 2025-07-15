@@ -16,6 +16,29 @@ function LoginPage() {
   const isLoading = authStore((state) => state.isLoading);
   const navigate = useNavigate();
 
+  
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm({
+    resolver: yupResolver(schemaLogin),
+    mode: 'onBlur'
+  });
+  
+  const onSubmit = async (data) => {
+    try {
+      await actionLogin(data);
+      toast.success("Login successful!");
+      reset();
+      
+    } catch (error) {
+      // console.error("Login failed:", error);
+      toast.error(error.response?.data?.message || "Login failed.");
+    }
+  };
+  
   const handleLoginRedirect = () => {
     if (!isLoading && isLoggedIn && user) {
       if (user.role === 'SUPERADMIN' || user.role === 'ADMIN') {
@@ -30,29 +53,6 @@ function LoginPage() {
   useEffect(() => {
     handleLoginRedirect()
   }, [isLoggedIn, user, isLoading, navigate]);
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-    reset,
-  } = useForm({
-    resolver: yupResolver(schemaLogin),
-    mode: 'onBlur'
-  });
-
-  const onSubmit = async (data) => {
-    try {
-      await actionLogin(data);
-      toast.success("Login successful!");
-      reset();
-
-    } catch (error) {
-      // console.error("Login failed:", error);
-      toast.error(error.response?.data?.message || "Login failed.");
-    }
-  };
-
 
   return (
     <AuthLayout>
